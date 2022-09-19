@@ -20,7 +20,7 @@ namespace CaroAPI.Controllers
             _userService = userService;
         }
         [Authorize]
-        [HttpGet("GetAllUsers")]
+        [HttpGet("GetUsers")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         public async Task<IActionResult> GetUsers()
         {
@@ -57,8 +57,8 @@ namespace CaroAPI.Controllers
             return Ok(authResult);
         }
         [Authorize]
-        [HttpPut("UpdateProfile")]
-        public async Task<IActionResult> UpdateProfile(UpdateUserRequest updateUserRequest)
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update(UpdateUserRequest updateUserRequest)
         {
             var result = await _userService.Update(updateUserRequest.Id ,updateUserRequest);
             if (result.Succeeded)
