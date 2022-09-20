@@ -92,9 +92,14 @@ namespace Service.APIClientServices
             return await ResultReturn<bool>(response);
         }
 
-        public Task<APIResult<bool>> Update(UpdateUserRequest request)
+        public async Task<APIResult<bool>> Update(string userName, UpdateUserRequest request)
         {
-            throw new NotImplementedException();
+            var client = _httpClientFactory.CreateClient("CaroAPI");
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"User/Update?username={userName}", httpContent);
+            return await ResultReturn<bool>(response);
         }
     }
 }

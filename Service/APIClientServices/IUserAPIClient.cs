@@ -16,7 +16,7 @@ namespace Service.APIClientServices
 
         Task<APIResult<string>> Authenticate(LoginRequest request);
         Task<APIResult<bool>> Register(RegisterRequest request);
-        Task<APIResult<bool>> Update(UpdateUserRequest request);
+        Task<APIResult<bool>> Update(string userName, UpdateUserRequest request);
         Task<APIResult<IEnumerable<UserResponse>>> GetUserList(
             Expression<Func<User, bool>>? filter = null,
             Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null,

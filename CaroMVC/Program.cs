@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+using Service.APIClientServices;
 
 namespace CaroMVC
 {
@@ -17,6 +17,7 @@ namespace CaroMVC
             });
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped<IUserAPIClient, UserAPIClient>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

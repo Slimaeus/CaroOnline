@@ -62,6 +62,8 @@ namespace CaroAPI.Controllers
             return Ok(authResult);
         }
         [HttpPut("Update")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(string userName, [FromBody] UpdateUserRequest updateUserRequest)
         {
             if (!ModelState.IsValid)
@@ -72,6 +74,8 @@ namespace CaroAPI.Controllers
             return BadRequest(result);
         }
         [HttpDelete("Delete")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(string userName)
         {
             if (!ModelState.IsValid)
@@ -82,6 +86,8 @@ namespace CaroAPI.Controllers
             return BadRequest(result);
         }
         [HttpGet("GetByUserName")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetByUserName(string userName)
         {
             if (!ModelState.IsValid)
@@ -92,6 +98,8 @@ namespace CaroAPI.Controllers
             return BadRequest(result);
         }
         [HttpPut("RoleAssign")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RoleAssign(string userName, RoleAssignRequest roleAssignRequest)
         {
             if (!ModelState.IsValid)
