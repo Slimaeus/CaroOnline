@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Model.DbModels;
 using Model.RequestModels;
@@ -21,6 +22,7 @@ namespace CaroAPI.Controllers
             this.resultService = resultService;
             this.mapper = mapper;
         }
+        [Authorize]
         [HttpGet]
         public IActionResult Get()
         {
@@ -37,12 +39,12 @@ namespace CaroAPI.Controllers
 
         // POST api/<ResultController>
         [HttpPost]
-        public IActionResult Post([FromBody] ResultRequest resultRequest)
+        public async Task<IActionResult> Post([FromBody] ResultRequest resultRequest)
         {
-            var result = mapper.Map<ResultRequest, Result>(resultRequest);
-            resultService.AddResult(result);
-
-            return BadRequest();
+            var serviceResult = await resultService.AddResult(resultRequest);
+            if (serviceResult.Succeeded)
+                return Ok(serviceResult);
+            return BadRequest(serviceResult);
         }
 
         // PUT api/<ResultController>/5

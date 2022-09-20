@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace Data.UnitOfWork
 {
     public interface IUnitOfWork
     {
-        void Commit();
+        CaroDbContext DbContext { get; set; }
+        int Commit();
         IDbContextTransaction BeginTransaction();
     }
 }

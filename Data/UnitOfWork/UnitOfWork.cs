@@ -11,15 +11,15 @@ namespace Data.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public DbContext DbContext { get; set; }
+        public CaroDbContext DbContext { get; set; }
         public UnitOfWork(IDbContextFactory<CaroDbContext> dbContextFactory)
         {
             DbContext = dbContextFactory.CreateDbContext();
         }
 
-        public void Commit()
+        public int Commit()
         {
-            DbContext.SaveChanges();
+            return DbContext.SaveChanges();
         }
 
         public IDbContextTransaction BeginTransaction()

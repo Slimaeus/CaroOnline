@@ -1,4 +1,7 @@
 ﻿using Model.DbModels;
+using Model.RequestModels;
+using Model.ResponseModels;
+using Model.ResultModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +13,8 @@ namespace Service.APIServices
 {
     public interface IResultService
     {
-        void AddResult (Result result);
-        IEnumerable<Result> GetResults(
+        Task<APIResult<string>> AddResult (ResultRequest resultRequest);
+        APIResult<IEnumerable<ResultResponse>> GetResults(
             Expression<Func<Result, bool>> filter = null!,
             Func<IQueryable<Result>, IOrderedQueryable<Result>> orderBy = null!,
             string includeProperties = "",

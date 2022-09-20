@@ -19,7 +19,7 @@ namespace CaroAPI.Controllers
         {
             _userService = userService;
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("GetUsers")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         public async Task<IActionResult> GetUsers()

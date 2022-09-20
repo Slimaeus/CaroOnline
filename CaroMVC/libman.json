@@ -5,6 +5,10 @@
     {
       "library": "jquery-ajax-unobtrusive@3.2.6",
       "destination": "wwwroot/lib/jquery-ajax-unobtrusive/"
+    },
+    {
+      "library": "axios@0.27.2",
+      "destination": "wwwroot/lib/axios/"
     }
   ]
 }

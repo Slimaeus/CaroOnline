@@ -31,10 +31,10 @@ namespace CaroAPI
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase"));
             });
-            builder.Services.AddDbContext<CaroDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase"));
-            }, ServiceLifetime.Transient);
+            //builder.Services.AddDbContext<CaroDbContext>(options =>
+            //{
+            //    options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase"));
+            //}, ServiceLifetime.Transient);
             builder.Services.AddIdentity<User, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<CaroDbContext>()
                 .AddDefaultTokenProviders();

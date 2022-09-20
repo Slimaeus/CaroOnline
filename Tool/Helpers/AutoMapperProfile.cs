@@ -14,9 +14,9 @@ namespace Utility.Helpers
     {
         public AutoMapperProfile()
         {
-            CreateMap<RegisterRequest, User>();
             CreateMap<User, UserResponse>();
             CreateMap<UserResponse, User>();
+            CreateMap<RegisterRequest, User>();
             CreateMap<ResultRequest, Result>()
                 .ForMember(des => des.StartedTime, act => act.MapFrom(src => DateTime.Now))
                 .ForMember(
@@ -27,6 +27,7 @@ namespace Utility.Helpers
                     .AddMinutes(src.Minute)
                     .AddSeconds(src.Second)
                     ));
+            CreateMap<Result, ResultResponse>();
         }
     }
 }

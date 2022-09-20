@@ -9,8 +9,8 @@ namespace Model.RequestModels
 {
     public class ResultRequest
     {
-        //public DateTime StartedTime { get; set; } = DateTime.Now;
-        //public DateTime EndedTime { get; set; } = DateTime.Now;
+        public string WinnerUserName { get; set; } = string.Empty;
+        public string LoserUserName { get; set; } = string.Empty;
         public int Hour { get; set; }
         [Range(0, 60)]
         public int Minute { get; set; }
