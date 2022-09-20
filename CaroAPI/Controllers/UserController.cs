@@ -11,6 +11,7 @@ namespace CaroAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -19,7 +20,6 @@ namespace CaroAPI.Controllers
         {
             _userService = userService;
         }
-        //[Authorize]
         [HttpGet("GetUsers")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         public async Task<IActionResult> GetUsers()
@@ -31,24 +31,29 @@ namespace CaroAPI.Controllers
             {
                 return BadRequest(result);
             }
-            IEnumerable<UserResponse> users = result.ResultObject;
-            return Ok(users);
+            return Ok(result);
         }
+        [AllowAnonymous]
         [HttpPost("SignUp")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SignUp([FromBody] RegisterRequest signUpModel)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var result = await _userService.Register(signUpModel);
             if (!result.Succeeded)
                 return BadRequest(result);
             return Ok(result);
         }
+        [AllowAnonymous]
         [HttpPost("Authenticate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Authenticate([FromBody] LoginRequest loginModel)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             if (!ModelState.IsValid)
                 return Unauthorized(ModelState);
             var authResult = await _userService.Authenticate(loginModel);
@@ -56,11 +61,42 @@ namespace CaroAPI.Controllers
                 return Unauthorized(authResult);
             return Ok(authResult);
         }
-        [Authorize]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(UpdateUserRequest updateUserRequest)
+        public async Task<IActionResult> Update(string userName, [FromBody] UpdateUserRequest updateUserRequest)
         {
-            var result = await _userService.Update(updateUserRequest.Id ,updateUserRequest);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _userService.Update(userName, updateUserRequest);
+            if (result.Succeeded)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(string userName)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _userService.Delete(userName);
+            if (result.Succeeded)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpGet("GetByUserName")]
+        public async Task<IActionResult> GetByUserName(string userName)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _userService.GetByUserName(userName);
+            if (result.Succeeded)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpPut("RoleAssign")]
+        public async Task<IActionResult> RoleAssign(string userName, RoleAssignRequest roleAssignRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var result = await _userService.RoleAssign(userName, roleAssignRequest);
             if (result.Succeeded)
                 return Ok(result);
             return BadRequest(result);

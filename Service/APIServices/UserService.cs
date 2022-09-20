@@ -18,10 +18,9 @@ namespace Service.APIServices
         private readonly IJWTManager _jwtManager;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IJWTManager jwtManager, IMapper mapper)
+        public UserService(UserManager<User> userManager, IJWTManager jwtManager, IMapper mapper)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _jwtManager = jwtManager;
             _mapper = mapper;
         }
@@ -30,12 +29,12 @@ namespace Service.APIServices
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
             {
-                return new APIErrorResult<string>("Username does not exist!");
+                return new APIErrorResult<string>("User does not exist!");
             }
             var result = await _userManager.CheckPasswordAsync(user, request.Password) ;
             if (result == false)
             {
-                return new APIErrorResult<string>("Username or Password uncorrect!");
+                return new APIErrorResult<string>("Username or Password Uncorrect!");
             }
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -52,13 +51,25 @@ namespace Service.APIServices
             }
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
-                return new APISuccessResult<bool>();
+                return new APISuccessResult<bool>(true);
+            return new APIErrorResult<bool>("Delete Fail!");
+        }
+
+        public async Task<APIResult<bool>> Delete(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return new APIErrorResult<bool>("User does not exist!");
+            }
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+                return new APISuccessResult<bool>(true);
             return new APIErrorResult<bool>("Delete failed!");
         }
 
         public async Task<APIResult<UserResponse>> GetById(Guid id)
         {
-
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
                 return new APIErrorResult<UserResponse>("User does not exist!");
@@ -67,6 +78,17 @@ namespace Service.APIServices
             userResponse.Roles = roles;
             return new APISuccessResult<UserResponse>(userResponse);
 
+        }
+
+        public async Task<APIResult<UserResponse>> GetByUserName(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                return new APIErrorResult<UserResponse>("User Does Not Exist!");
+            var roles = await _userManager.GetRolesAsync(user);
+            var userResponse = _mapper.Map<UserResponse>(user);
+            userResponse.Roles = roles;
+            return new APISuccessResult<UserResponse>(userResponse);
         }
 
         public async Task<APIResult<IEnumerable<UserResponse>>> GetUserList(Expression<Func<User, bool>>? filter, Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy, string includeProperties = "", int take = 0, int skip = 0)
@@ -97,8 +119,8 @@ namespace Service.APIServices
             {
                 userList = await query.ToListAsync();
             }
-            if (userList.Count <= 0)
-                return new APIErrorResult<IEnumerable<UserResponse>>("There is no user!");
+            //if (userList.Count <= 0)
+            //    return new APIErrorResult<IEnumerable<UserResponse>>("There is no user!");
             var userResponseList = _mapper.Map<IEnumerable<UserResponse>>(userList);
             return new APISuccessResult<IEnumerable<UserResponse>>(userResponseList);
         }
@@ -116,9 +138,9 @@ namespace Service.APIServices
             bool isEmailExists = findEmail != null;
 
             if (isUserNameExists)
-                return new APIErrorResult<bool>("This username already used!");
+                return new APIErrorResult<bool>("This Username Already Used!");
             if (isEmailExists)
-                return new APIErrorResult<bool>("This email already used");
+                return new APIErrorResult<bool>("This Email Already Used");
 
             var user = _mapper.Map<User>(request);
             var result = await _userManager.CreateAsync(user, request.Password);
@@ -127,15 +149,15 @@ namespace Service.APIServices
             {
                 return new APISuccessResult<bool>();
             }
-            return new APIErrorResult<bool>("Register failed!");
+            return new APIErrorResult<bool>("Register Fail!");
         }
 
-        public async Task<APIResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        public async Task<APIResult<bool>> RoleAssign(string userName, RoleAssignRequest request)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
-                return new APIErrorResult<bool>("User does not exist");
+                return new APIErrorResult<bool>("User Does Not Exist");
             }
             var removedRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList();
             foreach (var roleName in removedRoles)
@@ -159,13 +181,17 @@ namespace Service.APIServices
             return new APISuccessResult<bool>();
         }
 
-        public async Task<APIResult<bool>> Update(Guid id, UpdateUserRequest request)
+        public async Task<APIResult<bool>> Update(string userName, UpdateUserRequest request)
         {
-            if (await _userManager.Users.AnyAsync(x => x.Email == request.Email && x.Id != id))
+            if (request.Email != null && await _userManager.Users.AnyAsync(x => x.Email == request.Email))
             {
-                return new APIErrorResult<bool>("Email already exists");
+                return new APIErrorResult<bool>("Email Already Exists");
             }
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (userName != null && await _userManager.Users.AnyAsync(x => x.UserName == userName))
+            {
+                return new APIErrorResult<bool>("UserName Already Exists");
+            }
+            var user = await _userManager.FindByIdAsync(request.UserName);
             bool isEmailExists = request.Email != null;
             bool isPhoneNumberExists = request.PhoneNumber != null;
             bool isUserNameExists = request.UserName != null;
@@ -178,7 +204,7 @@ namespace Service.APIServices
                 getTokenTasks.Add(_userManager.GenerateChangePhoneNumberTokenAsync(user, request.PhoneNumber));
             var tokens = await Task.WhenAll(getTokenTasks);
 
-            List<Task> updateTasks = new List<Task>();
+            List<Task> updateTasks = new();
             if (isUserNameExists)
                 updateTasks.Add(_userManager.SetUserNameAsync(user, request.UserName));
             if (isEmailExists)
@@ -196,7 +222,7 @@ namespace Service.APIServices
             {
                 return new APISuccessResult<bool>();
             }
-            return new APIErrorResult<bool>("Cập nhật không thành công");
+            return new APIErrorResult<bool>("Update Failed!");
         }
     }
 }

@@ -8,7 +8,6 @@ namespace Model.RequestModels
 {
     public class RoleAssignRequest
     {
-        public Guid Id { get; set; } = new Guid();
         public ICollection<SelectedItem> Roles { get; set; } = new List<SelectedItem>();
     }
 }

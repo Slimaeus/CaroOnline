@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,34 +19,42 @@ namespace Service.APIClientServices
     public class UserAPIClient : IUserAPIClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserAPIClient(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _httpClientFactory = httpClientFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<APIResult<string>> Authenticate(LoginRequest request)
         {
+            var client = _httpClientFactory.CreateClient("CaroAPI");
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var client = _httpClientFactory.CreateClient("CaroAPI");
             var response = await client.PostAsync("User/Authenticate", httpContent);
-            if (response.IsSuccessStatusCode)
-            {
-                return JsonConvert.DeserializeObject<APISuccessResult<string>>(await response.Content.ReadAsStringAsync())!;
-            }
-
-            return JsonConvert.DeserializeObject<APIErrorResult<string>>(await response.Content.ReadAsStringAsync())!;
+            return await ResultReturn<string>(response);
         }
 
-        public Task<APIResult<bool>> Delete(Guid id)
+        public async Task<APIResult<bool>> Delete(DeleteUserRequest deleteUserRequest)
         {
-            throw new NotImplementedException();
+            var client = _httpClientFactory.CreateClient("CaroAPI");
+            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var user = await GetByUserName(deleteUserRequest.UserName);
+            if (!user.Succeeded)
+                return new APIErrorResult<bool>("User Not Found!");
+            var response = await client.DeleteAsync($"User/Delete?username={deleteUserRequest.UserName}");
+            return await ResultReturn<bool>(response);    
         }
 
-        public Task<APIResult<UserResponse>> GetById(Guid id)
+        public async Task<APIResult<UserResponse>> GetByUserName(string userName)
         {
-            throw new NotImplementedException();
+            var client = _httpClientFactory.CreateClient("CaroAPI");
+            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await client.GetAsync($"User/GetByUserName?userName={userName}");
+            return await ResultReturn<UserResponse>(response);
         }
 
         public Task<APIResult<IEnumerable<UserResponse>>> GetUserList(Expression<Func<User, bool>>? filter = null, Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null, string includeProperties = "", int take = 0, int skip = 0)
@@ -53,17 +62,37 @@ namespace Service.APIClientServices
             throw new NotImplementedException();
         }
 
-        public Task<APIResult<bool>> Register(RegisterRequest request)
+        public async Task<APIResult<bool>> Register(RegisterRequest request)
         {
-            throw new NotImplementedException();
+            var client = _httpClientFactory.CreateClient("CaroAPI");
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("User/Register", httpContent);
+            return await ResultReturn<bool>(response);
         }
 
-        public Task<APIResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        public async Task<APIResult<TResult>> ResultReturn<TResult>(HttpResponseMessage response)
         {
-            throw new NotImplementedException();
+            string body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<APISuccessResult<TResult>>(body)!;
+            }
+            return JsonConvert.DeserializeObject<APIErrorResult<TResult>>(body)!;
         }
 
-        public Task<APIResult<bool>> Update(Guid id, UpdateUserRequest request)
+        public async Task<APIResult<bool>> RoleAssign(string userName, RoleAssignRequest request)
+        {
+            var client = _httpClientFactory.CreateClient("CaroAPI");
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"User/RoleAssign?username={userName}", httpContent);
+            return await ResultReturn<bool>(response);
+        }
+
+        public Task<APIResult<bool>> Update(UpdateUserRequest request)
         {
             throw new NotImplementedException();
         }

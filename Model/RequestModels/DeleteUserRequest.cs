@@ -8,6 +8,7 @@ namespace Model.RequestModels
 {
     public class DeleteUserRequest
     {
-        public Guid Id { get; set; }
+        //public Guid Id { get; set; }
+        public string UserName { get; set; } = string.Empty;
     }
 }
