@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+
 namespace CaroMVC
 {
     public class Program
@@ -8,8 +10,13 @@ namespace CaroMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddHttpClient();
+            builder.Services.AddHttpClient("CaroAPI", httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("CaroAPIBaseUrl"));
+                //httpClient.DefaultRequestHeaders.Add();
+            });
 
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -24,6 +31,8 @@ namespace CaroMVC
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            //app.UseCors("CaroAPI");
 
             app.UseAuthorization();
 

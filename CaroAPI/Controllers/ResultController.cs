@@ -22,7 +22,7 @@ namespace CaroAPI.Controllers
             this.resultService = resultService;
             this.mapper = mapper;
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public IActionResult Get()
         {

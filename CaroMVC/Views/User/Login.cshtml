@@ -4,7 +4,16 @@
 @{
 }
 <h1>Login</h1>
+<div id="datatable"></div>
+@section Scripts {
 
-<script>
+    <script>
 
-</script>
+        axios.get('https://localhost:7118/api/Result').then(resp => {
+            const list = resp.data.resultObject;
+            console.log(list)
+            $("#datatable").DataTable()
+        });
+
+    </script>
+}
