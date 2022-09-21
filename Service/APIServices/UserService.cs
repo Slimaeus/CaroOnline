@@ -129,10 +129,6 @@ namespace Service.APIServices
         {
             var findUserName = await _userManager.FindByNameAsync(request.UserName);
             var findEmail = await _userManager.FindByEmailAsync(request.Email);
-            //await Task.WhenAll(
-            //        findUserName,
-            //        findEmail
-            //);
 
             bool isUserNameExists = findUserName != null;
             bool isEmailExists = findEmail != null;
@@ -141,7 +137,8 @@ namespace Service.APIServices
                 return new APIErrorResult<bool>("This Username Already Used!");
             if (isEmailExists)
                 return new APIErrorResult<bool>("This Email Already Used");
-
+            if (request.Password != request.ConfirmPassword)
+                return new APIErrorResult<bool>("Password and Confirm Password are not the same");
             var user = _mapper.Map<User>(request);
             var result = await _userManager.CreateAsync(user, request.Password);
 

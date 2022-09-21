@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Model.DbModels;
 using System;
@@ -21,6 +22,7 @@ namespace Data.Repositories
         {
             _configuration = configuration;
         }
+        // For API
         public string Authenticate(User user, IList<string> roles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -43,6 +45,23 @@ namespace Data.Repositories
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+        // For MVC
+        public ClaimsPrincipal Validate(string token)
+        {
+            IdentityModelEventSource.ShowPII = true;
+
+            TokenValidationParameters validationParameters = new()
+            {
+                ValidateLifetime = true,
+                ValidAudience = _configuration["JWT:Issuer"],
+                ValidIssuer = _configuration["JWT:Issuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]))
+            };
+
+            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+            return principal;
         }
     }
 }

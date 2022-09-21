@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Model.ActionModels;
 using Model.DbModels;
 using Model.RequestModels;
 using Model.ResponseModels;
@@ -28,6 +29,12 @@ namespace Utility.Helpers
                     .AddSeconds(src.Second)
                     ));
             CreateMap<Result, ResultResponse>();
+            CreateMap<RegisterRequest, LoginRequest>();
+            CreateMap<RegisterModel, LoginModel>()
+                .AfterMap((src, des, context) =>
+                {
+                    des.Input = context.Mapper.Map<LoginRequest>(src.Input);
+                });
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AutoMapper;
+using Data.Repositories;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
@@ -17,11 +19,15 @@ namespace CaroMVC.Controllers
     {
         private readonly IUserAPIClient _userAPIClient;
         private readonly IConfiguration _configuration;
+        private readonly IJWTManager _jWTManager;
+        private readonly IMapper _mapper;
 
-        public UserController(IUserAPIClient userAPIClient, IConfiguration configuration)
+        public UserController(IUserAPIClient userAPIClient, IConfiguration configuration, IJWTManager jWTManager, IMapper mapper)
         {
             _userAPIClient = userAPIClient;
             _configuration = configuration;
+            _jWTManager = jWTManager;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
@@ -53,7 +59,7 @@ namespace CaroMVC.Controllers
                 ModelState.AddModelError("", "Login Failure");
             }
             var token = response.ResultObject;
-            var userPrincipal = ValidateToken(token);
+            var userPrincipal = _jWTManager.Validate(token);
             var authProperties = new AuthenticationProperties
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
@@ -70,31 +76,50 @@ namespace CaroMVC.Controllers
                 return LocalRedirect(loginModel.ReturnUrl);
             return RedirectToAction("Index", "Home");
         }
-        public IActionResult Register()
+        public IActionResult Register(string returnUrl)
         {
-            return View();
+            RegisterModel model = new()
+            {
+                ReturnUrl = returnUrl
+            };
+            return View(model);
         }
         [HttpPost]
-        public IActionResult Register(RegisterRequest loginModel, string returnUrl)
+        public async Task<IActionResult> Register(RegisterModel model)
         {
-            return View();
-        }
 
-        private ClaimsPrincipal ValidateToken(string jwtToken)
-        {
-            IdentityModelEventSource.ShowPII = true;
-
-            TokenValidationParameters validationParameters = new()
+            if (!ModelState.IsValid)
+                return View(model);
+            var response = await _userAPIClient.Register(model.Input);
+            if (!response.Succeeded)
             {
-                ValidateLifetime = true,
-                ValidAudience = _configuration["JWT:Issuer"],
-                ValidIssuer = _configuration["JWT:Issuer"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]))
+                ModelState.AddModelError("", "Register Failure");
+            }
+            // Login 
+            var loginModel = _mapper.Map<LoginModel>(model);
+            var loginResponse = await _userAPIClient.Authenticate(loginModel.Input);
+
+            if (!loginResponse.Succeeded)
+            {
+                ModelState.AddModelError("", "Login Failure");
+            }
+            var token = loginResponse.ResultObject;
+            var userPrincipal = _jWTManager.Validate(token);
+            var authProperties = new AuthenticationProperties
+            {
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                IsPersistent = false
             };
+            HttpContext.Session.SetString("Token", token);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                userPrincipal,
+                authProperties
+            );
 
-            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out SecurityToken validatedToken);
-
-            return principal;
+            if (!string.IsNullOrEmpty(loginModel.ReturnUrl))
+                return LocalRedirect(loginModel.ReturnUrl);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

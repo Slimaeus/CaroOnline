@@ -1,5 +1,7 @@
+using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Service.APIClientServices;
+using Utility.Helpers;
 
 namespace CaroMVC
 {
@@ -18,7 +20,10 @@ namespace CaroMVC
             });
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddSingleton<IJWTManager, JWTManager>();
             builder.Services.AddScoped<IUserAPIClient, UserAPIClient>();
+
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
             builder.Services.AddSession();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -43,7 +48,6 @@ namespace CaroMVC
 
             app.UseRouting();
 
-            //app.UseCors("CaroAPI");
             app.UseAuthentication();
 
             app.UseAuthorization();

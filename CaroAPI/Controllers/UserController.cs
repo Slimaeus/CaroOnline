@@ -35,10 +35,10 @@ namespace CaroAPI.Controllers
             return Ok(result);
         }
         [AllowAnonymous]
-        [HttpPost("SignUp")]
+        [HttpPost("Register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> SignUp([FromBody] RegisterRequest signUpModel)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest signUpModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
