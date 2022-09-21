@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Model.DbModels;
 using Model.RequestModels;
@@ -19,12 +20,14 @@ namespace Service.APIClientServices
     public class UserAPIClient : IUserAPIClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMemoryCache _memoryCache;
 
-        public UserAPIClient(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
+        public UserAPIClient(
+            IHttpClientFactory httpClientFactory, 
+            IMemoryCache memoryCache)
         {
             _httpClientFactory = httpClientFactory;
-            _httpContextAccessor = httpContextAccessor;
+            _memoryCache = memoryCache;
         }
         public async Task<APIResult<string>> Authenticate(LoginRequest request)
         {
@@ -39,7 +42,7 @@ namespace Service.APIClientServices
         public async Task<APIResult<bool>> Delete(DeleteUserRequest deleteUserRequest)
         {
             var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            var token = _memoryCache.Get<String>("token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var user = await GetByUserName(deleteUserRequest.UserName);
             if (!user.Succeeded)
@@ -51,7 +54,7 @@ namespace Service.APIClientServices
         public async Task<APIResult<UserResponse>> GetByUserName(string userName)
         {
             var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("token");
+            var token = _memoryCache.Get<String>("token");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await client.GetAsync($"User/GetByUserName?userName={userName}");
             return await ResultReturn<UserResponse>(response);

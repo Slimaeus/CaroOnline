@@ -3,6 +3,7 @@ using Data.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Model.ActionModels;
@@ -21,21 +22,34 @@ namespace CaroMVC.Controllers
         private readonly IConfiguration _configuration;
         private readonly IJWTManager _jWTManager;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _memoryCache;
 
-        public UserController(IUserAPIClient userAPIClient, IConfiguration configuration, IJWTManager jWTManager, IMapper mapper)
+        public UserController(
+            IUserAPIClient userAPIClient,
+            IConfiguration configuration,
+            IJWTManager jWTManager,
+            IMapper mapper,
+            IMemoryCache memoryCache)
         {
             _userAPIClient = userAPIClient;
             _configuration = configuration;
             _jWTManager = jWTManager;
             _mapper = mapper;
+            _memoryCache = memoryCache;
         }
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
-            return Content("Test");
+            var result = await _userAPIClient.GetByUserName("thai");
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "UserName not found");
+            }
+            var user = result.ResultObject;
+            return View(user);
         }
         public IActionResult Login(string returnUrl)
         {
@@ -69,7 +83,9 @@ namespace CaroMVC.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
-            HttpContext.Session.SetString("Token", token);
+            
+            _memoryCache.Set("Token", token, DateTimeOffset.UtcNow.AddMinutes(10));
+            //HttpContext.Session.SetString("Token", token);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 userPrincipal,
@@ -114,7 +130,8 @@ namespace CaroMVC.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
-            HttpContext.Session.SetString("Token", token);
+            _memoryCache.Set("Token", token, DateTimeOffset.UtcNow.AddMinutes(10));
+            //HttpContext.Session.SetString("Token", token);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 userPrincipal,

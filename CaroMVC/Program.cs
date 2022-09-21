@@ -26,6 +26,7 @@ namespace CaroMVC
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
             builder.Services.AddSession();
+            builder.Services.AddMemoryCache();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 //.AddJwtBearer()
                 .AddCookie(options =>
