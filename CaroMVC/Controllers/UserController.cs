@@ -33,7 +33,7 @@ namespace CaroMVC.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> Profile()
+        public IActionResult Profile()
         {
             return Content("Test");
         }
