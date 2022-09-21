@@ -33,6 +33,10 @@ namespace CaroMVC.Controllers
         {
             return View();
         }
+        public async Task<IActionResult> Profile()
+        {
+            return Content("Test");
+        }
         public IActionResult Login(string returnUrl)
         {
             LoginModel model = new()
