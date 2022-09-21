@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Service.APIClientServices;
 
 namespace CaroMVC
@@ -18,6 +19,15 @@ namespace CaroMVC
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<IUserAPIClient, UserAPIClient>();
+
+            builder.Services.AddSession();
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                //.AddJwtBearer()
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/User/Login";
+                });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,13 +37,14 @@ namespace CaroMVC
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseRouting();
 
             //app.UseCors("CaroAPI");
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -20,6 +20,7 @@ namespace CaroAPI.Controllers
         {
             _userService = userService;
         }
+        [AllowAnonymous] // Test
         [HttpGet("GetUsers")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         public async Task<IActionResult> GetUsers()
@@ -53,8 +54,6 @@ namespace CaroAPI.Controllers
         public async Task<IActionResult> Authenticate([FromBody] LoginRequest loginModel)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            if (!ModelState.IsValid)
                 return Unauthorized(ModelState);
             var authResult = await _userService.Authenticate(loginModel);
             if (string.IsNullOrEmpty(authResult.ResultObject))
@@ -85,6 +84,7 @@ namespace CaroAPI.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        [AllowAnonymous] //TEst
         [HttpGet("GetByUserName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -1,5 +1,6 @@
 ﻿using CaroMVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using Service.APIClientServices;
 using System.Diagnostics;
 
 namespace CaroMVC.Controllers
@@ -13,7 +14,7 @@ namespace CaroMVC.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }

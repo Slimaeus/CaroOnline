@@ -29,7 +29,7 @@ namespace CaroAPI
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContextFactory<CaroDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase1"));
             });
             //builder.Services.AddDbContext<CaroDbContext>(options =>
             //{
@@ -70,14 +70,14 @@ namespace CaroAPI
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             // Add Services
             builder.Services.AddScoped<IResultService, ResultService>();
-            var caroAPIPolicy = "CaroAPI";
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy(caroAPIPolicy, policy =>
-                {
-                    policy.WithOrigins("https://localhost:7224");
-                });
-            });
+            //var caroAPIPolicy = "CaroAPI";
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy(caroAPIPolicy, policy =>
+            //    {
+            //        policy.WithOrigins("https://localhost:7224");
+            //    });
+            //});
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -87,7 +87,7 @@ namespace CaroAPI
                 app.UseSwaggerUI();
             }
 
-            app.UseCors(caroAPIPolicy);
+            //app.UseCors(caroAPIPolicy);
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
