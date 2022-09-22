@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Views\User\Index.cshtml">
+    <Content Update="Views\Account\Index.cshtml">
       <Generator>RazorGenerator</Generator>
       <CustomToolNamespace></CustomToolNamespace>
     </Content>

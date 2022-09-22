@@ -1,0 +1,32 @@
+﻿@using Model.ResponseModels
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model UserResponse
+<div class="container">
+    <div class="card mb-3">
+        <h3 class="card-header">Profile</h3>
+        <div class="card-body">
+            <h5 class="card-title">@Model.InGameName</h5>
+            <h6 class="card-subtitle text-muted">@Model.UserName</h6>
+        </div>
+        <img class="card-img" src="https://img.freepik.com/premium-vector/meadows-landscape-with-mountains-hill_104785-943.jpg?w=2000" alt="Profile image" />
+        <div class="card-body">
+            <p class="card-text">Email: @Model.Email</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Level: @Model.Level</li>
+            <li class="list-group-item">Exp: @Model.Exp</li>
+            <li class="list-group-item">Score: @Model.Score</li>
+        </ul>
+        <div class="card-body">
+            <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a>
+        </div>
+        <div class="card-footer text-muted">
+            2 days ago
+        </div>
+    </div>
+</div>

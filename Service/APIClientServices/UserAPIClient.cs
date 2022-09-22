@@ -50,7 +50,7 @@ namespace Service.APIClientServices
             try
             {
                 var client = _httpClientFactory.CreateClient("CaroAPI");
-                var token = _memoryCache.Get<String>("token");
+                var token = _memoryCache.Get<String>("Token");
                 if (token == null)
                     return new APIErrorResult<bool>("Unauthorized");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -73,7 +73,7 @@ namespace Service.APIClientServices
             try
             {
                 var client = _httpClientFactory.CreateClient("CaroAPI");
-                var token = _memoryCache.Get<String>("token");
+                var token = _memoryCache.Get<String>("Token");
                 // What if token expires
                 if (token == null)
                     return new APIErrorResult<UserResponse>("Unauthorized");
@@ -94,7 +94,7 @@ namespace Service.APIClientServices
             try
             {
                 var client = _httpClientFactory.CreateClient("CaroAPI");
-                var token = _memoryCache.Get<String>("token");
+                var token = _memoryCache.Get<String>("Token");
                 // What if token expires
                 if (token == null)
                     return new APIErrorResult<PagedList<UserResponse>>("Unauthorized");

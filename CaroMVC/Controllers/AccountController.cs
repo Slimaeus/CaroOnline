@@ -18,7 +18,7 @@ using System.Text;
 
 namespace CaroMVC.Controllers
 {
-    public class UserController : Controller
+    public class AccountController : Controller
     {
         private readonly IUserAPIClient _userAPIClient;
         private readonly IConfiguration _configuration;
@@ -26,7 +26,7 @@ namespace CaroMVC.Controllers
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
 
-        public UserController(
+        public AccountController(
             IUserAPIClient userAPIClient,
             IConfiguration configuration,
             IJWTManager jWTManager,
@@ -48,18 +48,23 @@ namespace CaroMVC.Controllers
             // Handle result.ResultObject null
             var userIdentity = User.Identity;
             if (userIdentity == null)
+            {
+                ViewData["Error"] = "You not login yet";
                 return RedirectToAction(nameof(Login));
+            }
             var userName = userIdentity.Name;
             if (userName == null)
+            {
+                ViewData["Error"] = "You not login yet";
                 return RedirectToAction(nameof(Login));
+            }
             var result = await _userAPIClient.GetByUserName(userName);
             if (!result.Succeeded)
             {
-                ModelState.AddModelError("", "UserName not found");
-                
+                ViewData["Error"] = "Cannot Request to Server";
                 return View("Error", new ErrorViewModel
                 {
-                    RequestId = "Profile"
+                    RequestId = userName
                 });
             }
             var user = result.ResultObject;
@@ -106,7 +111,7 @@ namespace CaroMVC.Controllers
             };
             var options = new MemoryCacheEntryOptions
             {
-                AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(10)
+                AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(30)
             };
             _memoryCache.Set("Token", token, options);
             await HttpContext.SignInAsync(
@@ -155,7 +160,7 @@ namespace CaroMVC.Controllers
             };
             var options = new MemoryCacheEntryOptions
             {
-                AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(10)
+                AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(30)
             };
             _memoryCache.Set("Token", token, options);
             await HttpContext.SignInAsync(
