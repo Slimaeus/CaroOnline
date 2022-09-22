@@ -21,13 +21,11 @@ namespace CaroAPI.Controllers
             _userService = userService;
         }
         [AllowAnonymous] // Test
-        [HttpGet("GetUsers")]
+        [HttpGet("GetPagedList")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetPagedList([FromQuery] PagingRequest pagingRequest)
         {
-            var result = await _userService.GetUserList(
-                orderBy: userList => userList.OrderBy(user => user.InGameName)
-              );
+            var result = await _userService.GetUserPagingList(pagingRequest);
             if (result.Succeeded)
             {
                 return BadRequest(result);

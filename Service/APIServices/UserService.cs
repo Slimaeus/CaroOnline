@@ -14,7 +14,6 @@ namespace Service.APIServices
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
         private readonly IJWTManager _jwtManager;
         private readonly IMapper _mapper;
 
@@ -91,7 +90,12 @@ namespace Service.APIServices
             return new APISuccessResult<UserResponse>(userResponse);
         }
 
-        public async Task<APIResult<IEnumerable<UserResponse>>> GetUserList(Expression<Func<User, bool>>? filter, Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy, string includeProperties = "", int take = 0, int skip = 0)
+        public async Task<IEnumerable<User>> GetUserList(
+            Expression<Func<User, bool>>? filter = null,
+            Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null,
+            string includeProperties = "",
+            int take = 0,
+            int skip = 0)
         {
             IQueryable<User> query = _userManager.Users.AsQueryable<User>();
             IList<User> userList;
@@ -119,10 +123,38 @@ namespace Service.APIServices
             {
                 userList = await query.ToListAsync();
             }
-            //if (userList.Count <= 0)
-            //    return new APIErrorResult<IEnumerable<UserResponse>>("There is no user!");
+
+            return userList;
+        }
+
+        public async Task<APIResult<PagedList<UserResponse>>> GetUserPagingList(PagingRequest request)
+        {
+            const int DEFAULT_PAGE_SIZE = 10;
+            const int DEFAULT_PAGE_INDEX = 1;
+            int pageSize = DEFAULT_PAGE_SIZE;
+            int pageIndex = DEFAULT_PAGE_INDEX;
+            if (request.PageSize > 0)
+            {
+                pageSize = request.PageSize;
+            }
+            if (request.PageIndex > 0)
+            {
+                pageIndex = request.PageIndex;
+            }
+            int totalUser = await _userManager.Users.CountAsync();
+            var userList = await GetUserList(
+                skip: pageSize * (pageIndex - 1),
+                take: pageSize
+            );
             var userResponseList = _mapper.Map<IEnumerable<UserResponse>>(userList);
-            return new APISuccessResult<IEnumerable<UserResponse>>(userResponseList);
+            var pageResult = new PagedList<UserResponse>
+            {
+                TotalCount = totalUser,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                Items = userResponseList
+            };
+            return new APISuccessResult<PagedList<UserResponse>>(pageResult);
         }
 
         public async Task<APIResult<bool>> Register(RegisterRequest request)

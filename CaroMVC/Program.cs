@@ -16,16 +16,15 @@ namespace CaroMVC
             builder.Services.AddHttpClient("CaroAPI", httpClient =>
             {
                 httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("CaroAPIBaseUrl"));
-                //httpClient.DefaultRequestHeaders.Add();
             });
 
-            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IJWTManager, JWTManager>();
             builder.Services.AddScoped<IUserAPIClient, UserAPIClient>();
 
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-            builder.Services.AddSession();
+            //builder.Services.AddSession();
             builder.Services.AddMemoryCache();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 //.AddJwtBearer()
@@ -45,7 +44,7 @@ namespace CaroMVC
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSession();
+            //app.UseSession();
 
             app.UseRouting();
 

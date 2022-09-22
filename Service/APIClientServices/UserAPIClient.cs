@@ -23,7 +23,7 @@ namespace Service.APIClientServices
         private readonly IMemoryCache _memoryCache;
 
         public UserAPIClient(
-            IHttpClientFactory httpClientFactory, 
+            IHttpClientFactory httpClientFactory,
             IMemoryCache memoryCache)
         {
             _httpClientFactory = httpClientFactory;
@@ -31,33 +31,83 @@ namespace Service.APIClientServices
         }
         public async Task<APIResult<string>> Authenticate(LoginRequest request)
         {
-            var client = _httpClientFactory.CreateClient("CaroAPI");
-            var json = JsonConvert.SerializeObject(request);
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await client.PostAsync("User/Authenticate", httpContent);
-            return await ResultReturn<string>(response);
+            try
+            {
+                var client = _httpClientFactory.CreateClient("CaroAPI");
+                var json = JsonConvert.SerializeObject(request);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync("User/Authenticate", httpContent);
+                return await ResultReturn<string>(response);
+            }
+            catch (Exception ex)
+            {
+                return new APIErrorResult<string>(ex.Message);
+            }
         }
 
         public async Task<APIResult<bool>> Delete(DeleteUserRequest deleteUserRequest)
         {
-            var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _memoryCache.Get<String>("token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var user = await GetByUserName(deleteUserRequest.UserName);
-            if (!user.Succeeded)
-                return new APIErrorResult<bool>("User Not Found!");
-            var response = await client.DeleteAsync($"User/Delete?username={deleteUserRequest.UserName}");
-            return await ResultReturn<bool>(response);    
+            try
+            {
+                var client = _httpClientFactory.CreateClient("CaroAPI");
+                var token = _memoryCache.Get<String>("token");
+                if (token == null)
+                    return new APIErrorResult<bool>("Unauthorized");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var user = await GetByUserName(deleteUserRequest.UserName);
+                if (!user.Succeeded)
+                    return new APIErrorResult<bool>("User Not Found!");
+                var response = await client.DeleteAsync($"User/Delete?username={deleteUserRequest.UserName}");
+                return await ResultReturn<bool>(response);
+
+            }
+            catch (Exception ex)
+            {
+                return new APIErrorResult<bool>(ex.Message);
+
+            }
         }
 
         public async Task<APIResult<UserResponse>> GetByUserName(string userName)
         {
-            var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _memoryCache.Get<String>("token");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await client.GetAsync($"User/GetByUserName?userName={userName}");
-            return await ResultReturn<UserResponse>(response);
+            try
+            {
+                var client = _httpClientFactory.CreateClient("CaroAPI");
+                var token = _memoryCache.Get<String>("token");
+                // What if token expires
+                if (token == null)
+                    return new APIErrorResult<UserResponse>("Unauthorized");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var response = await client.GetAsync($"User/GetByUserName?userName={userName}");
+                return await ResultReturn<UserResponse>(response);
+
+            }
+            catch (Exception ex)
+            {
+                return new APIErrorResult<UserResponse>(ex.Message);
+
+            }
+        }
+
+        public async Task<APIResult<PagedList<UserResponse>>> GetPagedList(PagingRequest pagingRequest)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("CaroAPI");
+                var token = _memoryCache.Get<String>("token");
+                // What if token expires
+                if (token == null)
+                    return new APIErrorResult<PagedList<UserResponse>>("Unauthorized");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var response = await client.GetAsync($"User/GetPagedList?{nameof(pagingRequest.PageIndex)}={pagingRequest.PageIndex}&{nameof(pagingRequest.PageSize)}={pagingRequest.PageSize}");
+                return await ResultReturn<PagedList<UserResponse>>(response);
+
+            }
+            catch (Exception ex)
+            {
+                return new APIErrorResult<PagedList<UserResponse>> (ex.Message);
+
+            }
         }
 
         public Task<APIResult<IEnumerable<UserResponse>>> GetUserList(Expression<Func<User, bool>>? filter = null, Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null, string includeProperties = "", int take = 0, int skip = 0)
@@ -67,17 +117,25 @@ namespace Service.APIClientServices
 
         public async Task<APIResult<bool>> Register(RegisterRequest request)
         {
-            var client = _httpClientFactory.CreateClient("CaroAPI");
-            var json = JsonConvert.SerializeObject(request);
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            try
+            {
+                var client = _httpClientFactory.CreateClient("CaroAPI");
+                var json = JsonConvert.SerializeObject(request);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync("User/Register", httpContent);
-            return await ResultReturn<bool>(response);
+                var response = await client.PostAsync("User/Register", httpContent);
+                return await ResultReturn<bool>(response);
+
+            }
+            catch (Exception ex)
+            {
+                return new APIErrorResult<bool>(ex.Message);
+            }
         }
 
         public async Task<APIResult<TResult>> ResultReturn<TResult>(HttpResponseMessage response)
         {
-            string body = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
                 return JsonConvert.DeserializeObject<APISuccessResult<TResult>>(body)!;
@@ -87,22 +145,38 @@ namespace Service.APIClientServices
 
         public async Task<APIResult<bool>> RoleAssign(string userName, RoleAssignRequest request)
         {
-            var client = _httpClientFactory.CreateClient("CaroAPI");
-            var json = JsonConvert.SerializeObject(request);
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            try
+            {
+                var client = _httpClientFactory.CreateClient("CaroAPI");
+                var json = JsonConvert.SerializeObject(request);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync($"User/RoleAssign?username={userName}", httpContent);
-            return await ResultReturn<bool>(response);
+                var response = await client.PostAsync($"User/RoleAssign?username={userName}", httpContent);
+                return await ResultReturn<bool>(response);
+
+            }
+            catch (Exception ex)
+            {
+                return new APIErrorResult<bool>(ex.Message);
+            }
         }
 
         public async Task<APIResult<bool>> Update(string userName, UpdateUserRequest request)
         {
-            var client = _httpClientFactory.CreateClient("CaroAPI");
-            var json = JsonConvert.SerializeObject(request);
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            try
+            {
+                var client = _httpClientFactory.CreateClient("CaroAPI");
+                var json = JsonConvert.SerializeObject(request);
+                var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync($"User/Update?username={userName}", httpContent);
-            return await ResultReturn<bool>(response);
+                var response = await client.PostAsync($"User/Update?username={userName}", httpContent);
+                return await ResultReturn<bool>(response);
+
+            }
+            catch (Exception ex)
+            {
+                return new APIErrorResult<bool>(ex.Message);
+            }
         }
     }
 }

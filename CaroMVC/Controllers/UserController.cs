@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CaroMVC.Models;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -10,6 +11,7 @@ using Model.ActionModels;
 using Model.DbModels;
 using Model.RequestModels;
 using Service.APIClientServices;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -43,16 +45,30 @@ namespace CaroMVC.Controllers
         }
         public async Task<IActionResult> Profile()
         {
-            var result = await _userAPIClient.GetByUserName("thai");
+            // Handle result.ResultObject null
+            var userIdentity = User.Identity;
+            if (userIdentity == null)
+                return RedirectToAction(nameof(Login));
+            var userName = userIdentity.Name;
+            if (userName == null)
+                return RedirectToAction(nameof(Login));
+            var result = await _userAPIClient.GetByUserName(userName);
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", "UserName not found");
+                
+                return View("Error", new ErrorViewModel
+                {
+                    RequestId = "Profile"
+                });
             }
             var user = result.ResultObject;
             return View(user);
         }
-        public IActionResult Login(string returnUrl)
+        public IActionResult Login(string? returnUrl)
         {
+            if (returnUrl == null)
+                return View(new LoginModel());
             LoginModel model = new()
             {
                 ReturnUrl = returnUrl
@@ -77,15 +93,22 @@ namespace CaroMVC.Controllers
                 ModelState.AddModelError("", "Login Failure");
             }
             var token = response.ResultObject;
+            if (token == null)
+            {
+                ViewData["Warning"] = "Cannot Get Token";
+                return View(loginModel);
+            }
             var userPrincipal = _jWTManager.Validate(token);
             var authProperties = new AuthenticationProperties
             {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(10),
                 IsPersistent = false
             };
-            
-            _memoryCache.Set("Token", token, DateTimeOffset.UtcNow.AddMinutes(10));
-            //HttpContext.Session.SetString("Token", token);
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(10)
+            };
+            _memoryCache.Set("Token", token, options);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 userPrincipal,
@@ -127,11 +150,14 @@ namespace CaroMVC.Controllers
             var userPrincipal = _jWTManager.Validate(token);
             var authProperties = new AuthenticationProperties
             {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(10),
                 IsPersistent = false
             };
-            _memoryCache.Set("Token", token, DateTimeOffset.UtcNow.AddMinutes(10));
-            //HttpContext.Session.SetString("Token", token);
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(10)
+            };
+            _memoryCache.Set("Token", token, options);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 userPrincipal,
