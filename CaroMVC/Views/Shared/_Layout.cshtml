@@ -19,7 +19,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/logoCaro.png" style="width:40px;height:40px" alt="Caro Logo"/></a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/logoCaro.png" style="width:50px;height:50px" alt="Caro Logo"/></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -33,7 +33,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">User</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -52,7 +52,6 @@
                 {
                     <li class="breadcrumb-item">@action</li>
                 }
-                @*<li class="breadcrumb-item active">Data</li>*@
             </ol>
             @RenderBody()
         </main>
@@ -65,27 +64,7 @@
                 <!-- Grid row -->
                 <div class="row mt-3">
                     <!-- Grid column -->
-                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-                        <!-- Content -->
-                        <h6 class="text-uppercase fw-bold mb-4">
-                            <i class="fas fa-gem me-3 text-secondary"></i>Member
-                        </h6>
-                        <p>
-                            <a href="https://www.facebook.com/thai.nguyenhong.587606" class="text-reset">Nguyễn Hồng Thái</a>
-                        </p>
-                        <p>
-                            <a href="https://www.facebook.com/misa.truong.16" class="text-reset">Trương Thục Vân</a>
-                        </p>
-                        <p>
-                            <a href="https://www.facebook.com/nguyenquockha8112/" class="text-reset">Nguyễn Quốc Kha</a>
-                        </p>
-                        <p>
-                            <a href="https://www.facebook.com/buidat.shiro" class="text-reset">Bùi Thành Đạt</a>
-                        </p>
-                        <p>
-                            <a href="https://www.facebook.com/profile.php?id=100009121580500" class="text-reset">Trần Hữu Đức</a>
-                        </p>
-                    </div>
+                    
                     <!-- Grid column -->
                     <!-- Grid column -->
                     <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
@@ -120,7 +99,7 @@
                             <a href="#!" class="text-reset">Lịch sử đấu</a>
                         </p>
                         <p>
-                            <a href="#!" class="text-reset">Help</a>
+                            <a href="#!" class="text-reset">Trợ giúp</a>
                         </p>
                     </div>
                     <!-- Grid column -->
@@ -128,9 +107,13 @@
                     <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
                         <!-- Links -->
                         <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
-                        <p><i class="fas fa-home me-3 text-secondary"></i>Đại Học Công Nghệ TP.HCM (Hutech) - 20DTHD3</p>
                         <p>
-                            <i class="fas fa-envelope me-3 text-secondary"></i>
+                            Đại Học Công Nghệ TP.HCM (Hutech)
+                        </p>
+                        <p>
+                            20DTHD3
+                        </p>
+                        <p>
                             owlvernyte@gmail.com
                         </p>
                     </div>
