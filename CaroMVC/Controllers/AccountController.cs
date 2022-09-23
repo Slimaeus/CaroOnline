@@ -49,19 +49,17 @@ namespace CaroMVC.Controllers
             var userIdentity = User.Identity;
             if (userIdentity == null)
             {
-                ViewData["Error"] = "You not login yet";
-                return RedirectToAction(nameof(Login));
+                return RedirectToAction(nameof(Login), new LoginModel() { ReturnUrl = Request.Path });
             }
             var userName = userIdentity.Name;
             if (userName == null)
             {
-                ViewData["Error"] = "You not login yet";
-                return RedirectToAction(nameof(Login));
+                return RedirectToAction(nameof(Login), new LoginModel() { ReturnUrl = Request.Path });
             }
             var result = await _userAPIClient.GetByUserName(userName);
             if (!result.Succeeded)
             {
-                ViewData["Error"] = "Cannot Request to Server";
+                ModelState.AddModelError("", result.Message);
                 return View("Error", new ErrorViewModel
                 {
                     RequestId = userName
@@ -95,12 +93,13 @@ namespace CaroMVC.Controllers
             var response = await _userAPIClient.Authenticate(loginModel.Input);
             if (!response.Succeeded)
             {
-                ModelState.AddModelError("", "Login Failure");
+                ViewData["Error"] = response.Message;
             }
             var token = response.ResultObject;
             if (token == null)
             {
-                ViewData["Warning"] = "Cannot Get Token";
+                ViewData["Error"] = "Cannot Get Token";
+
                 return View(loginModel);
             }
             var userPrincipal = _jWTManager.Validate(token);
@@ -146,12 +145,16 @@ namespace CaroMVC.Controllers
             // Login 
             var loginModel = _mapper.Map<LoginModel>(model);
             var loginResponse = await _userAPIClient.Authenticate(loginModel.Input);
-
             if (!loginResponse.Succeeded)
             {
                 ModelState.AddModelError("", "Login Failure");
             }
             var token = loginResponse.ResultObject;
+            if (token == null)
+            {
+                ModelState.AddModelError("", "Cannot Get Token");
+                return View(model);
+            }
             var userPrincipal = _jWTManager.Validate(token);
             var authProperties = new AuthenticationProperties
             {
