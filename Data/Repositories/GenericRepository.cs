@@ -66,12 +66,10 @@ namespace Data.Repositories
             int take = 0)
         {
             IQueryable<TEntity> query = _dbSet.AsQueryable();
+            foreach (string includeProperty in includeProperties.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                query = query.Include(includeProperty);
             if (filter != null)
                 query = query.Where(filter);
-            foreach (string includeProperty in includeProperties.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-            {
-                query = query.Include(includeProperty);
-            }
             if (skip > 0)
                 query = query.Skip(skip);
             if (take > 0)

@@ -13,11 +13,11 @@ namespace Model.DbModels
         [Key]
         public Guid Id { get; set; }
 
-        public DateTime StartedTime { get; set; } = DateTime.Now;
-        public DateTime EndedTime { get; set; } = DateTime.Now;
+        public DateTime StartedTime { get; set; } = default!;
+        public DateTime EndedTime { get; set; } = default!;
 
         public int LimitTime { get; set; }
 
-        public ICollection<UserResult> UserResults { get; set; } = new List<UserResult>();
+        public ICollection<UserResult> UserResults { get; set; } = default!;
     }
 }

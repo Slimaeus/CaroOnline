@@ -29,12 +29,8 @@ namespace CaroAPI
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContextFactory<CaroDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase1"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase"));
             });
-            //builder.Services.AddDbContext<CaroDbContext>(options =>
-            //{
-            //    options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase"));
-            //}, ServiceLifetime.Transient);
             builder.Services.AddIdentity<User, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<CaroDbContext>()
                 .AddDefaultTokenProviders();
@@ -59,7 +55,7 @@ namespace CaroAPI
                     IssuerSigningKey = new SymmetricSecurityKey(Key)
                 };
             });
-            //services.AddTransient<IRoleService, RoleService>();
+
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
             builder.Services.AddSingleton<IJWTManager, JWTManager>();
@@ -70,14 +66,6 @@ namespace CaroAPI
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             // Add Services
             builder.Services.AddScoped<IResultService, ResultService>();
-            //var caroAPIPolicy = "CaroAPI";
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy(caroAPIPolicy, policy =>
-            //    {
-            //        policy.WithOrigins("https://localhost:7224");
-            //    });
-            //});
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -93,7 +81,6 @@ namespace CaroAPI
             app.UseAuthentication();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

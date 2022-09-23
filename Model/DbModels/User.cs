@@ -13,6 +13,6 @@ namespace Model.DbModels
         [PersonalData]
         public int Score { get; set; } = 0;
 
-        public ICollection<UserResult> UserResults { get; set; } = new List<UserResult>();
+        public ICollection<UserResult> UserResults { get; set; } = default!;
     }
 }

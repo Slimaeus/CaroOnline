@@ -23,11 +23,25 @@ namespace CaroAPI.Controllers
             this.mapper = mapper;
         }
         //[Authorize]
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("GetResults")]
+        public IActionResult Get([FromQuery] PagingRequest pagingRequest)
         {
-            var results = resultService.GetResults();
-            return Ok(results);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var results = resultService.GetResults(pagingRequest);
+            if (results.Succeeded)
+                return Ok(results);
+            return BadRequest(results);
+        }
+        [HttpGet("GetResultsByUserName")]
+        public async Task<IActionResult> Get(string userName, [FromQuery] PagingRequest pagingRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var results = await resultService.GetResultsByUserName(userName, pagingRequest);
+            if (results.Succeeded)
+                return Ok(results);
+            return BadRequest(results);
         }
 
         // GET api/<ResultController>/5
@@ -41,6 +55,9 @@ namespace CaroAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResultRequest resultRequest)
         {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var serviceResult = await resultService.AddResult(resultRequest);
             if (serviceResult.Succeeded)
                 return Ok(serviceResult);

@@ -11,11 +11,11 @@ namespace Model.DbModels
     {
         [Column(Order = 0)]
         public Guid UserId { get; set; }
-        public User User { get; set; } = new User();
+        public User User { get; set; } = default!;
 
         [Column(Order = 1)]
         public Guid ResultId { get; set; }
-        public Result Result { get; set; } = new Result();
+        public Result Result { get; set; } = default!;
 
         public bool IsWinner { get; set; }
         public int Score { get; set; }

@@ -16,12 +16,14 @@ namespace Service.APIServices
         private readonly UserManager<User> _userManager;
         private readonly IJWTManager _jwtManager;
         private readonly IMapper _mapper;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserService(UserManager<User> userManager, IJWTManager jwtManager, IMapper mapper)
+        public UserService(UserManager<User> userManager, IJWTManager jwtManager, IMapper mapper, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _jwtManager = jwtManager;
             _mapper = mapper;
+            _signInManager = signInManager;
         }
         public async Task<APIResult<string>> Authenticate(LoginRequest request)
         {
@@ -30,8 +32,9 @@ namespace Service.APIServices
             {
                 return new APIErrorResult<string>("User does not exist!");
             }
-            var result = await _userManager.CheckPasswordAsync(user, request.Password) ;
-            if (result == false)
+            var result = await _userManager.CheckPasswordAsync(user, request.Password);
+            //var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
+            if (!result)
             {
                 return new APIErrorResult<string>("Username or Password Uncorrect!");
             }

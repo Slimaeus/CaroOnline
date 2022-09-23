@@ -106,7 +106,6 @@ namespace Service.APIClientServices
             catch (Exception ex)
             {
                 return new APIErrorResult<PagedList<UserResponse>> (ex.Message);
-
             }
         }
 

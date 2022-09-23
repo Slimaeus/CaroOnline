@@ -14,11 +14,7 @@ namespace Service.APIServices
     public interface IResultService
     {
         Task<APIResult<string>> AddResult (ResultRequest resultRequest);
-        APIResult<IEnumerable<ResultResponse>> GetResults(
-            Expression<Func<Result, bool>> filter = null!,
-            Func<IQueryable<Result>, IOrderedQueryable<Result>> orderBy = null!,
-            string includeProperties = "",
-            int skip = 0,
-            int take = 0);
+        APIResult<IEnumerable<ResultResponse>> GetResults(PagingRequest pagingRequest);
+        Task<APIResult<IEnumerable<ResultResponse>>> GetResultsByUserName(string userName, PagingRequest pagingRequest);
     }
 }

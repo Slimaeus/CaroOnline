@@ -106,12 +106,12 @@ namespace CaroMVC.Controllers
             var userPrincipal = _jWTManager.Validate(token);
             var authProperties = new AuthenticationProperties
             {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(10),
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
             var options = new MemoryCacheEntryOptions
             {
-                AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(30)
+                AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(10)
             };
             _memoryCache.Set("Token", token, options);
             await HttpContext.SignInAsync(
@@ -155,12 +155,12 @@ namespace CaroMVC.Controllers
             var userPrincipal = _jWTManager.Validate(token);
             var authProperties = new AuthenticationProperties
             {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(10),
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
             var options = new MemoryCacheEntryOptions
             {
-                AbsoluteExpiration = DateTimeOffset.UtcNow.AddSeconds(30)
+                AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(10)
             };
             _memoryCache.Set("Token", token, options);
             await HttpContext.SignInAsync(

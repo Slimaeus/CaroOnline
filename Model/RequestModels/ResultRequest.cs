@@ -9,7 +9,10 @@ namespace Model.RequestModels
 {
     public class ResultRequest
     {
+        [Required]
         public string WinnerUserName { get; set; } = string.Empty;
+        [Required]
+
         public string LoserUserName { get; set; } = string.Empty;
         public int Hour { get; set; }
         [Range(0, 60)]

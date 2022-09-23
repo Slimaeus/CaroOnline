@@ -20,7 +20,7 @@ namespace CaroAPI.Controllers
         {
             _userService = userService;
         }
-        [AllowAnonymous] // Test
+        /*[AllowAnonymous]*/ // Test
         [HttpGet("GetPagedList")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         public async Task<IActionResult> GetPagedList([FromQuery] PagingRequest pagingRequest)
@@ -82,7 +82,7 @@ namespace CaroAPI.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-        [AllowAnonymous] //TEst
+        /*[AllowAnonymous]*/ //TEst
         [HttpGet("GetByUserName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
