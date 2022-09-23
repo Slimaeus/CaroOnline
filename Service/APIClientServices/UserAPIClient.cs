@@ -57,7 +57,7 @@ namespace Service.APIClientServices
                 var user = await GetByUserName(deleteUserRequest.UserName);
                 if (!user.Succeeded)
                     return new APIErrorResult<bool>("User Not Found!");
-                var response = await client.DeleteAsync($"User/Delete?username={deleteUserRequest.UserName}");
+                var response = await client.DeleteAsync($"User/Delete/{deleteUserRequest.UserName}");
                 return await ResultReturn<bool>(response);
 
             }
@@ -78,7 +78,7 @@ namespace Service.APIClientServices
                 if (token == null)
                     return new APIErrorResult<UserResponse>("Unauthorized");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await client.GetAsync($"User/GetByUserName?userName={userName}");
+                var response = await client.GetAsync($"User/GetByUserName/{userName}");
                 return await ResultReturn<UserResponse>(response);
 
             }
@@ -150,7 +150,7 @@ namespace Service.APIClientServices
                 var json = JsonConvert.SerializeObject(request);
                 var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await client.PostAsync($"User/RoleAssign?username={userName}", httpContent);
+                var response = await client.PostAsync($"User/RoleAssign/{userName}", httpContent);
                 return await ResultReturn<bool>(response);
 
             }
@@ -168,7 +168,7 @@ namespace Service.APIClientServices
                 var json = JsonConvert.SerializeObject(request);
                 var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await client.PostAsync($"User/Update?username={userName}", httpContent);
+                var response = await client.PostAsync($"User/Update/{userName}", httpContent);
                 return await ResultReturn<bool>(response);
 
             }
