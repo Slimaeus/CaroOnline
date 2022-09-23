@@ -70,10 +70,25 @@ namespace CaroAPI.Controllers
         {
         }
 
-        // DELETE api/<ResultController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("DeleteByUserName/{userName}")]
+        public async Task<IActionResult> DeleteByUserName(string userName, DeleteResultRequest deleteResultRequest)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var deleteResult = await resultService.DeleteResultByUserName(userName, deleteResultRequest);
+            if (deleteResult.Succeeded)
+                return Ok(deleteResult);
+            return BadRequest();
+        }
+        [HttpDelete("DeleteById/{id}")]
+        public async Task<IActionResult> DeleteById(Guid id, DeleteResultRequest deleteResultRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var deleteResult = await resultService.DeleteResultById(id, deleteResultRequest);
+            if (deleteResult.Succeeded)
+                return Ok(deleteResult);
+            return BadRequest();
         }
     }
 }

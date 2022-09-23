@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -76,6 +77,41 @@ namespace Service.APIServices
             if (affectRowNumber > 0)
                 return new APISuccessResult<string>("Add result successfully!");
             return new APIErrorResult<string>("Add result fail!");
+        }
+
+        public async Task<APIResult<string>> DeleteResultById(Guid resultId, DeleteResultRequest resultRequest)
+        {
+            var result = await resultRepo.GetByIdAsync(resultId);
+            if (result == null)
+                return new APIErrorResult<string>("Game does not exist!");
+            resultRepo.Delete(result);
+            var affectRowNumber = unitOfWork.Commit();
+
+
+            if (affectRowNumber > 0)
+                return new APISuccessResult<string>("Delete result successfully!");
+            return new APIErrorResult<string>("Delete result fail!");
+        }
+
+        // Not working yet
+        public async Task<APIResult<string>> DeleteResultByUserName(string userName, DeleteResultRequest resultRequest)
+        {
+            var user = await userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return new APIErrorResult<string>("Cannot found user!");
+            }
+            var resultIdList = resultRepo.GetList(
+                includeProperties: "UserResults",
+                filter: result => result.UserResults.Any(userResult => userResult.UserId == user.Id)
+            ).Select(result => result.Id);
+            resultRepo.Delete(res => resultIdList.Contains(res.Id));
+            var affectRowNumber = unitOfWork.Commit();
+
+
+            if (affectRowNumber > 0)
+                return new APISuccessResult<string>("Delete result successfully!");
+            return new APIErrorResult<string>("Delete result fail!");
         }
 
         public APIResult<IEnumerable<ResultResponse>> GetResults(PagingRequest pagingRequest)

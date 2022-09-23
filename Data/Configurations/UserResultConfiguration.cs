@@ -18,11 +18,14 @@ namespace Data.Configurations
             builder
                 .HasOne(us => us.User)
                 .WithMany(u => u.UserResults)
-                .HasForeignKey(us => us.UserId);
+                .HasForeignKey(us => us.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             builder
                 .HasOne(us => us.Result)
                 .WithMany(u => u.UserResults)
-                .HasForeignKey(us => us.ResultId);
+                .HasForeignKey(us => us.ResultId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

@@ -58,6 +58,11 @@ namespace Data.Repositories
             return _dbSet.Find(id)!;
         }
 
+        public async Task<TEntity> GetByIdAsync(object id)
+        {
+            return (await _dbSet.FindAsync(id))!;
+        }
+
         public virtual IEnumerable<TEntity> GetList(
             Expression<Func<TEntity, bool>> filter = null!, 
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null!, 
