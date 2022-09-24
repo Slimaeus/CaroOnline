@@ -3,7 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Appsettinns
+# Sqlite databases
+*.db
+# Appsettings
 appsettings.*
 
 # User-specific files
