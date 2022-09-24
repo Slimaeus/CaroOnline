@@ -3,6 +3,7 @@ using CaroMVC.Models;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Model.ActionModels;
@@ -10,6 +11,7 @@ using Service.APIClientServices;
 
 namespace CaroMVC.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private readonly IUserAPIClient _userAPIClient;
@@ -33,7 +35,7 @@ namespace CaroMVC.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction(nameof(Profile));
         }
         public async Task<IActionResult> Profile()
         {
@@ -60,6 +62,7 @@ namespace CaroMVC.Controllers
             var user = result.ResultObject;
             return View(user);
         }
+        [AllowAnonymous]
         public IActionResult Login(string? returnUrl)
         {
             if (returnUrl == null)
@@ -71,13 +74,8 @@ namespace CaroMVC.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> Logout(string returnUrl)
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if (!string.IsNullOrEmpty(returnUrl))
-                return LocalRedirect(returnUrl);
-            return RedirectToAction("Index", "Home");
-        }
+        
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
@@ -121,6 +119,14 @@ namespace CaroMVC.Controllers
                 return LocalRedirect(loginModel.ReturnUrl);
             return RedirectToAction("Index", "Home");
         }
+        public async Task<IActionResult> Logout(string returnUrl)
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            if (!string.IsNullOrEmpty(returnUrl))
+                return LocalRedirect(returnUrl);
+            return RedirectToAction("Index", "Home");
+        }
+        [AllowAnonymous]
         public IActionResult Register(string returnUrl)
         {
             RegisterModel model = new()

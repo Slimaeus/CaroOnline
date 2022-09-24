@@ -53,12 +53,7 @@
             .build();
 
         connection.on("addRoom", (roomName) => {
-            console.log("Adding ROom")
-            const newRoom = document.createElement("div");
-            newRoom.className = "col";
-            newRoom.id = roomName;
-            newRoom.innerText = roomName;
-            roomList.appendChild(newRoom);
+            location.reload();
         })
 
         connection.start()
@@ -68,7 +63,7 @@
         createRoomButton.addEventListener("click", event => {
             event.preventDefault();
             console.log("Hello")
-            connection.invoke("RoomJoin", `Room${Date.now().toString()}`);
+            connection.invoke("RoomJoin");
         })
 
     </script>

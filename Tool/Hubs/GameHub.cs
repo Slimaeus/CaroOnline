@@ -45,8 +45,9 @@ namespace Utility.Hubs
 
             await base.OnConnectedAsync();
         }
-        public async Task RoomJoin(string roomName)
+        public async Task RoomJoin()
         {
+            string roomName = Context.User.Identity!.Name!;
             var room = await context.Rooms.FindAsync(roomName);
             
             if (room == null)
