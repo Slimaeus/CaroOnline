@@ -25,15 +25,10 @@ namespace CaroMVC.Controllers
             return View(roomList);
         }
 
-        public ActionResult Play(Board board)
+        public ActionResult Play(Board? board)
         {
-            if (board == null)
-                board = new Board { RowCount = 5, ColumnCount = 5 };
+            board ??= new Board { RowCount = 5, ColumnCount = 5 };
             return View(board);
-        }
-        public ActionResult Details(int id)
-        {
-            return View();
         }
 
         public ActionResult Create()

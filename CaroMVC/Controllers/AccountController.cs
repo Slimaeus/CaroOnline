@@ -180,5 +180,15 @@ namespace CaroMVC.Controllers
                 return LocalRedirect(loginModel.ReturnUrl);
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult ForgotPassword()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IActionResult ResendEmailConfirmation()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
