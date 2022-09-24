@@ -32,6 +32,9 @@
     }
   },
   "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "GameSqliteDb": "DataSource=../Data/CaroGame.db"
+  },
   "CaroAPIBaseUrl": "https://localhost:7118/api/"
   "JWT": {
     "Key": "HFQ8GmeZwwXiX3LjU5ZL9ffBdUMJNDxL",
