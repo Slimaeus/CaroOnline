@@ -5,16 +5,26 @@
 @{
     ViewData["Title"] = "Play";
 }
-@model Board
+@model Model.ActionModels.PlayModel
+<div class="container text-center">
+    <h1>@Model.Room.RoomName</h1>
+    <div class="row">
+        @foreach (var user in Model.Room.GameUsers)
+        {
+            <div class="col">
+                @user.UserName
+            </div>
+        }
+    </div>
+</div>
 <div class="container">
     <div class="row" id="user-list">
     </div>
-    @for (int row = 0; row < Model.RowCount; row++)
+    @for (int row = 0; row < Model.Board.RowCount; row++)
     {
         <div class="row d-flex justify-content-xl-center justify-content-xxl-center flex-nowrap">
-            @for (int col = 0; col < Model.ColumnCount; col++)
+            @for (int col = 0; col < Model.Board.ColumnCount; col++)
             {
-
                 <partial name="_Stone" model="new Stone { Location = new System.Drawing.Point(row, col) }"/>
             }
         </div>
@@ -24,37 +34,12 @@
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script>
         const userList = document.getElementById("user-list");
-        const caroStones = document.querySelectorAll(".caro-stone");
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)
             .build();
-        connection.on("updateBoard", (x, y, userId) => {
-            console.log(`${x} - ${y}`);
-            if (userId != null)
-            {
-                const userIdNode = document.createElement("div");
-                userIdNode.className = "col";
-                userIdNode.innerText = userId;
-                userList.appendChild(userIdNode);
-            }
-        });
         connection.start()
             .then(() => console.log("Connected!"))
             .catch(console.error);
-
-
-        caroStones.forEach(boardButton => {
-            boardButton.addEventListener("click", e => {
-                e.preventDefault();
-                const row = boardButton.getAttribute("row");
-                const col = boardButton.getAttribute("col");
-                connection.invoke("PlaceStone", Number(row), Number(col));
-        })
-        
-
-            
-
-        })
     </script>
 }

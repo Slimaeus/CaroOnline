@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Model.GameModels;
 using System.Text;
+using Model.ActionModels;
 
 namespace CaroMVC.Controllers
 {
@@ -27,8 +28,10 @@ namespace CaroMVC.Controllers
 
         public async Task<IActionResult> Play(string? roomName)
         {
-            var room = await _context.Rooms.FindAsync(roomName);
-            return View();
+            var room = await _context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(room => room.RoomName == roomName);
+            var board = new Board { RowCount = 30, ColumnCount = 30};
+            var model = new PlayModel { Room = room, Board = board };
+            return View(model);
         }
 
         public ActionResult Create()

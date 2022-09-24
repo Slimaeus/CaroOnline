@@ -109,13 +109,5 @@ namespace Utility.Hubs
         {
             await Clients.Group(roomName).SendAsync(message);
         }
-        public async Task PlaceStone(int x, int y)
-        {
-            ClaimsPrincipal user = Context.User;
-            string userId = "Guest";
-            if (user != null)
-                userId = user.Identity!.Name!;
-            await Clients.All.SendAsync("updateBoard", x, y, userId);
-        }
     }
 }

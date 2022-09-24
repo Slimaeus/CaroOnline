@@ -6,7 +6,7 @@
 </div>
 <div class="container row" id="room-list">
     <div class="col">
-        <button class="btn btn-primary" id="create-room">Create a room</button>
+        <a asp-action="Play" asp-route-roomName="@User.Identity!.Name" class="btn btn-primary" id="create-room">Create a room</a>
     </div>
 </div>
 
@@ -29,11 +29,11 @@
                 <td>
                     @if (room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
                     {
-                        <a asp-action="Play" asp-route="@room.RoomName" class="btn btn-danger leave-room" room="@room.RoomName">Leave</a>
+                        <a class="btn btn-danger leave-room" room="@room.RoomName">Leave</a>
                     }
                     else if (room.GameUsers.Count() < room.RoomMax)
                     {
-                        <a asp-action="Play" asp-route="@room.RoomName" class="btn btn-success join-room" room="@room.RoomName">Join</a>
+                        <a asp-action="Play" asp-route-roomName="@room.RoomName" class="btn btn-success join-room" room="@room.RoomName">Join</a>
                     }
                 </td>
 
@@ -57,10 +57,10 @@
             .configureLogging(signalR.LogLevel.Information)
             .build();
         // Catch addRoom event
-        connection.on("addRoom", (roomName) => {
+        connection.on("addRoom", () => {
             location.reload();
         });
-        connection.on("leaveRoom", (roomName) => {
+        connection.on("leaveRoom", () => {
             location.reload();
         });
         connection.start()
@@ -73,14 +73,14 @@
         });
 
         leaveRoomButton.forEach((button) => {
-            button.addEventListener("click", event => {
+            button.addEventListener("click", () => {
                 const roomName = button.getAttribute("room");
                 connection.invoke("RoomLeave", roomName);
             });
         })
 
         joinRoomButton.forEach((button) => {
-            button.addEventListener("click", event => {
+            button.addEventListener("click", () => {
                 const roomName = button.getAttribute("room");
                 connection.invoke("RoomJoin", roomName);
             });
