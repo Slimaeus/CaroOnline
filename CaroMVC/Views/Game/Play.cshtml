@@ -25,7 +25,7 @@
         <div class="row d-flex justify-content-xl-center justify-content-xxl-center flex-nowrap">
             @for (int col = 0; col < Model.Board.ColumnCount; col++)
             {
-                <partial name="_Stone" model="new Stone { Location = new System.Drawing.Point(row, col) }"/>
+                <button class="btn btn-primary game-button">&nbsp;&nbsp;&nbsp;</button>
             }
         </div>
     }
@@ -33,6 +33,7 @@
 @section Scripts {
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script>
+        const moves = [];
         const userList = document.getElementById("user-list");
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")

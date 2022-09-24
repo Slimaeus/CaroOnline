@@ -3,18 +3,10 @@ using Data;
 using Data.Repositories;
 using Data.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Model.DbModels;
 using Model.RequestModels;
 using Model.ResponseModels;
 using Model.ResultModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.APIServices
 {
@@ -81,7 +73,7 @@ namespace Service.APIServices
 
         public async Task<APIResult<string>> DeleteResultById(Guid resultId, DeleteResultRequest resultRequest)
         {
-            var result = await resultRepo.GetByIdAsync(resultId);
+            var result = await resultRepo.GetByIdAsync(id: resultId);
             if (result == null)
                 return new APIErrorResult<string>("Game does not exist!");
             resultRepo.Delete(result);
@@ -120,7 +112,7 @@ namespace Service.APIServices
                 skip: (pagingRequest.PageIndex - 1) * pagingRequest.PageSize,
                 take: pagingRequest.PageSize
             );
-            if (resultList == null)
+            if (resultList.Any())
                 return new APIErrorResult<IEnumerable<ResultResponse>>("Get result list failed!");
             var response = mapper.Map<IEnumerable<ResultResponse>>(resultList);
             return new APISuccessResult<IEnumerable<ResultResponse>>(response);
