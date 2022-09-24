@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Model.GameModels;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Utility.Hubs
 {
+    [Authorize]
     public class GameHub : Hub
     {
         private readonly GameDbContext context;

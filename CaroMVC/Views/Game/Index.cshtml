@@ -24,7 +24,7 @@
                 <th scope="row">@room.RoomName</th>
                 <td>@room.RoomName</td>
                 <td>
-                    <span>@room.GameUsers.Count()/2</span>
+                    <span>@room.GameUsers.Count()/@room.RoomMax</span>
                 </td>
                 <td>
                     @if (room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
