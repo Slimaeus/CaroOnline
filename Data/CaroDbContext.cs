@@ -8,11 +8,13 @@ namespace Data
 {
     public class CaroDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
-        public CaroDbContext(DbContextOptions<CaroDbContext> options) : base(options)
+        public CaroDbContext(DbContextOptions<CaroDbContext> options, DbSet<Result> results, DbSet<UserResult> userResults) : base(options)
         {
+            Results = results;
+            UserResults = userResults;
         }
-        DbSet<Result> Results { get; set; } = default!;
-        DbSet<UserResult> UserResults { get; set; } = default!;
+        public DbSet<Result> Results { get; }
+        public DbSet<UserResult> UserResults { get; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Model.DbModels;
+﻿using Microsoft.AspNetCore.Mvc;
 using Model.RequestModels;
 using Service.APIServices;
 
@@ -13,12 +10,12 @@ namespace CaroAPI.Controllers
     [ApiController]
     public class ResultController : ControllerBase
     {
-        private readonly IResultService resultService;
+        private readonly IResultService _resultService;
 
         // GET: api/<ResultController>
         public ResultController(IResultService resultService)
         {
-            this.resultService = resultService;
+            _resultService = resultService;
         }
         //[Authorize]
         [HttpGet("GetResults")]
@@ -26,7 +23,7 @@ namespace CaroAPI.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var results = resultService.GetResults(pagingRequest);
+            var results = _resultService.GetResults(pagingRequest);
             if (results.Succeeded)
                 return Ok(results);
             return BadRequest(results);
@@ -36,7 +33,7 @@ namespace CaroAPI.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var results = await resultService.GetResultsByUserName(userName, pagingRequest);
+            var results = await _resultService.GetResultsByUserName(userName, pagingRequest);
             if (results.Succeeded)
                 return Ok(results);
             return BadRequest(results);
@@ -56,7 +53,7 @@ namespace CaroAPI.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var serviceResult = await resultService.AddResult(resultRequest);
+            var serviceResult = await _resultService.AddResult(resultRequest);
             if (serviceResult.Succeeded)
                 return Ok(serviceResult);
             return BadRequest(serviceResult);
@@ -73,7 +70,7 @@ namespace CaroAPI.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var deleteResult = await resultService.DeleteResultByUserName(userName, deleteResultRequest);
+            var deleteResult = await _resultService.DeleteResultByUserName(userName, deleteResultRequest);
             if (deleteResult.Succeeded)
                 return Ok(deleteResult);
             return BadRequest();
@@ -83,7 +80,7 @@ namespace CaroAPI.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            var deleteResult = await resultService.DeleteResultById(id, deleteResultRequest);
+            var deleteResult = await _resultService.DeleteResultById(id, deleteResultRequest);
             if (deleteResult.Succeeded)
                 return Ok(deleteResult);
             return BadRequest();
