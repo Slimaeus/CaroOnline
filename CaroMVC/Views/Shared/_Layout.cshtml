@@ -35,6 +35,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Game" asp-action="Index">Game</a>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -67,7 +70,7 @@
                     
                     <!-- Grid column -->
                     <!-- Grid column -->
-                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <div class="col-md-4 col-lg-4 col-xl-4 mb-4">
                         <!-- Links -->
                         <h6 class="text-uppercase fw-bold mb-4">
                             Follow
@@ -84,27 +87,27 @@
                     </div>
                     <!-- Grid column -->
                     <!-- Grid column -->
-                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <div class="col-md-4 col-lg-4 col-xl-4 mb-4">
                         <!-- Links -->
                         <h6 class="text-uppercase fw-bold mb-4">
                             Useful links
                         </h6>
                         <p>
-                            <a href="https://localhost:7224/Home/Privacy" class="text-reset">Luật chơi</a>
+                            <a href="https://localhost:7224/Home/Privacy" class="text-reset">Rules</a>
                         </p>
                         <p>
-                            <a href="#!" class="text-reset">Bảng xếp hạng</a>
+                            <a href="#!" class="text-reset">Ranking</a>
                         </p>
                         <p>
-                            <a href="#!" class="text-reset">Lịch sử đấu</a>
+                            <a href="#!" class="text-reset">History</a>
                         </p>
                         <p>
-                            <a href="#!" class="text-reset">Trợ giúp</a>
+                            <a href="#!" class="text-reset">Support</a>
                         </p>
                     </div>
                     <!-- Grid column -->
                     <!-- Grid column -->
-                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                    <div class="col-md-4 col-lg-4 col-xl-4 mb-md-0 mb-4">
                         <!-- Links -->
                         <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
                         <p>
@@ -124,7 +127,7 @@
         </section>
         <!-- Section: Links  -->
         <!-- Copyright -->
-        <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.025);">
+        <div class="text-center">
             <span>
                 &copy; 2022 - Caro Online - <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
             </span>
@@ -137,7 +140,6 @@
 
     <!-- Use Libraries-->
     <script src="~/lib/axios/axios.min.js"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

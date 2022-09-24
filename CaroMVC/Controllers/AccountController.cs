@@ -5,16 +5,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Model.ActionModels;
-using Model.DbModels;
-using Model.RequestModels;
 using Service.APIClientServices;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace CaroMVC.Controllers
 {
@@ -76,6 +68,7 @@ namespace CaroMVC.Controllers
             {
                 ReturnUrl = returnUrl
             };
+
             return View(model);
         }
         public async Task<IActionResult> Logout(string returnUrl)
@@ -88,8 +81,14 @@ namespace CaroMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
+
+            Console.WriteLine(loginModel.ReturnUrl);
             if (!ModelState.IsValid)
+            {
+                ViewData["Error"] = "Invalid Input!";
+
                 return View(loginModel);
+            }
             var response = await _userAPIClient.Authenticate(loginModel.Input);
             if (!response.Succeeded)
             {
@@ -118,7 +117,6 @@ namespace CaroMVC.Controllers
                 userPrincipal,
                 authProperties
             );
-
             if (!string.IsNullOrEmpty(loginModel.ReturnUrl))
                 return LocalRedirect(loginModel.ReturnUrl);
             return RedirectToAction("Index", "Home");

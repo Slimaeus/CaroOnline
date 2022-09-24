@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(CaroDbContext))]
-    [Migration("20220921002025_Initital")]
-    partial class Initital
+    [Migration("20220924061506_Initialize")]
+    partial class Initialize
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

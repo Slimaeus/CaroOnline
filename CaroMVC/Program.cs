@@ -1,7 +1,10 @@
+using Data;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using Service.APIClientServices;
 using Utility.Helpers;
+using Utility.Hubs;
 
 namespace CaroMVC
 {
@@ -10,9 +13,12 @@ namespace CaroMVC
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<GameDbContext>(options =>
+            {
+                options.UseSqlite(builder.Configuration.GetConnectionString("GameSqliteDb"));
+            });
             builder.Services.AddHttpClient("CaroAPI", httpClient =>
             {
                 httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("CaroAPIBaseUrl"));
@@ -30,9 +36,9 @@ namespace CaroMVC
                 //.AddJwtBearer()
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/User/Login";
+                    options.LoginPath = "/Account/Login";
                 });
-
+            builder.Services.AddSignalR();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -55,7 +61,7 @@ namespace CaroMVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            app.MapHub<GameHub>("/hubs/game");
             app.Run();
         }
     }

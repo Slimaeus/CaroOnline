@@ -1,0 +1,22 @@
+﻿@using Model.GameModels
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Board
+<form asp-action="Play" method="get" class="form-control">
+
+    <h1>Setup your board</h1>
+    <div class="form-control">
+        <label class="form-label" asp-for="RowCount"></label>
+        <input class="form-text" type="number" asp-for="RowCount" />
+    </div>
+    <div class="form-control">
+        <label class="form-label" asp-for="ColumnCount"></label>
+        <input class="form-text" type="number" asp-for="ColumnCount" />
+    </div>
+    <div>
+        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+    </div>
+</form>

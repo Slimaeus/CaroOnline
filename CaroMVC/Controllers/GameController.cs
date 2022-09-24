@@ -1,19 +1,35 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Model.GameModels;
+using System.Text;
 
 namespace CaroMVC.Controllers
 {
     public class GameController : Controller
     {
+        private readonly GameDbContext _context;
+
+        public GameController(GameDbContext context)
+        {
+            _context = context;
+        }
         // GET: GameController
+        [Authorize]
         public ActionResult Index()
         {
-            return View();
+            var roomList = _context.Rooms.Include(room => room.GameUsers).ToList();
+            return View(roomList);
         }
 
-        public ActionResult Play()
+        public ActionResult Play(Board board)
         {
-            return View();
+            if (board == null)
+                board = new Board { RowCount = 5, ColumnCount = 5 };
+            return View(board);
         }
         // GET: GameController/Details/5
         public ActionResult Details(int id)

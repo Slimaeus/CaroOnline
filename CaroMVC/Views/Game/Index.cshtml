@@ -1,0 +1,75 @@
+﻿@using Data
+
+
+@model IEnumerable<PlayRoom>
+<div class="container">
+</div>
+<div class="container row" id="room-list">
+    <div class="col">
+        <button class="btn btn-primary" id="create-room">Create a room</button>
+    </div>
+</div>
+
+<table class="table table-light table-hover">
+    <tr>
+        <th scope="col">Id Room</th>
+        <th scope="col">Room Name</th>
+        <th scope="col">Current Players</th>
+        <th scope="col">Status</th>
+    </tr>
+    <tbody>
+        @foreach (var room in Model)
+        {
+            <tr>
+                <th scope="row">@room.RoomName</th>
+                <td>@room.RoomName</td>
+                <td>
+                        <span>@room.GameUsers.Count()/2</span>
+                </td>
+                <td>
+                    <a asp-controller="Home" asp-action="Index">
+                        @if (room.GameUsers.Count() < room.RoomMax)
+                        {
+                            <button class="btn btn-success" id="create-room">Join this Room</button>
+                        }
+                    </a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
+    <script>
+        const roomList = document.getElementById("room-list");
+        const createRoomButton = document.getElementById("create-room");
+
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/game")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on("addRoom", (roomName) => {
+            console.log("Adding ROom")
+            const newRoom = document.createElement("div");
+            newRoom.className = "col";
+            newRoom.id = roomName;
+            newRoom.innerText = roomName;
+            roomList.appendChild(newRoom);
+        })
+
+        connection.start()
+            .then(() => console.log("Connected!"))
+            .catch(console.error);
+
+        createRoomButton.addEventListener("click", event => {
+            event.preventDefault();
+            console.log("Hello")
+            connection.invoke("RoomJoin", `Room${Date.now().toString()}`);
+        })
+
+    </script>
+}

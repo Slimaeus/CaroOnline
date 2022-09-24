@@ -20,6 +20,7 @@
             <label asp-for="Input.Password" class="form-label"></label>
             <span asp-validation-for="Input.Password" class="text-danger"></span>
         </div>
+        <input asp-for="ReturnUrl" value="@Model.ReturnUrl" hidden/>
         <div>
             <div class="checkbox m-3">
                 <label asp-for="Input.RememberMe" class="form-label row">
