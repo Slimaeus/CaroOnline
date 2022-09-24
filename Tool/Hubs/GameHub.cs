@@ -1,13 +1,8 @@
 ﻿using Data;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+using Model.GameModels;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Utility.Hubs
 {

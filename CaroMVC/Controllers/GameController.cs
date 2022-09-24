@@ -25,10 +25,10 @@ namespace CaroMVC.Controllers
             return View(roomList);
         }
 
-        public ActionResult Play(Board? board)
+        public async Task<IActionResult> Play(string? roomName)
         {
-            board ??= new Board { RowCount = 5, ColumnCount = 5 };
-            return View(board);
+            var room = await _context.Rooms.FindAsync(roomName);
+            return View();
         }
 
         public ActionResult Create()
