@@ -45,9 +45,31 @@ namespace Utility.Hubs
 
             await base.OnConnectedAsync();
         }
-        public async Task RoomJoin()
+        public async Task RoomCreate()
         {
             string roomName = Context.User.Identity!.Name!;
+            var room = await context.Rooms.FindAsync(roomName);
+
+            if (room == null)
+            {
+                room = new PlayRoom { RoomName = roomName };
+                await context.Rooms.AddAsync(room);
+                await context.SaveChangesAsync();
+            }
+            if (room != null)
+            {
+                var user = new GameUser() { UserName = Context.User.Identity!.Name! };
+                context.GameUsers.Attach(user);
+                room.GameUsers.Add(user);
+                await context.SaveChangesAsync();
+
+                await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+
+                await Clients.All.SendAsync("addRoom", roomName);
+            }
+        }
+        public async Task RoomJoin(string roomName)
+        {
             var room = await context.Rooms.FindAsync(roomName);
             
             if (room == null)
@@ -70,16 +92,22 @@ namespace Utility.Hubs
         }
         public async Task RoomLeave(string roomName)
         {
-            var room = context.Rooms.Find(roomName);
+            var room = await context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(room => room.RoomName == roomName);
             if (room != null)
             {
-                var user = new GameUser() { UserName = Context.User.Identity!.Name! };
+                var user = await context.GameUsers.FindAsync(Context.User.Identity!.Name!);
+                if (user ==  null)
+                {
+                    user = new GameUser() { UserName = Context.User.Identity!.Name! };
+                }
                 context.GameUsers.Attach(user);
 
                 room.GameUsers.Remove(user);
+                if (room.GameUsers.Count == 0)
+                    context.Rooms.Remove(room);
                 await context.SaveChangesAsync();
-
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+                await Clients.All.SendAsync("leaveRoom", roomName);
             }
         }
         public async Task RoomChat(string roomName, string message)

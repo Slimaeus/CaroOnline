@@ -24,15 +24,17 @@
                 <th scope="row">@room.RoomName</th>
                 <td>@room.RoomName</td>
                 <td>
-                        <span>@room.GameUsers.Count()/2</span>
+                    <span>@room.GameUsers.Count()/2</span>
                 </td>
                 <td>
-                    <a asp-controller="Home" asp-action="Index">
-                        @if (room.GameUsers.Count() < room.RoomMax)
-                        {
-                            <button class="btn btn-success" id="create-room">Join this Room</button>
-                        }
-                    </a>
+                    @if (room.GameUsers.Any(user => user.UserName == User.Identity.Name))
+                    {
+                        <button class="btn btn-danger leave-room" id="" room="@room.RoomName">Leave this Room</button>
+                    }
+                    else if (room.GameUsers.Count() < room.RoomMax)
+                    {
+                        <button class="btn btn-success join-room" id="" room="@room.RoomName">Join this Room</button>
+                    }
                 </td>
 
             </tr>
@@ -44,27 +46,46 @@
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script>
         const roomList = document.getElementById("room-list");
+
         const createRoomButton = document.getElementById("create-room");
+        const leaveRoomButton = document.querySelectorAll(".leave-room");
+        const joinRoomButton = document.querySelectorAll(".join-room");
 
 
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)
             .build();
-
+        // Catch addRoom event
         connection.on("addRoom", (roomName) => {
             location.reload();
-        })
-
+        });
+        connection.on("leaveRoom", (roomName) => {
+            location.reload();
+        });
         connection.start()
             .then(() => console.log("Connected!"))
             .catch(console.error);
 
         createRoomButton.addEventListener("click", event => {
             event.preventDefault();
-            console.log("Hello")
-            connection.invoke("RoomJoin");
+            connection.invoke("RoomCreate");
+        });
+
+        leaveRoomButton.forEach((button) => {
+            button.addEventListener("click", event => {
+                event.preventDefault();
+                const roomName = button.getAttribute("room");
+                connection.invoke("RoomLeave", roomName);
+            });
         })
 
+        joinRoomButton.forEach((button) => {
+            button.addEventListener("click", event => {
+                event.preventDefault();
+                const roomName = button.getAttribute("room");
+                connection.invoke("RoomJoin", roomName);
+            });
+        });
     </script>
 }
