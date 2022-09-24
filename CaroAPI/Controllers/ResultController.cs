@@ -14,13 +14,11 @@ namespace CaroAPI.Controllers
     public class ResultController : ControllerBase
     {
         private readonly IResultService resultService;
-        private readonly IMapper mapper;
 
         // GET: api/<ResultController>
-        public ResultController(IResultService resultService, IMapper mapper)
+        public ResultController(IResultService resultService)
         {
             this.resultService = resultService;
-            this.mapper = mapper;
         }
         //[Authorize]
         [HttpGet("GetResults")]
