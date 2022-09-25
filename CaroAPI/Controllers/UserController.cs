@@ -69,7 +69,7 @@ namespace CaroAPI.Controllers
                 return BadRequest(ModelState);
             var authResult = await _userService.Authenticate(loginModel);
             if (string.IsNullOrEmpty(authResult.ResultObject))
-                return Unauthorized(authResult);
+                return BadRequest(authResult);
             return Ok(authResult);
         }
         /// <summary>
