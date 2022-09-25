@@ -15,7 +15,8 @@ appsettings.*
 PublishProfiles/
 # ServiceDependencies
 ServiceDependencies/
-
+# serviceDependencies
+serviceDependencies.*
 # User-specific files
 *.rsuser
 *.suo

@@ -39,7 +39,7 @@ namespace CaroAPI.Controllers
         /// <summary>
         /// Regist an account 
         /// </summary>
-        /// <param name="signUpModel"></param>
+        /// <param name="signUpModel">Register information</param>
         /// <returns>Rigister Status</returns>
         [AllowAnonymous]
         [HttpPost("Register")]
@@ -66,7 +66,7 @@ namespace CaroAPI.Controllers
         public async Task<IActionResult> Authenticate([FromBody] LoginRequest loginModel)
         {
             if (!ModelState.IsValid)
-                return Unauthorized(ModelState);
+                return BadRequest(ModelState);
             var authResult = await _userService.Authenticate(loginModel);
             if (string.IsNullOrEmpty(authResult.ResultObject))
                 return Unauthorized(authResult);
