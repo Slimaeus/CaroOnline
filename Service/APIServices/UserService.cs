@@ -16,14 +16,12 @@ namespace Service.APIServices
         private readonly UserManager<User> _userManager;
         private readonly IJwtManager _jwtManager;
         private readonly IMapper _mapper;
-        private readonly SignInManager<User> _signInManager;
 
-        public UserService(UserManager<User> userManager, IJwtManager jwtManager, IMapper mapper, SignInManager<User> signInManager)
+        public UserService(UserManager<User> userManager, IJwtManager jwtManager, IMapper mapper)
         {
             _userManager = userManager;
             _jwtManager = jwtManager;
             _mapper = mapper;
-            _signInManager = signInManager;
         }
         public async Task<ApiResult<string>> Authenticate(LoginRequest request)
         {
@@ -33,7 +31,6 @@ namespace Service.APIServices
                 return new ApiErrorResult<string>("User does not exist!");
             }
             var result = await _userManager.CheckPasswordAsync(user, request.Password);
-            //var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
             if (!result)
             {
                 return new ApiErrorResult<string>("Username or Password Uncorrect!");
@@ -191,10 +188,10 @@ namespace Service.APIServices
             {
                 return new ApiErrorResult<bool>("User Does Not Exist");
             }
-            var removedRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList();
+            var removedRoles = request.Roles.Where(x => !x.Selected).Select(x => x.Name).ToList();
             foreach (var roleName in removedRoles)
             {
-                if (await _userManager.IsInRoleAsync(user, roleName) == true)
+                if (await _userManager.IsInRoleAsync(user, roleName))
                 {
                     await _userManager.RemoveFromRoleAsync(user, roleName);
                 }
@@ -204,7 +201,7 @@ namespace Service.APIServices
             var addedRoles = request.Roles.Where(x => x.Selected).Select(x => x.Name).ToList();
             foreach (var roleName in addedRoles)
             {
-                if (await _userManager.IsInRoleAsync(user, roleName) == false)
+                if (!await _userManager.IsInRoleAsync(user, roleName))
                 {
                     await _userManager.AddToRoleAsync(user, roleName);
                 }

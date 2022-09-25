@@ -12,12 +12,11 @@ namespace Service.APIServices
 {
     public class ResultService : IResultService
     {
-        private readonly IResultRepository resultRepo;
-        private readonly IUserResultRepository userResultRepo;
-        private readonly IMapper mapper;
-        private readonly IUnitOfWork unitOfWork;
-        private readonly UserManager<User> userManager;
-        private readonly CaroDbContext dbContext;
+        private readonly IResultRepository _resultRepo;
+        private readonly IUserResultRepository _userResultRepo;
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<User> _userManager;
 
         public ResultService(
             IMapper mapper, 
@@ -26,17 +25,16 @@ namespace Service.APIServices
             IUserResultRepository userResultRepo, 
             UserManager<User> userManager)
         {
-            this.mapper = mapper;
-            this.unitOfWork = unitOfWork;
-            this.userManager = userManager;
-            this.dbContext = unitOfWork.DbContext;
-            this.resultRepo = new ResultRepository(dbContext);
-            this.userResultRepo = new UserResultRepository(dbContext);
+            this._mapper = mapper;
+            this._unitOfWork = unitOfWork;
+            this._userManager = userManager;
+            this._resultRepo = new ResultRepository(unitOfWork.DbContext);
+            this._userResultRepo = new UserResultRepository(unitOfWork.DbContext);
         }
         public async Task<ApiResult<string>> AddResult(ResultRequest resultRequest)
         {
-            var winner = await userManager.FindByNameAsync(resultRequest.WinnerUserName);
-            var loser = await userManager.FindByNameAsync(resultRequest.LoserUserName);
+            var winner = await _userManager.FindByNameAsync(resultRequest.WinnerUserName);
+            var loser = await _userManager.FindByNameAsync(resultRequest.LoserUserName);
             if (winner == null)
             {
                 return new ApiErrorResult<string>("Cannot found Winner!");
@@ -45,8 +43,8 @@ namespace Service.APIServices
             {
                 return new ApiErrorResult<string>("Cannot found Loser!");
             }
-            var result = mapper.Map<ResultRequest, Result>(resultRequest);
-            resultRepo.Add(result);
+            var result = _mapper.Map<ResultRequest, Result>(resultRequest);
+            _resultRepo.Add(result);
 
             var winnerResult = new UserResult
             {
@@ -60,10 +58,10 @@ namespace Service.APIServices
                 UserId = loser.Id
             };
 
-            userResultRepo.Add(winnerResult);
-            userResultRepo.Add(loserResult);
+            _userResultRepo.Add(winnerResult);
+            _userResultRepo.Add(loserResult);
 
-            var affectRowNumber = unitOfWork.Commit();
+            var affectRowNumber = _unitOfWork.Commit();
 
 
             if (affectRowNumber > 0)
@@ -73,11 +71,11 @@ namespace Service.APIServices
 
         public async Task<ApiResult<string>> DeleteResultById(Guid resultId, DeleteResultRequest resultRequest)
         {
-            var result = await resultRepo.GetByIdAsync(id: resultId);
+            var result = await _resultRepo.GetByIdAsync(id: resultId);
             if (result == null)
                 return new ApiErrorResult<string>("Game does not exist!");
-            resultRepo.Delete(result);
-            var affectRowNumber = unitOfWork.Commit();
+            _resultRepo.Delete(result);
+            var affectRowNumber = _unitOfWork.Commit();
 
 
             if (affectRowNumber > 0)
@@ -88,17 +86,17 @@ namespace Service.APIServices
         // Not working yet
         public async Task<ApiResult<string>> DeleteResultByUserName(string userName, DeleteResultRequest resultRequest)
         {
-            var user = await userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
                 return new ApiErrorResult<string>("Cannot found user!");
             }
-            var resultIdList = resultRepo.GetList(
+            var resultIdList = _resultRepo.GetList(
                 includeProperties: "UserResults",
                 filter: result => result.UserResults.Any(userResult => userResult.UserId == user.Id)
             ).Select(result => result.Id);
-            resultRepo.Delete(res => resultIdList.Contains(res.Id));
-            var affectRowNumber = unitOfWork.Commit();
+            _resultRepo.Delete(res => resultIdList.Contains(res.Id));
+            var affectRowNumber = _unitOfWork.Commit();
 
 
             if (affectRowNumber > 0)
@@ -108,24 +106,24 @@ namespace Service.APIServices
 
         public ApiResult<IEnumerable<ResultResponse>> GetResults(PagingRequest pagingRequest)
         {
-            var resultList = resultRepo.GetList(
+            var resultList = _resultRepo.GetList(
                 skip: (pagingRequest.PageIndex - 1) * pagingRequest.PageSize,
                 take: pagingRequest.PageSize
             );
             if (resultList.Any())
                 return new ApiErrorResult<IEnumerable<ResultResponse>>("Get result list failed!");
-            var response = mapper.Map<IEnumerable<ResultResponse>>(resultList);
+            var response = _mapper.Map<IEnumerable<ResultResponse>>(resultList);
             return new ApiSuccessResult<IEnumerable<ResultResponse>>(response);
         }
 
         public async Task<ApiResult<IEnumerable<ResultResponse>>> GetResultsByUserName(string userName, PagingRequest pagingRequest)
         {
-            var user = await userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
                 return new ApiErrorResult<IEnumerable<ResultResponse>>("User not found!");
             }
-            var resultList = resultRepo.GetList(
+            var resultList = _resultRepo.GetList(
                     includeProperties: "UserResults",
                     filter: result => result.UserResults.Any(userResult => userResult.UserId == user.Id),
                     skip: (pagingRequest.PageIndex - 1) * pagingRequest.PageSize,
@@ -133,7 +131,7 @@ namespace Service.APIServices
                 );
             if (resultList == null)
                 return new ApiErrorResult<IEnumerable<ResultResponse>>("Get Result by UserName list failed!");
-            var response = mapper.Map<IEnumerable<ResultResponse>>(resultList);
+            var response = _mapper.Map<IEnumerable<ResultResponse>>(resultList);
             return new ApiSuccessResult<IEnumerable<ResultResponse>>(response);
         }
     }

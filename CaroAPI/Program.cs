@@ -15,7 +15,7 @@ using Utility.Helpers;
 
 namespace CaroAPI
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -75,7 +75,6 @@ namespace CaroAPI
                 app.UseSwaggerUI();
             }
 
-            //app.UseCors(caroAPIPolicy);
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
