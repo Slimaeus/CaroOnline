@@ -38,11 +38,15 @@
         const buttonList = document.querySelectorAll(".game-button");
         const board = document.getElementById("board");
 
+        const preventClick = (e) => {
+            e.preventDefault();
+        };
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)
             .build();
         connection.on("updateBoard", (userName, row, col) => {
+            buttonList.forEach(button => button.disabled = false);
             moves.push({
                 userName,
                 row,
@@ -68,8 +72,11 @@
                     col
                 });
                 button.className = button.className.replace("outline-dark", "success");
+                buttonList.forEach(button => button.disabled = true);
                 connection.invoke("PlaceStone", roomName, Number(row), Number(col));
             });
+            
+            
         });
     </script>
 }

@@ -112,7 +112,7 @@ namespace Utility.Hubs
         public async Task PlaceStone(string roomName, int row, int col)
         {
             var userName = Context.User.Identity?.Name;
-            await Clients.Group(roomName).SendAsync("updateBoard", userName, row, col);
+            await Clients.OthersInGroup(roomName).SendAsync("updateBoard", userName, row, col);
         }
     }
 }
