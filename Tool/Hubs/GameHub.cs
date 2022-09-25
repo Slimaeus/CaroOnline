@@ -4,22 +4,24 @@ using Microsoft.EntityFrameworkCore;
 using Model.GameModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Model.DbModels;
+using Service.APIClientServices;
 
 namespace Utility.Hubs
 {
     [Authorize]
     public class GameHub : Hub
     {
-        private readonly GameDbContext context;
+        private readonly GameDbContext _context;
 
         public GameHub(GameDbContext context)
         {
-            this.context = context;
+            _context = context;
         }
         public override async Task OnConnectedAsync()
         {
             // Retrieve user.
-            var user = context.GameUsers
+            var user = _context.GameUsers
                 .Include(u => u.Rooms)
                 .SingleOrDefault(u => u.UserName == Context.User.Identity!.Name!);
 
@@ -30,8 +32,8 @@ namespace Utility.Hubs
                 {
                     UserName = Context.User.Identity!.Name!
                 };
-                context.GameUsers.Add(user);
-                await context.SaveChangesAsync();
+                _context.GameUsers.Add(user);
+                await _context.SaveChangesAsync();
 
             }
             else
@@ -45,20 +47,20 @@ namespace Utility.Hubs
         public async Task RoomCreate()
         {
             string roomName = Context.User.Identity!.Name!;
-            var room = await context.Rooms.FindAsync(roomName);
+            var room = await _context.Rooms.FindAsync(roomName);
 
             if (room == null)
             {
                 room = new PlayRoom { RoomName = roomName };
-                await context.Rooms.AddAsync(room);
-                await context.SaveChangesAsync();
+                await _context.Rooms.AddAsync(room);
+                await _context.SaveChangesAsync();
             }
             if (room != null)
             {
                 var user = new GameUser() { UserName = Context.User.Identity!.Name! };
-                context.GameUsers.Attach(user);
+                _context.GameUsers.Attach(user);
                 room.GameUsers.Add(user);
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 
@@ -67,20 +69,20 @@ namespace Utility.Hubs
         }
         public async Task RoomJoin(string roomName)
         {
-            var room = await context.Rooms.FindAsync(roomName);
+            var room = await _context.Rooms.FindAsync(roomName);
             
             if (room == null)
             {
                 room = new PlayRoom { RoomName = roomName };
-                await context.Rooms.AddAsync(room);
-                await context.SaveChangesAsync();
+                await _context.Rooms.AddAsync(room);
+                await _context.SaveChangesAsync();
             }
             if (room != null)
             {
                 var user = new GameUser() { UserName = Context.User.Identity!.Name! };
-                context.GameUsers.Attach(user);
+                _context.GameUsers.Attach(user);
                 room.GameUsers.Add(user);
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 
@@ -89,27 +91,28 @@ namespace Utility.Hubs
         }
         public async Task RoomLeave(string roomName)
         {
-            var room = await context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(room => room.RoomName == roomName);
+            var room = await _context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(room => room.RoomName == roomName);
             if (room != null)
             {
-                var user = await context.GameUsers.FindAsync(Context.User.Identity!.Name!);
+                var user = await _context.GameUsers.FindAsync(Context.User.Identity!.Name!);
                 if (user ==  null)
                 {
                     user = new GameUser() { UserName = Context.User.Identity!.Name! };
                 }
-                context.GameUsers.Attach(user);
+                _context.GameUsers.Attach(user);
 
                 room.GameUsers.Remove(user);
                 if (room.GameUsers.Count == 0)
-                    context.Rooms.Remove(room);
-                await context.SaveChangesAsync();
+                    _context.Rooms.Remove(room);
+                await _context.SaveChangesAsync();
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
                 await Clients.All.SendAsync("leaveRoom", roomName);
             }
         }
-        public async Task RoomChat(string roomName, string message)
+        public async Task PlaceStone(string roomName, int row, int col)
         {
-            await Clients.Group(roomName).SendAsync(message);
+            var userName = Context.User.Identity?.Name;
+            await Clients.Group(roomName).SendAsync("updateBoard", userName, row, col);
         }
     }
 }

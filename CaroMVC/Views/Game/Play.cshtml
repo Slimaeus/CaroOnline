@@ -7,25 +7,25 @@
 }
 @model Model.ActionModels.PlayModel
 <div class="container text-center">
-    <h1>@Model.Room.RoomName</h1>
+    <h1>@Model.Room!.RoomName</h1>
     <div class="row">
-        @foreach (var user in Model.Room.GameUsers)
+        @foreach (var user in Model.Room!.GameUsers)
         {
             <div class="col">
-                @user.UserName
+                <span>Player: @user.UserName</span>
             </div>
         }
     </div>
 </div>
-<div class="container">
-    <div class="row" id="user-list">
+<div class="container" id="board">
+    <div class="row" id="user-list" room="@Model.Room.RoomName">
     </div>
     @for (int row = 0; row < Model.Board.RowCount; row++)
     {
         <div class="row d-flex justify-content-xl-center justify-content-xxl-center flex-nowrap">
             @for (int col = 0; col < Model.Board.ColumnCount; col++)
             {
-                <button class="btn btn-primary game-button">&nbsp;&nbsp;&nbsp;</button>
+                <button class="col-1 btn btn-outline-dark w-auto game-button" row="@row" col="@col">&nbsp;&nbsp;&nbsp;</button>
             }
         </div>
     }
@@ -35,12 +35,41 @@
     <script>
         const moves = [];
         const userList = document.getElementById("user-list");
+        const buttonList = document.querySelectorAll(".game-button");
+        const board = document.getElementById("board");
+
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)
             .build();
+        connection.on("updateBoard", (userName, row, col) => {
+            moves.push({
+                userName,
+                row,
+                col
+            });
+            const updateButtons = document.querySelectorAll(`button[row = "${row}"][col = "${col}"]`);
+            updateButtons.forEach((button) => {
+                button.className = button.className.replace("outline-dark", "danger");
+            })
+        });
         connection.start()
             .then(() => console.log("Connected!"))
             .catch(console.error);
+
+        buttonList.forEach((button) => {
+            button.addEventListener("click", () => {
+                const row = button.getAttribute("row");
+                const col = button.getAttribute("col");
+                const roomName = userList.getAttribute("room");
+                moves.push({
+                    userName: "@User.Identity?.Name",
+                    row,
+                    col
+                });
+                button.className = button.className.replace("outline-dark", "success");
+                connection.invoke("PlaceStone", roomName, Number(row), Number(col));
+            });
+        });
     </script>
 }
