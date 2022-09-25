@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model.ResultModels
 {
-    public class APIResult<T>
+    public class ApiResult<T>
     {
         public bool Succeeded { get; set; }
         public string Message { get; set; } = string.Empty;

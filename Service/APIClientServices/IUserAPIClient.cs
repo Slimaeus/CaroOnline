@@ -11,23 +11,23 @@ using System.Threading.Tasks;
 
 namespace Service.APIClientServices
 {
-    public interface IUserAPIClient
+    public interface IUserApiClient
     {
 
-        Task<APIResult<string>> Authenticate(LoginRequest request);
-        Task<APIResult<bool>> Register(RegisterRequest request);
-        Task<APIResult<bool>> Update(string userName, UpdateUserRequest request);
-        Task<APIResult<PagedList<UserResponse>>> GetPagedList(PagingRequest pagingRequest);
-        Task<APIResult<IEnumerable<UserResponse>>> GetUserList(
+        Task<ApiResult<string>> Authenticate(LoginRequest request);
+        Task<ApiResult<bool>> Register(RegisterRequest request);
+        Task<ApiResult<bool>> Update(string userName, UpdateUserRequest request);
+        Task<ApiResult<PagedList<UserResponse>>> GetPagedList(PagingRequest pagingRequest);
+        Task<ApiResult<IEnumerable<UserResponse>>> GetUserList(
             Expression<Func<User, bool>>? filter = null,
             Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null,
             string includeProperties = "",
             int take = 0,
             int skip = 0
         );
-        Task<APIResult<UserResponse>> GetByUserName(string userName);
-        Task<APIResult<bool>> Delete(DeleteUserRequest deleteUserRequest);
-        Task<APIResult<bool>> RoleAssign(string userName, RoleAssignRequest request);
-        Task<APIResult<TResult>> ResultReturn<TResult>(HttpResponseMessage response);
+        Task<ApiResult<UserResponse>> GetByUserName(string userName);
+        Task<ApiResult<bool>> Delete(DeleteUserRequest deleteUserRequest);
+        Task<ApiResult<bool>> RoleAssign(string userName, RoleAssignRequest request);
+        Task<ApiResult<TResult>> ResultReturn<TResult>(HttpResponseMessage response);
     }
 }

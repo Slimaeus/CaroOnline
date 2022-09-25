@@ -14,22 +14,19 @@ namespace CaroMVC.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly IUserAPIClient _userAPIClient;
-        private readonly IConfiguration _configuration;
-        private readonly IJWTManager _jWTManager;
+        private readonly IUserApiClient _userApiClient;
+        private readonly IJwtManager _jWtManager;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
 
         public AccountController(
-            IUserAPIClient userAPIClient,
-            IConfiguration configuration,
-            IJWTManager jWTManager,
+            IUserApiClient userApiClient,
+            IJwtManager jWtManager,
             IMapper mapper,
             IMemoryCache memoryCache)
         {
-            _userAPIClient = userAPIClient;
-            _configuration = configuration;
-            _jWTManager = jWTManager;
+            _userApiClient = userApiClient;
+            _jWtManager = jWtManager;
             _mapper = mapper;
             _memoryCache = memoryCache;
         }
@@ -50,7 +47,7 @@ namespace CaroMVC.Controllers
             {
                 return RedirectToAction(nameof(Login), new LoginModel() { ReturnUrl = Request.Path });
             }
-            var result = await _userAPIClient.GetByUserName(userName);
+            var result = await _userApiClient.GetByUserName(userName);
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", result.Message);
@@ -87,7 +84,7 @@ namespace CaroMVC.Controllers
 
                 return View(loginModel);
             }
-            var response = await _userAPIClient.Authenticate(loginModel.Input);
+            var response = await _userApiClient.Authenticate(loginModel.Input);
             if (!response.Succeeded)
             {
                 ViewData["Error"] = response.Message;
@@ -99,7 +96,7 @@ namespace CaroMVC.Controllers
 
                 return View(loginModel);
             }
-            var userPrincipal = _jWTManager.Validate(token);
+            var userPrincipal = _jWtManager.Validate(token);
             var authProperties = new AuthenticationProperties
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
@@ -141,14 +138,14 @@ namespace CaroMVC.Controllers
 
             if (!ModelState.IsValid)
                 return View(model);
-            var response = await _userAPIClient.Register(model.Input);
+            var response = await _userApiClient.Register(model.Input);
             if (!response.Succeeded)
             {
                 ModelState.AddModelError("", "Register Failure");
             }
             // Login 
             var loginModel = _mapper.Map<LoginModel>(model);
-            var loginResponse = await _userAPIClient.Authenticate(loginModel.Input);
+            var loginResponse = await _userApiClient.Authenticate(loginModel.Input);
             if (!loginResponse.Succeeded)
             {
                 ModelState.AddModelError("", "Login Failure");
@@ -159,7 +156,7 @@ namespace CaroMVC.Controllers
                 ModelState.AddModelError("", "Cannot Get Token");
                 return View(model);
             }
-            var userPrincipal = _jWTManager.Validate(token);
+            var userPrincipal = _jWtManager.Validate(token);
             var authProperties = new AuthenticationProperties
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),

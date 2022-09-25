@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public interface IJWTManager
+    public interface IJwtManager
     {
         public string Authenticate(User user, IList<string> roles);
         public ClaimsPrincipal Validate(string token);

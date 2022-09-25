@@ -14,83 +14,83 @@ namespace Service.APIServices
     public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
-        private readonly IJWTManager _jwtManager;
+        private readonly IJwtManager _jwtManager;
         private readonly IMapper _mapper;
         private readonly SignInManager<User> _signInManager;
 
-        public UserService(UserManager<User> userManager, IJWTManager jwtManager, IMapper mapper, SignInManager<User> signInManager)
+        public UserService(UserManager<User> userManager, IJwtManager jwtManager, IMapper mapper, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _jwtManager = jwtManager;
             _mapper = mapper;
             _signInManager = signInManager;
         }
-        public async Task<APIResult<string>> Authenticate(LoginRequest request)
+        public async Task<ApiResult<string>> Authenticate(LoginRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
             {
-                return new APIErrorResult<string>("User does not exist!");
+                return new ApiErrorResult<string>("User does not exist!");
             }
             var result = await _userManager.CheckPasswordAsync(user, request.Password);
             //var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
             if (!result)
             {
-                return new APIErrorResult<string>("Username or Password Uncorrect!");
+                return new ApiErrorResult<string>("Username or Password Uncorrect!");
             }
             var roles = await _userManager.GetRolesAsync(user);
 
             var token = _jwtManager.Authenticate(user, roles);
-            return new APISuccessResult<string>(token);
+            return new ApiSuccessResult<string>(token);
         }
 
-        public async Task<APIResult<bool>> Delete(Guid id)
+        public async Task<ApiResult<bool>> Delete(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
-                return new APIErrorResult<bool>("User does not exist!");
+                return new ApiErrorResult<bool>("User does not exist!");
             }
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
-                return new APISuccessResult<bool>(true);
-            return new APIErrorResult<bool>("Delete Fail!");
+                return new ApiSuccessResult<bool>(true);
+            return new ApiErrorResult<bool>("Delete Fail!");
         }
 
-        public async Task<APIResult<bool>> Delete(string userName)
+        public async Task<ApiResult<bool>> Delete(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
-                return new APIErrorResult<bool>("User does not exist!");
+                return new ApiErrorResult<bool>("User does not exist!");
             }
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
-                return new APISuccessResult<bool>(true);
-            return new APIErrorResult<bool>("Delete failed!");
+                return new ApiSuccessResult<bool>(true);
+            return new ApiErrorResult<bool>("Delete failed!");
         }
 
-        public async Task<APIResult<UserResponse>> GetById(Guid id)
+        public async Task<ApiResult<UserResponse>> GetById(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
-                return new APIErrorResult<UserResponse>("User does not exist!");
+                return new ApiErrorResult<UserResponse>("User does not exist!");
             var roles = await _userManager.GetRolesAsync(user);
             var userResponse = _mapper.Map<UserResponse>(user);
             userResponse.Roles = roles;
-            return new APISuccessResult<UserResponse>(userResponse);
+            return new ApiSuccessResult<UserResponse>(userResponse);
 
         }
 
-        public async Task<APIResult<UserResponse>> GetByUserName(string userName)
+        public async Task<ApiResult<UserResponse>> GetByUserName(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
-                return new APIErrorResult<UserResponse>("User Does Not Exist!");
+                return new ApiErrorResult<UserResponse>("User Does Not Exist!");
             var roles = await _userManager.GetRolesAsync(user);
             var userResponse = _mapper.Map<UserResponse>(user);
             userResponse.Roles = roles;
-            return new APISuccessResult<UserResponse>(userResponse);
+            return new ApiSuccessResult<UserResponse>(userResponse);
         }
 
         public async Task<IEnumerable<User>> GetUserList(
@@ -130,7 +130,7 @@ namespace Service.APIServices
             return userList;
         }
 
-        public async Task<APIResult<PagedList<UserResponse>>> GetUserPagingList(PagingRequest request)
+        public async Task<ApiResult<PagedList<UserResponse>>> GetUserPagingList(PagingRequest request)
         {
             const int DEFAULT_PAGE_SIZE = 10;
             const int DEFAULT_PAGE_INDEX = 1;
@@ -157,10 +157,10 @@ namespace Service.APIServices
                 PageSize = pageSize,
                 Items = userResponseList
             };
-            return new APISuccessResult<PagedList<UserResponse>>(pageResult);
+            return new ApiSuccessResult<PagedList<UserResponse>>(pageResult);
         }
 
-        public async Task<APIResult<bool>> Register(RegisterRequest request)
+        public async Task<ApiResult<bool>> Register(RegisterRequest request)
         {
             var findUserName = await _userManager.FindByNameAsync(request.UserName);
             var findEmail = await _userManager.FindByEmailAsync(request.Email);
@@ -169,27 +169,27 @@ namespace Service.APIServices
             bool isEmailExists = findEmail != null;
 
             if (isUserNameExists)
-                return new APIErrorResult<bool>("This Username Already Used!");
+                return new ApiErrorResult<bool>("This Username Already Used!");
             if (isEmailExists)
-                return new APIErrorResult<bool>("This Email Already Used");
+                return new ApiErrorResult<bool>("This Email Already Used");
             if (request.Password != request.ConfirmPassword)
-                return new APIErrorResult<bool>("Password and Confirm Password are not the same");
+                return new ApiErrorResult<bool>("Password and Confirm Password are not the same");
             var user = _mapper.Map<User>(request);
             var result = await _userManager.CreateAsync(user, request.Password);
 
             if (result.Succeeded)
             {
-                return new APISuccessResult<bool>();
+                return new ApiSuccessResult<bool>();
             }
-            return new APIErrorResult<bool>("Register Fail!");
+            return new ApiErrorResult<bool>("Register Fail!");
         }
 
-        public async Task<APIResult<bool>> RoleAssign(string userName, RoleAssignRequest request)
+        public async Task<ApiResult<bool>> RoleAssign(string userName, RoleAssignRequest request)
         {
             var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
-                return new APIErrorResult<bool>("User Does Not Exist");
+                return new ApiErrorResult<bool>("User Does Not Exist");
             }
             var removedRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList();
             foreach (var roleName in removedRoles)
@@ -210,18 +210,18 @@ namespace Service.APIServices
                 }
             }
 
-            return new APISuccessResult<bool>();
+            return new ApiSuccessResult<bool>();
         }
 
-        public async Task<APIResult<bool>> Update(string userName, UpdateUserRequest request)
+        public async Task<ApiResult<bool>> Update(string userName, UpdateUserRequest request)
         {
             if (request.Email != null && await _userManager.Users.AnyAsync(x => x.Email == request.Email))
             {
-                return new APIErrorResult<bool>("Email Already Exists");
+                return new ApiErrorResult<bool>("Email Already Exists");
             }
             if (userName != null && await _userManager.Users.AnyAsync(x => x.UserName == userName))
             {
-                return new APIErrorResult<bool>("UserName Already Exists");
+                return new ApiErrorResult<bool>("UserName Already Exists");
             }
             var user = await _userManager.FindByIdAsync(request.UserName);
             bool isEmailExists = request.Email != null;
@@ -252,9 +252,9 @@ namespace Service.APIServices
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
-                return new APISuccessResult<bool>();
+                return new ApiSuccessResult<bool>();
             }
-            return new APIErrorResult<bool>("Update Failed!");
+            return new ApiErrorResult<bool>("Update Failed!");
         }
     }
 }

@@ -11,6 +11,5 @@ namespace Model.GameModels
         public int RowCount { get; set; }
         public int ColumnCount { get; set; }
         public int BoardSize => RowCount * ColumnCount;
-        public ICollection<Stone> Stones = default!;
     }
 }

@@ -14,11 +14,11 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class JWTManager : IJWTManager
+    public class JwtManager : IJwtManager
     {
         private readonly IConfiguration _configuration;
 
-        public JWTManager(IConfiguration configuration)
+        public JwtManager(IConfiguration configuration)
         {
             _configuration = configuration;
         }

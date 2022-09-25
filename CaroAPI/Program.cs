@@ -58,7 +58,7 @@ namespace CaroAPI
 
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-            builder.Services.AddSingleton<IJWTManager, JWTManager>();
+            builder.Services.AddSingleton<IJwtManager, JwtManager>();
             // Add Repositories
             builder.Services.AddScoped<IResultRepository, ResultRepository>();
             builder.Services.AddScoped<IUserResultRepository, UserResultRepository>();

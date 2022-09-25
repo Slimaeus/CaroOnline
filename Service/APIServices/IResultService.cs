@@ -13,10 +13,10 @@ namespace Service.APIServices
 {
     public interface IResultService
     {
-        Task<APIResult<string>> AddResult (ResultRequest resultRequest);
-        Task<APIResult<string>> DeleteResultByUserName (string userName, DeleteResultRequest resultRequest);
-        Task<APIResult<string>> DeleteResultById (Guid resultId, DeleteResultRequest resultRequest);
-        APIResult<IEnumerable<ResultResponse>> GetResults(PagingRequest pagingRequest);
-        Task<APIResult<IEnumerable<ResultResponse>>> GetResultsByUserName(string userName, PagingRequest pagingRequest);
+        Task<ApiResult<string>> AddResult (ResultRequest resultRequest);
+        Task<ApiResult<string>> DeleteResultByUserName (string userName, DeleteResultRequest resultRequest);
+        Task<ApiResult<string>> DeleteResultById (Guid resultId, DeleteResultRequest resultRequest);
+        ApiResult<IEnumerable<ResultResponse>> GetResults(PagingRequest pagingRequest);
+        Task<ApiResult<IEnumerable<ResultResponse>>> GetResultsByUserName(string userName, PagingRequest pagingRequest);
     }
 }

@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace Model.ResultModels
 {
-    public class APIErrorResult<T> : APIResult<T>
+    public class ApiErrorResult<T> : ApiResult<T>
     {
         public string[] ValidationErrors { get; set; } = Array.Empty<string>();
 
-        public APIErrorResult()
+        public ApiErrorResult()
         {
             Succeeded = false;
         }
 
-        public APIErrorResult(string message)
+        public ApiErrorResult(string message)
         {
             Succeeded = false;
             Message = message;
         }
 
-        public APIErrorResult(string[] validationErrors)
+        public ApiErrorResult(string[] validationErrors)
         {
             Succeeded = false;
             ValidationErrors = validationErrors;

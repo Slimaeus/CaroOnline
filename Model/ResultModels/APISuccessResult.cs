@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Model.ResultModels
 {
-    public class APISuccessResult<T> : APIResult<T>
+    public class ApiSuccessResult<T> : ApiResult<T>
     {
-        public APISuccessResult(T resultObject)
+        public ApiSuccessResult(T resultObject)
         {
             Succeeded = true;
             ResultObject = resultObject;
         }
-        public APISuccessResult()
+        public ApiSuccessResult()
         {
             Succeeded = true;
         }

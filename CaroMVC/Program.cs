@@ -8,7 +8,7 @@ using Utility.Hubs;
 
 namespace CaroMVC
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -24,12 +24,12 @@ namespace CaroMVC
                 httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("CaroAPIBaseUrl"));
             });
 
-            builder.Services.AddSingleton<IJWTManager, JWTManager>();
-            builder.Services.AddScoped<IUserAPIClient, UserAPIClient>();
+            builder.Services.AddSingleton<IJwtManager, JwtManager>();
+            builder.Services.AddScoped<IUserApiClient, UserApiClient>();
 
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-            //builder.Services.AddSession();
+            builder.Services.AddSession();
             builder.Services.AddMemoryCache();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
