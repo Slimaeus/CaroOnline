@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Model.RequestModels;
 using Service.APIServices;
 
@@ -6,6 +7,7 @@ using Service.APIServices;
 
 namespace CaroAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ResultController : ControllerBase
@@ -17,8 +19,12 @@ namespace CaroAPI.Controllers
         {
             _resultService = resultService;
         }
-        //[Authorize]
-        [HttpGet("GetResults")]
+        /// <summary>
+        /// Get All Results in this game
+        /// </summary>
+        /// <param name="pagingRequest">Paging Resquest</param>
+        /// <returns></returns>
+        [HttpGet("GetList")]
         public IActionResult Get([FromQuery] PagingRequest pagingRequest)
         {
             if (!ModelState.IsValid)
@@ -28,7 +34,13 @@ namespace CaroAPI.Controllers
                 return Ok(results);
             return BadRequest(results);
         }
-        [HttpGet("GetResultsByUserName")]
+        /// <summary>
+        /// Get Results by UserName
+        /// </summary>
+        /// <param name="userName">UserName</param>
+        /// <param name="pagingRequest">Paging Request</param>
+        /// <returns>Result List</returns>
+        [HttpGet("GetByUserName")]
         public async Task<IActionResult> Get(string userName, [FromQuery] PagingRequest pagingRequest)
         {
             if (!ModelState.IsValid)
@@ -38,16 +50,12 @@ namespace CaroAPI.Controllers
                 return Ok(results);
             return BadRequest(results);
         }
-
-        // GET api/<ResultController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<ResultController>
-        [HttpPost]
+        /// <summary>
+        /// Create a result
+        /// </summary>
+        /// <param name="resultRequest">Create Result Request</param>
+        /// <returns>Create Status</returns>
+        [HttpPost("Create")]
         public async Task<IActionResult> Post([FromBody] ResultRequest resultRequest)
         {
 
@@ -58,13 +66,12 @@ namespace CaroAPI.Controllers
                 return Ok(serviceResult);
             return BadRequest(serviceResult);
         }
-
-        // PUT api/<ResultController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
+        /// <summary>
+        /// Delete Results by UserName
+        /// </summary>
+        /// <param name="userName">UserName</param>
+        /// <param name="deleteResultRequest">Delete Result Request</param>
+        /// <returns>Delete Status</returns>
         [HttpDelete("DeleteByUserName/{userName}")]
         public async Task<IActionResult> DeleteByUserName(string userName, DeleteResultRequest deleteResultRequest)
         {
@@ -75,6 +82,12 @@ namespace CaroAPI.Controllers
                 return Ok(deleteResult);
             return BadRequest();
         }
+        /// <summary>
+        /// Delete Results by Id
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <param name="deleteResultRequest">Delete Request Params</param>
+        /// <returns>Delete Status</returns>
         [HttpDelete("DeleteById/{id}")]
         public async Task<IActionResult> DeleteById(Guid id, DeleteResultRequest deleteResultRequest)
         {

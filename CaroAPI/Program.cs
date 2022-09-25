@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Model.DbModels;
 using Service.APIServices;
 using System.Text;
@@ -26,7 +27,20 @@ namespace CaroAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Caro API",
+                    Version = "v1",
+                    Description = "API for Caro Game",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Nguyen Hong Thai",
+                        Url = new Uri("https://github.com/Slimaeus")
+                    }
+                });
+            });
             builder.Services.AddDbContextFactory<CaroDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase"));
@@ -42,7 +56,6 @@ namespace CaroAPI
             }).AddJwtBearer(options =>
             {
                 var Key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]);
-                Console.WriteLine(builder.Configuration["JWT:Key"]);
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -71,9 +84,13 @@ namespace CaroAPI
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
+                options.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 

@@ -85,15 +85,20 @@ namespace CaroMVC.Controllers
                 return View(loginModel);
             }
             var response = await _userApiClient.Authenticate(loginModel.Input);
+            if (response == null)
+            {
+                ViewData["Error"] = "Cannot connect to Server";
+                return View(loginModel);
+            }
             if (!response.Succeeded)
             {
                 ViewData["Error"] = response.Message;
+                return View(loginModel);
             }
             var token = response.ResultObject;
             if (token == null)
             {
                 ViewData["Error"] = "Cannot Get Token";
-
                 return View(loginModel);
             }
             var userPrincipal = _jWtManager.Validate(token);
@@ -139,9 +144,15 @@ namespace CaroMVC.Controllers
             if (!ModelState.IsValid)
                 return View(model);
             var response = await _userApiClient.Register(model.Input);
+            if (response == null)
+            {
+                ModelState.AddModelError("", "Cannot connect to Server");
+                return View(model);
+            }
             if (!response.Succeeded)
             {
                 ModelState.AddModelError("", "Register Failure");
+                return View(model);
             }
             // Login 
             var loginModel = _mapper.Map<LoginModel>(model);

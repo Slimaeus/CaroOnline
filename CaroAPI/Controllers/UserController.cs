@@ -20,7 +20,11 @@ namespace CaroAPI.Controllers
         {
             _userService = userService;
         }
-        /*[AllowAnonymous]*/ // Test
+        /// <summary>
+        /// Get User paged list
+        /// </summary>
+        /// <param name="pagingRequest">Paging params</param>
+        /// <returns>The User paged list</returns>
         [HttpGet("GetPagedList")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         public async Task<IActionResult> GetPagedList([FromQuery] PagingRequest pagingRequest)
@@ -32,6 +36,11 @@ namespace CaroAPI.Controllers
             }
             return Ok(result);
         }
+        /// <summary>
+        /// Regist an account 
+        /// </summary>
+        /// <param name="signUpModel"></param>
+        /// <returns>Rigister Status</returns>
         [AllowAnonymous]
         [HttpPost("Register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -45,6 +54,11 @@ namespace CaroAPI.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+        /// <summary>
+        /// Authenticate your Login
+        /// </summary>
+        /// <param name="loginModel">Login infomations</param>
+        /// <returns>Your token</returns>
         [AllowAnonymous]
         [HttpPost("Authenticate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -58,6 +72,12 @@ namespace CaroAPI.Controllers
                 return Unauthorized(authResult);
             return Ok(authResult);
         }
+        /// <summary>
+        /// Update User Profile
+        /// </summary>
+        /// <param name="userName">UserName</param>
+        /// <param name="updateUserRequest">Update Infomations</param>
+        /// <returns>Update Status</returns>
         [HttpPut("Update/{userName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -70,6 +90,11 @@ namespace CaroAPI.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        /// <summary>
+        /// Delete an account
+        /// </summary>
+        /// <param name="userName">UserName</param>
+        /// <returns>Delete Status</returns>
         [HttpDelete("Delete/{userName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -82,7 +107,11 @@ namespace CaroAPI.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-        /*[AllowAnonymous]*/ //TEst
+        /// <summary>
+        /// Get User information by UserName
+        /// </summary>
+        /// <param name="userName">UserName</param>
+        /// <returns>User's information</returns>
         [HttpGet("GetByUserName/{userName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -95,6 +124,12 @@ namespace CaroAPI.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        /// <summary>
+        /// Assign Roles for User
+        /// </summary>
+        /// <param name="userName">UserName</param>
+        /// <param name="roleAssignRequest">Role Assign Informations</param>
+        /// <returns>Assign Status</returns>
         [HttpPut("RoleAssign/{userName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

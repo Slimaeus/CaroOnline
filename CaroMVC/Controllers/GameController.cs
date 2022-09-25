@@ -29,6 +29,10 @@ namespace CaroMVC.Controllers
         public async Task<IActionResult> Play(string? roomName)
         {
             var room = await _context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(room => room.RoomName == roomName);
+            if (room == null)
+                return RedirectToAction("Index", "Home");
+            if (room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
+                return RedirectToAction("Index", "Home");
             var board = new Board { RowCount = 30, ColumnCount = 30};
             var model = new PlayModel { Room = room, Board = board };
             return View(model);
