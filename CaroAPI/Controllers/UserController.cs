@@ -26,15 +26,14 @@ namespace CaroAPI.Controllers
         /// <param name="pagingRequest">Paging params</param>
         /// <returns>The User paged list</returns>
         [HttpGet("GetPagedList")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetPagedList([FromQuery] PagingRequest pagingRequest)
         {
             var result = await _userService.GetUserPagingList(pagingRequest);
             if (result.Succeeded)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+                return Ok(result);
+            return BadRequest(result);
         }
         /// <summary>
         /// Regist an account 
@@ -50,9 +49,9 @@ namespace CaroAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _userService.Register(signUpModel);
-            if (!result.Succeeded)
-                return BadRequest(result);
-            return Ok(result);
+            if (result.Succeeded)
+                return Ok(result);
+            return BadRequest(result);
         }
         /// <summary>
         /// Authenticate your Login

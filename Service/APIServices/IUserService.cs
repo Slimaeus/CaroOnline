@@ -19,9 +19,9 @@ namespace Service.APIServices
         Task<ApiResult<UserResponse>> GetById(Guid id);
         Task<ApiResult<UserResponse>> GetByUserName(string userName);
         Task<ApiResult<PagedList<UserResponse>>> GetUserPagingList(PagingRequest request);
-        Task<IEnumerable<User>> GetUserList(
-            Expression<Func<User, bool>>? filter = null,
-            Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null,
+        Task<IEnumerable<AppUser>> GetUserList(
+            Expression<Func<AppUser, bool>>? filter = null,
+            Func<IQueryable<AppUser>, IOrderedQueryable<AppUser>>? orderBy = null,
             string includeProperties = "",
             int take = 0,
             int skip = 0

@@ -16,14 +16,14 @@ namespace Service.APIServices
         private readonly IUserResultRepository _userResultRepo;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
         public ResultService(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             IResultRepository resultRepo, 
             IUserResultRepository userResultRepo, 
-            UserManager<User> userManager)
+            UserManager<AppUser> userManager)
         {
             this._mapper = mapper;
             this._unitOfWork = unitOfWork;

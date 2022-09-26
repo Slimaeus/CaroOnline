@@ -11,7 +11,7 @@ namespace Model.DbModels
     {
         [Column(Order = 0)]
         public Guid UserId { get; set; }
-        public User User { get; set; } = default!;
+        public AppUser User { get; set; } = default!;
 
         [Column(Order = 1)]
         public Guid ResultId { get; set; }

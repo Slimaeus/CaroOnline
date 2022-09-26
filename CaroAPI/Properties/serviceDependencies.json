@@ -2,8 +2,7 @@
   "dependencies": {
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:CaroDatabase",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:CaroDatabase"
     }
   }
 }

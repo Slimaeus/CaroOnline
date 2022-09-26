@@ -6,7 +6,7 @@ using Model.DbModels;
 
 namespace Data
 {
-    public class CaroDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+    public class CaroDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         public CaroDbContext(DbContextOptions<CaroDbContext> options) : base(options)
         {

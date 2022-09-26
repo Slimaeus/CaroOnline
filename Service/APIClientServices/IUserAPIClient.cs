@@ -19,8 +19,8 @@ namespace Service.APIClientServices
         Task<ApiResult<bool>> Update(string userName, UpdateUserRequest request);
         Task<ApiResult<PagedList<UserResponse>>> GetPagedList(PagingRequest pagingRequest);
         Task<ApiResult<IEnumerable<UserResponse>>> GetUserList(
-            Expression<Func<User, bool>>? filter = null,
-            Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null,
+            Expression<Func<AppUser, bool>>? filter = null,
+            Func<IQueryable<AppUser>, IOrderedQueryable<AppUser>>? orderBy = null,
             string includeProperties = "",
             int take = 0,
             int skip = 0

@@ -43,9 +43,9 @@ namespace CaroAPI
             });
             builder.Services.AddDbContextFactory<CaroDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase1"));
             });
-            builder.Services.AddIdentity<User, IdentityRole<Guid>>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<CaroDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -70,6 +70,7 @@ namespace CaroAPI
             });
 
             builder.Services.AddTransient<IUserService, UserService>();
+            builder.Services.AddTransient<IRoleService, RoleService>();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
             builder.Services.AddSingleton<IJwtManager, JwtManager>();
             // Add Repositories

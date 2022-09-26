@@ -13,11 +13,11 @@ namespace Service.APIServices
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly IJwtManager _jwtManager;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<User> userManager, IJwtManager jwtManager, IMapper mapper)
+        public UserService(UserManager<AppUser> userManager, IJwtManager jwtManager, IMapper mapper)
         {
             _userManager = userManager;
             _jwtManager = jwtManager;
@@ -90,15 +90,15 @@ namespace Service.APIServices
             return new ApiSuccessResult<UserResponse>(userResponse);
         }
 
-        public async Task<IEnumerable<User>> GetUserList(
-            Expression<Func<User, bool>>? filter = null,
-            Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null,
+        public async Task<IEnumerable<AppUser>> GetUserList(
+            Expression<Func<AppUser, bool>>? filter = null,
+            Func<IQueryable<AppUser>, IOrderedQueryable<AppUser>>? orderBy = null,
             string includeProperties = "",
             int take = 0,
             int skip = 0)
         {
-            IQueryable<User> query = _userManager.Users.AsQueryable<User>();
-            IList<User> userList;
+            IQueryable<AppUser> query = _userManager.Users.AsQueryable<AppUser>();
+            IList<AppUser> userList;
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -171,12 +171,12 @@ namespace Service.APIServices
                 return new ApiErrorResult<bool>("This Email Already Used");
             if (request.Password != request.ConfirmPassword)
                 return new ApiErrorResult<bool>("Password and Confirm Password are not the same");
-            var user = _mapper.Map<User>(request);
+            var user = _mapper.Map<AppUser>(request);
             var result = await _userManager.CreateAsync(user, request.Password);
 
             if (result.Succeeded)
             {
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<bool>(true);
             }
             return new ApiErrorResult<bool>("Register Fail!");
         }
@@ -207,7 +207,7 @@ namespace Service.APIServices
                 }
             }
 
-            return new ApiSuccessResult<bool>();
+            return new ApiSuccessResult<bool>(true);
         }
 
         public async Task<ApiResult<bool>> Update(string userName, UpdateUserRequest request)
@@ -249,7 +249,7 @@ namespace Service.APIServices
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<bool>(true);
             }
             return new ApiErrorResult<bool>("Update Failed!");
         }

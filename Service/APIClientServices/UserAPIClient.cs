@@ -107,7 +107,7 @@ namespace Service.APIClientServices
 
         }
 
-        public Task<ApiResult<IEnumerable<UserResponse>>> GetUserList(Expression<Func<User, bool>>? filter = null, Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null, string includeProperties = "", int take = 0, int skip = 0)
+        public Task<ApiResult<IEnumerable<UserResponse>>> GetUserList(Expression<Func<AppUser, bool>>? filter = null, Func<IQueryable<AppUser>, IOrderedQueryable<AppUser>>? orderBy = null, string includeProperties = "", int take = 0, int skip = 0)
         {
             throw new NotImplementedException();
         }

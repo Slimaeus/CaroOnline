@@ -21,7 +21,7 @@ namespace CaroMVC
             });
             builder.Services.AddHttpClient("CaroAPI", httpClient =>
             {
-                httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("CaroAPIBaseUrl"));
+                httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("CaroAPIBaseUrl1"));
             });
 
             builder.Services.AddSingleton<IJwtManager, JwtManager>();

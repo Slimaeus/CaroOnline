@@ -15,9 +15,11 @@ namespace Utility.Helpers
     {
         public AutoMapperProfile()
         {
-            CreateMap<User, UserResponse>();
-            CreateMap<UserResponse, User>();
-            CreateMap<RegisterRequest, User>();
+            CreateMap<AppUser, UserResponse>();
+            CreateMap<UserResponse, AppUser>();
+            CreateMap<RoleRequest, AppRole>();
+            CreateMap<AppRole, RoleResponse>();
+            CreateMap<RegisterRequest, AppUser>();
             CreateMap<ResultRequest, Result>()
                 .ForMember(des => des.StartedTime, act => act.MapFrom(src => DateTime.Now))
                 .ForMember(

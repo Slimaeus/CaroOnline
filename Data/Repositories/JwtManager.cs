@@ -23,7 +23,7 @@ namespace Data.Repositories
             _configuration = configuration;
         }
         // For API
-        public string Authenticate(User user, IList<string> roles)
+        public string Authenticate(AppUser user, IList<string> roles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
