@@ -5,6 +5,8 @@
 
 # Sqlite databases
 *.db
+# Caro Game Db
+CaroGame.db
 # Appsettings
 appsettings.*
 
