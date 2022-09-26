@@ -6,7 +6,6 @@ using Data.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Model.DbModels;
@@ -27,8 +26,6 @@ namespace CaroAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            Console.WriteLine(builder.Configuration["ApiContacts:Thai:Name"]);
-            Console.WriteLine(builder.Configuration["ApiContacts:Thai:Url"]);
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -38,8 +35,8 @@ namespace CaroAPI
                     Description = "API for Caro Game",
                     Contact = new OpenApiContact
                     {
-                        Name = "Thai",
-                        Url = new Uri("https://github.com/Slimaeus")
+                        Name = builder.Configuration["ApiContacts:Thai:Name"],
+                        Url = new Uri(builder.Configuration["ApiContacts:Thai:Url"])
                     }
                 });
                 var securitySchema = new OpenApiSecurityScheme
@@ -109,7 +106,7 @@ namespace CaroAPI
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                Console.WriteLine("Development...");
+                Console.WriteLine("Developing...");
             }
             app.UseSwagger();
             app.UseSwaggerUI(options =>
