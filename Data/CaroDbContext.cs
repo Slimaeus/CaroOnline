@@ -19,6 +19,12 @@ namespace Data
 
             builder.ApplyConfiguration<Result>(new ResultConfiguration());
             builder.ApplyConfiguration<UserResult>(new UserResultConfiguration());
+
+            builder.Entity<AppRole>().HasData(new AppRole[]
+            {
+                new AppRole { Id = Guid.NewGuid(), Name = "Admin", NormalizedName = "ADMIN", Description = "Admin Role" },
+                new AppRole { Id = Guid.NewGuid(), Name = "Manager", NormalizedName = "MANAGER", Description = "Manager Role" }
+            });
         }
     }
 }

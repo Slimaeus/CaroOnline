@@ -37,7 +37,6 @@ namespace CaroAPI.Controllers
         /// </summary>
         /// <param name="roleRequest">Role Create Model</param>
         /// <returns>Create Status</returns>
-        [Authorize(Roles = "Admin")]
         [HttpPost("Create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

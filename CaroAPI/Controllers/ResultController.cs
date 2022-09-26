@@ -7,7 +7,7 @@ using Service.APIServices;
 
 namespace CaroAPI.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Manager")]
     [Route("api/[controller]")]
     [ApiController]
     public class ResultController : ControllerBase
@@ -24,6 +24,7 @@ namespace CaroAPI.Controllers
         /// </summary>
         /// <param name="pagingRequest">Paging Resquest</param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("GetList")]
         public IActionResult Get([FromQuery] PagingRequest pagingRequest)
         {

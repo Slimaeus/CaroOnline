@@ -27,6 +27,8 @@ namespace CaroAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+            Console.WriteLine(builder.Configuration["ApiContacts:Thai:Name"]);
+            Console.WriteLine(builder.Configuration["ApiContacts:Thai:Url"]);
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -36,10 +38,32 @@ namespace CaroAPI
                     Description = "API for Caro Game",
                     Contact = new OpenApiContact
                     {
-                        Name = "Nguyen Hong Thai",
+                        Name = "Thai",
                         Url = new Uri("https://github.com/Slimaeus")
                     }
                 });
+                var securitySchema = new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+
+                options.AddSecurityDefinition("Bearer", securitySchema);
+
+                var securityRequirement = new OpenApiSecurityRequirement
+                {
+                    { securitySchema, new[] { "Bearer" } }
+                };
+
+                options.AddSecurityRequirement(securityRequirement);
             });
             builder.Services.AddDbContextFactory<CaroDbContext>(options =>
             {
@@ -55,7 +79,7 @@ namespace CaroAPI
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                var Key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]);
+                var key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]);
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -65,7 +89,7 @@ namespace CaroAPI
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = builder.Configuration["JWT:Issuer"],
                     ValidAudience = builder.Configuration["JWT:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Key)
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
                 };
             });
 
@@ -85,6 +109,7 @@ namespace CaroAPI
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                Console.WriteLine("Development...");
             }
             app.UseSwagger();
             app.UseSwaggerUI(options =>

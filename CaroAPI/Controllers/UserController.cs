@@ -129,6 +129,8 @@ namespace CaroAPI.Controllers
         /// <param name="userName">UserName</param>
         /// <param name="roleAssignRequest">Role Assign Informations</param>
         /// <returns>Assign Status</returns>
+        // WARNING: AFTER DEPLOY MUST UNCOMMENT THIS
+        //[Authorize(Roles = "Admin")]
         [HttpPut("RoleAssign/{userName}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

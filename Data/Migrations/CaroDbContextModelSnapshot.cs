@@ -155,6 +155,24 @@ namespace Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("4ebcc5bb-b4d4-4b26-9d13-861aed7a3d89"),
+                            ConcurrencyStamp = "61f8c6df-5ac9-4aa7-ad8a-1b1843fdceb6",
+                            Description = "Admin Role",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("18d094e9-e04e-4842-8db6-0064c0d232e7"),
+                            ConcurrencyStamp = "8c796724-b72f-43b9-a273-d81019fef819",
+                            Description = "Manager Role",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        });
                 });
 
             modelBuilder.Entity("Model.DbModels.AppUser", b =>
