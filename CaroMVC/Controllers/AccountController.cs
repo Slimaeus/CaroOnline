@@ -110,6 +110,7 @@ namespace CaroMVC.Controllers
             {
                 AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(10)
             };
+            // HttpContext.Request.Headers.Authorization = $"Bearer {token}";
             _memoryCache.Set("Token", token, options);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
@@ -176,6 +177,7 @@ namespace CaroMVC.Controllers
             {
                 AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(10)
             };
+            // HttpContext.Request.Headers.Authorization = $"Bearer {token}";
             _memoryCache.Set("Token", token, options);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -45,7 +46,6 @@ namespace Service.APIClientServices
                 return new ApiErrorResult<string>($"Cannot connect to server because {ex.Message}");
             }
         }
-
         public async Task<ApiResult<bool>> Delete(DeleteUserRequest deleteUserRequest)
         {
             try

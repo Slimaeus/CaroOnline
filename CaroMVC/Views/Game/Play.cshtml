@@ -57,12 +57,17 @@
             game.moves.push(new Move(row,  col, userName));
             const updateButtons = document.querySelectorAll(`button[row = "${row}"][col = "${col}"]`);
             updateButtons.forEach((button) => {
+                // Set if this button clicked
+                button.setAttribute("clicked", "true")
                 button.className = button.className.replace("outline-dark", color);
             })
         });
         // Catch Enable Board Event
         connection.on("enableBoard", () => {
-            buttonList.forEach(button => button.disabled = false);
+            buttonList.forEach(button => {
+                if (button.getAttribute("clicked") !== "true")
+                    button.disabled = false
+            });
         });
         // Catch Game End Event
         connection.on("gameEnd", (winner) => {
@@ -80,11 +85,13 @@
                 const roomName = userList.getAttribute("room");
                 const userName = "@User.Identity?.Name";
                 const move = new Move(row,  col, userName);
-                // if (game.isWinner(move))
-                // {
-                //     connection.invoke("GameEnd", roomName, move.userName);
-                // }
-                game.moves.push(move);
+                const line = game.getHorLine(move);
+                if (game.isWinner(move))
+                {
+                    connection.invoke("GameEnd", roomName, move.userName);
+                }
+                console.log("This is current line")
+                console.table(line)
                 // button.className = button.className.replace("outline-dark", "success");
                 buttonList.forEach(button => button.disabled = true);
                 connection.invoke("PlaceStone", roomName, Number(row), Number(col));
