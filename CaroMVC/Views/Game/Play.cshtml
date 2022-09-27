@@ -1,5 +1,4 @@
-﻿@using Model.GameModels
-@*
+﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -10,13 +9,10 @@
         opacity: unset;
         /*background-color: red;*/
     }
-    .game-button.btn-outline-success {
-        border-radius: 50%;
-    }
-</style>
+    </style>
 @model Model.ActionModels.PlayModel
 <div class="container text-center">
-    <h1>@Model.Room!.RoomName</h1>
+    <h1 id="room-name">@Model.Room!.RoomName</h1>
     <div class="row">
         @foreach (var user in Model.Room!.GameUsers)
         {
@@ -41,8 +37,10 @@
 </div>
 @section Scripts {
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
-    <script>
-        const moves = [];
+    <script src="~/js/classes/Game.js"></script>
+    <script src="~/js/classes/Move.js"></script>
+    <script> 
+        const game = new Game();
         const userList = document.getElementById("user-list");
         const buttonList = document.querySelectorAll(".game-button");
         const board = document.getElementById("board");
@@ -54,17 +52,22 @@
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)
             .build();
-        connection.on("updateBoard", (userName, row, col) => {
-            buttonList.forEach(button => button.disabled = false);
-            moves.push({
-                userName,
-                row,
-                col
-            });
+        // Catch Update Board Event
+        connection.on("updateBoard", (userName, row, col, color) => {
+            game.moves.push(new Move(row,  col, userName));
             const updateButtons = document.querySelectorAll(`button[row = "${row}"][col = "${col}"]`);
             updateButtons.forEach((button) => {
-                button.className = button.className.replace("outline-dark", "danger");
+                button.className = button.className.replace("outline-dark", color);
             })
+        });
+        // Catch Enable Board Event
+        connection.on("enableBoard", () => {
+            buttonList.forEach(button => button.disabled = false);
+        });
+        // Catch Game End Event
+        connection.on("gameEnd", (winner) => {
+            const roomNameNode = document.getElementById("room-name");
+            roomNameNode.innerText = `The Winner is ${winner}`;
         });
         connection.start()
             .then(() => console.log("Connected!"))
@@ -75,12 +78,14 @@
                 const row = button.getAttribute("row");
                 const col = button.getAttribute("col");
                 const roomName = userList.getAttribute("room");
-                moves.push({
-                    userName: "@User.Identity?.Name",
-                    row,
-                    col
-                });
-                button.className = button.className.replace("outline-dark", "success");
+                const userName = "@User.Identity?.Name";
+                const move = new Move(row,  col, userName);
+                // if (game.isWinner(move))
+                // {
+                //     connection.invoke("GameEnd", roomName, move.userName);
+                // }
+                game.moves.push(move);
+                // button.className = button.className.replace("outline-dark", "success");
                 buttonList.forEach(button => button.disabled = true);
                 connection.invoke("PlaceStone", roomName, Number(row), Number(col));
             });

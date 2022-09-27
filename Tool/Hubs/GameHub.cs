@@ -2,10 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Model.GameModels;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Model.DbModels;
-using Service.APIClientServices;
 
 namespace Utility.Hubs
 {
@@ -55,17 +52,14 @@ namespace Utility.Hubs
                 await _context.Rooms.AddAsync(room);
                 await _context.SaveChangesAsync();
             }
-            if (room != null)
-            {
-                var user = new GameUser() { UserName = Context.User.Identity!.Name! };
-                _context.GameUsers.Attach(user);
-                room.GameUsers.Add(user);
-                await _context.SaveChangesAsync();
+            var user = new GameUser() { UserName = Context.User.Identity!.Name! };
+            _context.GameUsers.Attach(user);
+            room.GameUsers.Add(user);
+            await _context.SaveChangesAsync();
 
-                await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 
-                await Clients.All.SendAsync("addRoom", roomName);
-            }
+            await Clients.All.SendAsync("addRoom", roomName);
         }
         public async Task RoomJoin(string roomName)
         {
@@ -77,17 +71,14 @@ namespace Utility.Hubs
                 await _context.Rooms.AddAsync(room);
                 await _context.SaveChangesAsync();
             }
-            if (room != null)
-            {
-                var user = new GameUser() { UserName = Context.User.Identity!.Name! };
-                _context.GameUsers.Attach(user);
-                room.GameUsers.Add(user);
-                await _context.SaveChangesAsync();
+            var user = new GameUser() { UserName = Context.User.Identity!.Name! };
+            _context.GameUsers.Attach(user);
+            room.GameUsers.Add(user);
+            await _context.SaveChangesAsync();
 
-                await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 
-                await Clients.All.SendAsync("addRoom", roomName);
-            }
+            await Clients.All.SendAsync("addRoom", roomName);
         }
         public async Task RoomLeave(string roomName)
         {
@@ -112,7 +103,27 @@ namespace Utility.Hubs
         public async Task PlaceStone(string roomName, int row, int col)
         {
             var userName = Context.User.Identity?.Name;
-            await Clients.OthersInGroup(roomName).SendAsync("updateBoard", userName, row, col);
+            var room  = await _context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(r => r.RoomName == roomName);
+            if (room == null)
+                return;
+            var players = room.GameUsers.ToList();
+            var index = players.FindIndex(p => p.UserName == userName);
+            Console.WriteLine(index);
+            var colorList = new List<string>
+            {
+                "success",
+                "danger",
+                "primary"
+            };
+            var color = (index != -1 && index < colorList.Count) ? colorList[index] : "outline-dark";
+            Console.WriteLine(color);
+            await Clients.Group(roomName).SendAsync("updateBoard", userName, row, col, color);
+            await Clients.OthersInGroup(roomName).SendAsync("enableBoard");
+        }
+
+        public async Task GameEnd(string roomName, string winner)
+        {
+            await Clients.Group(roomName).SendAsync("gameEnd", winner);
         }
     }
 }

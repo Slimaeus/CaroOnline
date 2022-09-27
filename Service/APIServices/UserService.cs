@@ -6,7 +6,6 @@ using Model.DbModels;
 using Model.RequestModels;
 using Model.ResponseModels;
 using Model.ResultModels;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace Service.APIServices
@@ -33,7 +32,7 @@ namespace Service.APIServices
             var result = await _userManager.CheckPasswordAsync(user, request.Password);
             if (!result)
             {
-                return new ApiErrorResult<string>("Username or Password Uncorrect!");
+                return new ApiErrorResult<string>("Username or Password Incorrect!");
             }
             var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)
@@ -98,13 +97,13 @@ namespace Service.APIServices
             int take = 0,
             int skip = 0)
         {
-            IQueryable<AppUser> query = _userManager.Users.AsQueryable<AppUser>();
+            IQueryable<AppUser> query = _userManager.Users.AsQueryable();
             IList<AppUser> userList;
             if (filter != null)
             {
                 query = query.Where(filter);
             }
-            foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            foreach (var includeProperty in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {
                 query = query.Include(includeProperty);
             }
@@ -130,10 +129,10 @@ namespace Service.APIServices
 
         public async Task<ApiResult<PagedList<UserResponse>>> GetUserPagingList(PagingRequest request)
         {
-            const int DEFAULT_PAGE_SIZE = 10;
-            const int DEFAULT_PAGE_INDEX = 1;
-            int pageSize = DEFAULT_PAGE_SIZE;
-            int pageIndex = DEFAULT_PAGE_INDEX;
+            const int defaultPageSize = 10;
+            const int defaultPageIndex = 1;
+            var pageSize = defaultPageSize;
+            var pageIndex = defaultPageIndex;
             if (request.PageSize > 0)
             {
                 pageSize = request.PageSize;
@@ -142,7 +141,7 @@ namespace Service.APIServices
             {
                 pageIndex = request.PageIndex;
             }
-            int totalUser = await _userManager.Users.CountAsync();
+            var totalUser = await _userManager.Users.CountAsync();
             var userList = await GetUserList(
                 skip: pageSize * (pageIndex - 1),
                 take: pageSize
@@ -217,7 +216,7 @@ namespace Service.APIServices
             {
                 return new ApiErrorResult<bool>("Email Already Exists");
             }
-            if (userName != null && await _userManager.Users.AnyAsync(x => x.UserName == userName))
+            if (string.IsNullOrEmpty(userName) && await _userManager.Users.AnyAsync(x => x.UserName == userName))
             {
                 return new ApiErrorResult<bool>("UserName Already Exists");
             }

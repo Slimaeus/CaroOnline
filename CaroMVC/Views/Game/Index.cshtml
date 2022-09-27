@@ -67,7 +67,6 @@
             .catch(console.error);
 
         createRoomButton.addEventListener("click", event => {
-            event.preventDefault();
             connection.invoke("RoomCreate");
         });
 
