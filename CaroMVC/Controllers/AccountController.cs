@@ -150,7 +150,7 @@ namespace CaroMVC.Controllers
             }
             if (!response.Succeeded)
             {
-                ModelState.AddModelError("", "Register Failure");
+                ModelState.AddModelError("", response.Message);
                 return View(model);
             }
             // Login 
