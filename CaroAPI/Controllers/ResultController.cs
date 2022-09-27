@@ -7,7 +7,7 @@ using Service.APIServices;
 
 namespace CaroAPI.Controllers
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ResultController : ControllerBase

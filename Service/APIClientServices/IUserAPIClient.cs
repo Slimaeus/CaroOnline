@@ -18,13 +18,6 @@ namespace Service.APIClientServices
         Task<ApiResult<bool>> Register(RegisterRequest request);
         Task<ApiResult<bool>> Update(string userName, UpdateUserRequest request);
         Task<ApiResult<PagedList<UserResponse>>> GetPagedList(PagingRequest pagingRequest);
-        Task<ApiResult<IEnumerable<UserResponse>>> GetUserList(
-            Expression<Func<AppUser, bool>>? filter = null,
-            Func<IQueryable<AppUser>, IOrderedQueryable<AppUser>>? orderBy = null,
-            string includeProperties = "",
-            int take = 0,
-            int skip = 0
-        );
         Task<ApiResult<UserResponse>> GetByUserName(string userName);
         Task<ApiResult<bool>> Delete(DeleteUserRequest deleteUserRequest);
         Task<ApiResult<bool>> RoleAssign(string userName, RoleAssignRequest request);
