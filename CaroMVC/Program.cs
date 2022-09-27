@@ -18,11 +18,11 @@ namespace CaroMVC
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<GameDbContext>(options =>
             {
-                options.UseSqlite(builder.Configuration.GetConnectionString(SystemConstants.AppSettings.GAME_CONNECTION_STRING_KEY));
+                options.UseSqlite(builder.Configuration.GetConnectionString(SystemConstants.AppSettings.GameConnectionStringKey));
             });
             builder.Services.AddHttpClient("CaroAPI", httpClient =>
             {
-                httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>(SystemConstants.AppSettings.BASE_ADDRESS));
+                httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>(SystemConstants.AppSettings.BaseAddress));
             });
 
             builder.Services.AddSingleton<IJwtManager, JwtManager>();

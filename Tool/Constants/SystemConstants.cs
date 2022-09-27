@@ -2,12 +2,12 @@ namespace Utility.Constants;
 
 public class SystemConstants
 {
-    public const string CONNECTION_STRING_KEY = "CaroDatabase1";
+    public const string ConnectionStringKey = "CaroDatabase1";
     public class AppSettings
     {
-        public const string TOKEN = "Token";
-        public const string BASE_ADDRESS = "CaroAPIBaseUrl1";
-        public const string GAME_CONNECTION_STRING_KEY = "GameSqliteDb";
+        public const string Token = "Token";
+        public const string BaseAddress = "CaroAPIBaseUrl1";
+        public const string GameConnectionStringKey = "GameSqliteDb";
     }
 
 }

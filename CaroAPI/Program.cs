@@ -65,7 +65,7 @@ namespace CaroAPI
             });
             builder.Services.AddDbContextFactory<CaroDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.CONNECTION_STRING_KEY));
+                options.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.ConnectionStringKey));
             });
             builder.Services.AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<CaroDbContext>()
