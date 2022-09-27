@@ -30,9 +30,9 @@ namespace CaroMVC.Controllers
         {
             var room = await _context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(room => room.RoomName == roomName);
             if (room == null)
-                return RedirectToAction("Index", "Home");
-            if (room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Privacy", "Home");
+            if (!room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
+                return RedirectToAction("Index", "Game");
             var board = new Board { RowCount = 30, ColumnCount = 30};
             var model = new PlayModel { Room = room, Board = board };
             return View(model);
