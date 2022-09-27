@@ -3,6 +3,7 @@ using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Service.APIClientServices;
+using Utility.Constants;
 using Utility.Helpers;
 using Utility.Hubs;
 
@@ -17,11 +18,11 @@ namespace CaroMVC
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<GameDbContext>(options =>
             {
-                options.UseSqlite(builder.Configuration.GetConnectionString("GameSqliteDb"));
+                options.UseSqlite(builder.Configuration.GetConnectionString(SystemConstants.AppSettings.GAME_CONNECTION_STRING_KEY));
             });
             builder.Services.AddHttpClient("CaroAPI", httpClient =>
             {
-                httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("CaroAPIBaseUrl1"));
+                httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>(SystemConstants.AppSettings.BASE_ADDRESS));
             });
 
             builder.Services.AddSingleton<IJwtManager, JwtManager>();

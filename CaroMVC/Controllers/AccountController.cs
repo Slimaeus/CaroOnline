@@ -11,7 +11,6 @@ using Service.APIClientServices;
 
 namespace CaroMVC.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private readonly IUserApiClient _userApiClient;

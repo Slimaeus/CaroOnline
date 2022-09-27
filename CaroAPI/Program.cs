@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Model.DbModels;
 using Service.APIServices;
 using System.Text;
+using Utility.Constants;
 using Utility.Helpers;
 
 namespace CaroAPI
@@ -64,7 +65,7 @@ namespace CaroAPI
             });
             builder.Services.AddDbContextFactory<CaroDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("CaroDatabase1"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.CONNECTION_STRING_KEY));
             });
             builder.Services.AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<CaroDbContext>()
