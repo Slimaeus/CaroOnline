@@ -22,7 +22,8 @@
         }
     </div>
 </div>
-<div class="container" id="board">
+
+<div class="container position-relative" id="board">
     <div class="row" id="user-list" room="@Model.Room.RoomName">
     </div>
     @for (int row = 0; row < Model.Board.RowCount; row++)
@@ -34,6 +35,15 @@
             }
         </div>
     }
+    <div class="card position-absolute" style="bottom: 50%; right: 50%; visibility: hidden" id="result-card">
+        <div class="card-header">
+            Result
+        </div>
+        <div class="card-body">
+            <div class="card-title" id="result-text"></div>
+            <a asp-action="Index" class="btn btn-info">Return to Lobby</a>
+        </div>
+    </div>
 </div>
 @section Scripts {
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
@@ -70,9 +80,14 @@
             });
         });
         // Catch Game End Event
-        connection.on("gameEnd", (winner) => {
+        connection.on("gameEnd", (winnerUserName, winnerInGameName) => {
+            buttonList.forEach(button => button.disabled = true);
             const roomNameNode = document.getElementById("room-name");
-            roomNameNode.innerText = `The Winner is ${winner}`;
+            const resultCard = document.getElementById("result-card");
+            const resultText = document.getElementById("result-text");
+            roomNameNode.innerText = `The Winner is ${winnerInGameName}`;
+            resultText.innerText = `The Winner is ${winnerInGameName}`;
+            resultCard.style.visibility = "visible";
         });
         connection.start()
             .then(() => console.log("Connected!"))

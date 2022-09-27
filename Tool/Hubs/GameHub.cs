@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Model.GameModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
+using Service.APIClientServices;
 
 namespace Utility.Hubs
 {
@@ -10,10 +12,12 @@ namespace Utility.Hubs
     public class GameHub : Hub
     {
         private readonly GameDbContext _context;
+        private readonly IUserApiClient _userApiClient;
 
-        public GameHub(GameDbContext context)
+        public GameHub(GameDbContext context, IUserApiClient userApiClient)
         {
             _context = context;
+            _userApiClient = userApiClient;
         }
         public override async Task OnConnectedAsync()
         {
@@ -121,9 +125,17 @@ namespace Utility.Hubs
             await Clients.OthersInGroup(roomName).SendAsync("enableBoard");
         }
 
-        public async Task GameEnd(string roomName, string winner)
+        public async Task GameEnd(string roomName, string winnerUserName)
         {
-            await Clients.Group(roomName).SendAsync("gameEnd", winner);
+            if (string.IsNullOrEmpty(winnerUserName))
+                return;
+            var winner = await _userApiClient.GetByUserName(winnerUserName);
+            if (winner == null) return;
+            if (!winner.Succeeded) return;
+            var winnerInGameName = winner.ResultObject.InGameName;
+            Console.WriteLine(winnerUserName);
+            Console.WriteLine(winnerInGameName);
+            await Clients.Group(roomName).SendAsync("gameEnd", winnerUserName, winnerInGameName);
         }
     }
 }

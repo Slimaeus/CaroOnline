@@ -16,18 +16,15 @@ namespace CaroMVC.Controllers
         private readonly IUserApiClient _userApiClient;
         private readonly IJwtManager _jWtManager;
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _memoryCache;
 
         public AccountController(
             IUserApiClient userApiClient,
             IJwtManager jWtManager,
-            IMapper mapper,
-            IMemoryCache memoryCache)
+            IMapper mapper)
         {
             _userApiClient = userApiClient;
             _jWtManager = jWtManager;
             _mapper = mapper;
-            _memoryCache = memoryCache;
         }
         public IActionResult Index()
         {
@@ -75,12 +72,9 @@ namespace CaroMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
-
-            Console.WriteLine(loginModel.ReturnUrl);
             if (!ModelState.IsValid)
             {
                 ViewData["Error"] = "Invalid Input!";
-
                 return View(loginModel);
             }
             var response = await _userApiClient.Authenticate(loginModel.Input);
@@ -106,12 +100,7 @@ namespace CaroMVC.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
-            var options = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(10)
-            };
-            // HttpContext.Request.Headers.Authorization = $"Bearer {token}";
-            _memoryCache.Set("Token", token, options);
+            HttpContext.Session.SetString("Token", token);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 userPrincipal,
@@ -173,12 +162,7 @@ namespace CaroMVC.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
-            var options = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(10)
-            };
-            // HttpContext.Request.Headers.Authorization = $"Bearer {token}";
-            _memoryCache.Set("Token", token, options);
+            HttpContext.Session.SetString("Token", token);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 userPrincipal,

@@ -1,34 +1,26 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
-using Model.DbModels;
+﻿using Model.DbModels;
 using Model.RequestModels;
 using Model.ResponseModels;
 using Model.ResultModels;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Service.APIClientServices
 {
     public class UserApiClient : IUserApiClient
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IMemoryCache _memoryCache;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UserApiClient(
             IHttpClientFactory httpClientFactory,
-            IMemoryCache memoryCache)
+            IHttpContextAccessor httpContextAccessor)
         {
             _httpClientFactory = httpClientFactory;
-            _memoryCache = memoryCache;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<ApiResult<string>> Authenticate(LoginRequest request)
         {
@@ -51,7 +43,7 @@ namespace Service.APIClientServices
             try
             {
                 var client = _httpClientFactory.CreateClient("CaroAPI");
-                var token = _memoryCache.Get<String>("Token");
+                var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
                 if (token == null)
                     return new ApiErrorResult<bool>("Unauthorized");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -73,7 +65,7 @@ namespace Service.APIClientServices
             try
             {
                 var client = _httpClientFactory.CreateClient("CaroAPI");
-                var token = _memoryCache.Get<String>("Token");
+                var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
                 if (token == null)
                     return new ApiErrorResult<UserResponse>("Unauthorized");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -92,7 +84,7 @@ namespace Service.APIClientServices
             try
             {
                 var client = _httpClientFactory.CreateClient("CaroAPI");
-                var token = _memoryCache.Get<String>("Token");
+                var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
                 // What if token expires
                 if (token == null)
                     return new ApiErrorResult<PagedList<UserResponse>>("Unauthorized");

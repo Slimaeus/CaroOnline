@@ -1,6 +1,7 @@
 ﻿using CaroMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CaroMVC.Controllers
 {
