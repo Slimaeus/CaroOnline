@@ -1,5 +1,15 @@
 # Caro Online Game
 
+> This is a Caro Online game
+
+## Which technologies do we use?
+
+- [ASP.NET Core API](https://dotnet.microsoft.com/en-us/apps/aspnet/apis)
+- [ASP.NET Core MVC](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps)
+- [SignalR](https://dotnet.microsoft.com/en-us/apps/aspnet/signalr)
+- [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/)
+- [Bootstrap](https://getbootstrap.com/)
+- ...
 
 ## appsettings.json in CaroAPI
 ```json
@@ -49,3 +59,10 @@
   }
 }
 ```
+## Who we are?
+
+- [Nguyen Hong Thai]()
+- [Truong Thuc Van]()
+- [Nguyen Quoc Kha]()
+- [Bui Thanh Dat]()
+- [Tran Huu Duc]()
