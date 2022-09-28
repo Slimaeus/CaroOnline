@@ -31,8 +31,6 @@ public class UserService : IUserService
         if (!result)
             return new ApiErrorResult<string>("Username or Password Incorrect!");
         var roles = await _userManager.GetRolesAsync(user);
-        foreach (var role in roles)
-            Console.WriteLine(role);
         var token = _jwtManager.Authenticate(user, roles);
         return new ApiSuccessResult<string>(token);
     }

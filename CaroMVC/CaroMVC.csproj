@@ -37,4 +37,8 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Home\Components\SignComponent\Default.cshtml" />
+  </ItemGroup>
+
 </Project>

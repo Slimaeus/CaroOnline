@@ -4,8 +4,11 @@ using Data.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Model.ActionModels;
+using Model.DbModels;
+using Model.ResponseModels;
 using Service.APIClientServices;
 
 namespace CaroMVC.Controllers;
@@ -173,9 +176,9 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    public IActionResult ForgotPassword()
+    public async Task<IActionResult> ForgotPassword()
     {
-        throw new NotImplementedException();
+        return View();
     }
 
     public IActionResult ResendEmailConfirmation()

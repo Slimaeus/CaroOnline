@@ -1,33 +1,7 @@
-﻿@using Model.ResponseModels
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
-    const int colNum = 25;
-    int itemHeight = colNum * 2;
 }
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
-
-@foreach (int row in Enumerable.Range(1, 20))
-{
-    <div class="row position-relative">
-        @foreach (var col in Enumerable.Range(1, colNum))
-        {
-            <a asp-action="SquareClick" asp-route-col="@col" asp-route-row="@row" data-ajax="true" data-ajax-update="#square-@row-@col" class="col border-dark btn d-flex btn-outline-primary position-relative square" style="height: @{
-        @itemHeight
-}px" col="@col" row="@row" id="square-@row-@col"></a>
-        }
-    </div>
-}
-<script>
-    var squares = document.querySelectorAll(".square")
-    squares.forEach((e) => {
-        e.addEventListener("click", () => {
-            let col = Number(e.getAttribute("col"))
-            let row = Number(e.getAttribute("row"))
-            var element1 = document.getElementById(`square-${row}-${col}`)
-            //element1.classList.add("bg-dark")
-        })
-    })
-</script>

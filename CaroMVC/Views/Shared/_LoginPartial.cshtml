@@ -1,9 +1,6 @@
-﻿@*@using Microsoft.AspNetCore.Identity
-@using Model.DbModels
-@inject SignInManager<User> SignInManager
-@inject UserManager<User> UserManager*@
+﻿
 <ul class="navbar-nav">
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity!.IsAuthenticated)
     {
         <li class="nav-item">
             <a id="manage" class="nav-link text-dark" asp-controller="Account" asp-action="Profile" title="Manage">Hello @User.Identity.Name !</a>

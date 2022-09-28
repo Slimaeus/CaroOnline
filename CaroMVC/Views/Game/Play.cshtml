@@ -7,7 +7,6 @@
 <style>
     .game-button:disabled {
         opacity: unset;
-        /*background-color: red;*/
     }
     </style>
 @model Model.ActionModels.PlayModel
@@ -100,19 +99,13 @@
                 const roomName = userList.getAttribute("room");
                 const userName = "@User.Identity?.Name";
                 const move = new Move(row,  col, userName);
-                const line = game.getHorLine(move);
                 if (game.isWinner(move))
                 {
                     connection.invoke("GameEnd", roomName, move.userName);
                 }
-                console.log("This is current line")
-                console.table(line)
-                // button.className = button.className.replace("outline-dark", "success");
                 buttonList.forEach(button => button.disabled = true);
                 connection.invoke("PlaceStone", roomName, Number(row), Number(col));
             });
-            
-            
         });
     </script>
 }

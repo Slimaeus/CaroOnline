@@ -3,8 +3,10 @@ using Data;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Model.DbModels;
 using Service.APIClientServices;
 using Utility.Constants;
 using Utility.Helpers;
@@ -27,7 +29,7 @@ namespace CaroMVC
             {
                 httpClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>(SystemConstants.AppSettings.BaseAddress));
             });
-
+            
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IJwtManager, JwtManager>();
             builder.Services.AddScoped<IUserApiClient, UserApiClient>();

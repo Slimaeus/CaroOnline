@@ -12,16 +12,4 @@ class Move {
     isSameLine(move) {
         return this.userName === move.userName;
     }
-    getUpRow() {
-        return this.row - 1 
-    }
-    getDownRow() {
-        return this.row + 1
-    }
-    getLeftCol() {
-        return this.col - 1
-    }
-    getRightCol() {
-        return this.col + 1
-    }
 }

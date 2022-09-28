@@ -21,15 +21,6 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult SquareClick(int row, int col)
-    {
-        return ViewComponent("SignComponent", new
-        {
-            row,
-            col
-        });
-    }
-
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
