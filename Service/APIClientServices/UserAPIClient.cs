@@ -121,7 +121,7 @@ public class UserApiClient : IUserApiClient
         return JsonConvert.DeserializeObject<ApiErrorResult<TResult>>(await response.Content.ReadAsStringAsync())!;
     }
 
-    public async Task<ApiResult<bool>> RoleAssign(string userName, RoleAssignRequest request)
+    public async Task<ApiResult<bool>> RoleAssign(RoleAssignRequest request)
     {
         try
         {
@@ -129,7 +129,7 @@ public class UserApiClient : IUserApiClient
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync($"user/role-assign/{userName}", httpContent);
+            var response = await client.PostAsync($"user/role-assign", httpContent);
             return await ResultReturn<bool>(response);
         }
         catch (Exception ex)
@@ -138,7 +138,7 @@ public class UserApiClient : IUserApiClient
         }
     }
 
-    public async Task<ApiResult<bool>> Update(string userName, UpdateUserRequest request)
+    public async Task<ApiResult<bool>> Update(UpdateUserRequest request)
     {
         try
         {
@@ -146,7 +146,7 @@ public class UserApiClient : IUserApiClient
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync($"user/update/{userName}", httpContent);
+            var response = await client.PostAsync($"user/update", httpContent);
             return await ResultReturn<bool>(response);
         }
         catch (Exception ex)

@@ -164,7 +164,7 @@ public class UserService : IUserService
         return new ApiErrorResult<bool>(errorMessages); 
     }
 
-    public async Task<ApiResult<string>> SendConfirmCode(SendConfirmRequest request)
+    public async Task<ApiResult<string>> SendConfirmCode(GetConfirmCodeRequest request)
     {
         if (string.IsNullOrEmpty(request.Email))
             return new ApiErrorResult<string>("Email cannot Null or Empty!");

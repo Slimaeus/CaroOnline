@@ -139,13 +139,32 @@ public class UserController : ControllerBase
             return Ok(result);
         return BadRequest(result);
     }
-    
+    /// <summary>
+    /// Get Email Confirm Code
+    /// </summary>
+    /// <param name="request">Get Confirm Code</param>
+    /// <returns>Confirm Code</returns>
     [HttpPost("get-confirm-code")]
-    public async Task<IActionResult> GetConfirmCode(SendConfirmRequest request)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetConfirmCode(GetConfirmCodeRequest request)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         var result = await _userService.SendConfirmCode(request);
+        if (result.Succeeded)
+            return Ok(result);
+        return BadRequest(result);
+    }
+
+    [HttpPost("confirm-email")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        var result = await _userService.ConfirmEmail(request);
         if (result.Succeeded)
             return Ok(result);
         return BadRequest(result);

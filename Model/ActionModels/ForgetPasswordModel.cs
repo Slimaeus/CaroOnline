@@ -4,5 +4,5 @@ namespace Model.ActionModels;
 
 public class ForgetPasswordModel
 {
-    public SendConfirmRequest Input { get; set; }
+    public GetConfirmCodeRequest Input { get; set; }
 }

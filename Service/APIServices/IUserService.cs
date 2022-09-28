@@ -11,7 +11,7 @@ public interface IUserService
     Task<ApiResult<string>> Authenticate(LoginRequest request);
     Task<ApiResult<bool>> Register(RegisterRequest request);
     Task<ApiResult<bool>> ChangePassword(ChangePasswordRequest request);
-    Task<ApiResult<string>> SendConfirmCode(SendConfirmRequest request);
+    Task<ApiResult<string>> SendConfirmCode(GetConfirmCodeRequest request);
     Task<ApiResult<bool>> ConfirmEmail(ConfirmEmailRequest request);
     Task<ApiResult<bool>> Update(UpdateUserRequest request);
     Task<ApiResult<UserResponse>> GetById(Guid id);
