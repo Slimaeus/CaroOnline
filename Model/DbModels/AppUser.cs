@@ -5,7 +5,7 @@ namespace Model.DbModels;
 public class AppUser : IdentityUser<Guid>
 {
     [PersonalData]
-    public string InGameName { get; set; } = string.Empty;
+    public string? InGameName { get; set; } = string.Empty;
     [PersonalData]
     public int Level { get; set; } = 1;
     [PersonalData]
