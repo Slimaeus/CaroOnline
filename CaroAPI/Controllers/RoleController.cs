@@ -22,10 +22,10 @@ namespace CaroAPI.Controllers
         /// </summary>
         /// <returns>Role List</returns>
         [AllowAnonymous]
-        [HttpGet("GetRoles")]
+        [HttpGet("get-list")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetRoles()
+        public async Task<IActionResult> GetList()
         {
             var result = await _roleService.GetList();
             if (result.Succeeded)
@@ -37,7 +37,7 @@ namespace CaroAPI.Controllers
         /// </summary>
         /// <param name="roleRequest">Role Create Model</param>
         /// <returns>Create Status</returns>
-        [HttpPost("Create")]
+        [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] RoleRequest roleRequest)

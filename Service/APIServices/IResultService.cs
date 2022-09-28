@@ -9,14 +9,13 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.APIServices
+namespace Service.APIServices;
+
+public interface IResultService
 {
-    public interface IResultService
-    {
-        Task<ApiResult<string>> AddResult (ResultRequest resultRequest);
-        Task<ApiResult<string>> DeleteResultByUserName (string userName, DeleteResultRequest resultRequest);
-        Task<ApiResult<string>> DeleteResultById (Guid resultId, DeleteResultRequest resultRequest);
-        ApiResult<IEnumerable<ResultResponse>> GetResults(PagingRequest pagingRequest);
-        Task<ApiResult<IEnumerable<ResultResponse>>> GetResultsByUserName(string userName, PagingRequest pagingRequest);
-    }
+    Task<ApiResult<string>> AddResult (ResultRequest resultRequest);
+    Task<ApiResult<string>> DeleteResultByUserName (string userName, DeleteResultRequest resultRequest);
+    Task<ApiResult<string>> DeleteResultById (Guid resultId, DeleteResultRequest resultRequest);
+    ApiResult<IEnumerable<ResultResponse>> GetResults(PagingRequest pagingRequest);
+    Task<ApiResult<IEnumerable<ResultResponse>>> GetResultsByUserName(string userName, PagingRequest pagingRequest);
 }

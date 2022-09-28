@@ -1,17 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Model.DbModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Data.Repositories
+namespace Data.Repositories;
+
+public class UserResultRepository : GenericRepository<UserResult>, IUserResultRepository
 {
-    public class UserResultRepository : GenericRepository<UserResult>, IUserResultRepository
+    public UserResultRepository(DbContext context) : base(context)
     {
-        public UserResultRepository(CaroDbContext context) : base(context)
-        {
-        }
     }
 }

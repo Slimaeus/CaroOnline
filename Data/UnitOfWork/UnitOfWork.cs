@@ -1,30 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Data.UnitOfWork
+namespace Data.UnitOfWork;
+
+public class UnitOfWork : IUnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    public CaroDbContext DbContext { get; set; }
+    public UnitOfWork(IDbContextFactory<CaroDbContext> dbContextFactory)
     {
-        public CaroDbContext DbContext { get; set; }
-        public UnitOfWork(IDbContextFactory<CaroDbContext> dbContextFactory)
-        {
-            DbContext = dbContextFactory.CreateDbContext();
-        }
+        DbContext = dbContextFactory.CreateDbContext();
+    }
 
-        public int Commit()
-        {
-            return DbContext.SaveChanges();
-        }
+    public int Commit()
+    {
+        return DbContext.SaveChanges();
+    }
 
-        public IDbContextTransaction BeginTransaction()
-        {
-            return DbContext.Database.BeginTransaction();
-        }
+    public IDbContextTransaction BeginTransaction()
+    {
+        return DbContext.Database.BeginTransaction();
     }
 }

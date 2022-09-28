@@ -1,17 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Data.UnitOfWork
+namespace Data.UnitOfWork;
+
+public interface IUnitOfWork
 {
-    public interface IUnitOfWork
-    {
-        CaroDbContext DbContext { get; set; }
-        int Commit();
-        IDbContextTransaction BeginTransaction();
-    }
+    CaroDbContext DbContext { get; set; }
+    int Commit();
+    IDbContextTransaction BeginTransaction();
 }

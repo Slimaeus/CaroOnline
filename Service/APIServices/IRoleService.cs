@@ -7,11 +7,10 @@ using Model.RequestModels;
 using Model.ResponseModels;
 using Model.ResultModels;
 
-namespace Service.APIServices
+namespace Service.APIServices;
+
+public interface IRoleService
 {
-    public interface IRoleService
-    {
-        public Task<ApiResult<IEnumerable<RoleResponse>>> GetList();
-        public Task<ApiResult<bool>> Create(RoleRequest roleResponse);
-    }
+    public Task<ApiResult<IEnumerable<RoleResponse>>> GetList();
+    public Task<ApiResult<bool>> Create(RoleRequest roleResponse);
 }

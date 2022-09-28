@@ -6,18 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.DbModels
+namespace Model.DbModels;
+
+public class Result
 {
-    public class Result
-    {
-        [Key]
-        public Guid Id { get; set; }
+    [Key]
+    public Guid Id { get; set; }
 
-        public DateTime StartedTime { get; set; } = default!;
-        public DateTime EndedTime { get; set; } = default!;
+    public DateTime StartedTime { get; set; } = default!;
+    public DateTime EndedTime { get; set; } = default!;
 
-        public int LimitTime { get; set; }
+    public int LimitTime { get; set; }
 
-        public ICollection<UserResult> UserResults { get; set; } = default!;
-    }
+    public ICollection<UserResult> UserResults { get; set; } = default!;
 }

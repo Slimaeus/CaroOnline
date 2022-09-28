@@ -7,11 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.APIClientServices
+namespace Service.APIClientServices;
+
+public interface IResultApiClient
 {
-    public interface IResultApiClient
-    {
-        Task<ApiResult<bool>> Create(ResultRequest request);
-        Task<ApiResult<PagedList<ResultResponse>>> GetPagedList(PagingRequest request);
-    }
+    Task<ApiResult<bool>> Create(ResultRequest request);
+    Task<ApiResult<PagedList<ResultResponse>>> GetPagedList(PagingRequest request);
 }
