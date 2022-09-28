@@ -1,11 +1,15 @@
-﻿using AutoMapper;
+﻿using System.Text;
+using System.Text.Encodings.Web;
+using AutoMapper;
 using CaroMVC.Models;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Model.ActionModels;
 using Model.DbModels;
 using Model.ResponseModels;
@@ -18,15 +22,18 @@ public class AccountController : Controller
     private readonly IUserApiClient _userApiClient;
     private readonly IJwtManager _jWtManager;
     private readonly IMapper _mapper;
+    private readonly IEmailSender _emailSender;
 
     public AccountController(
         IUserApiClient userApiClient,
         IJwtManager jWtManager,
-        IMapper mapper)
+        IMapper mapper,
+        IEmailSender emailSender)
     {
         _userApiClient = userApiClient;
         _jWtManager = jWtManager;
         _mapper = mapper;
+        _emailSender = emailSender;
     }
     public IActionResult Index()
     {
@@ -183,10 +190,17 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> ForgotPassword(ForgetPasswordModel model)
     {
-        return View();
+        if (!ModelState.IsValid)
+            return View(model);
+        // Add Send 
+        // await _emailSender.SendEmailAsync(
+        //     Input.Email,
+        //     "Reset Password",
+        //     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+        return Content("NO CONTENT");
     }
-    public IActionResult ResendEmailConfirmation()
+    public IActionResult EmailConfirmation()
     {
-        throw new NotImplementedException();
+        return View();
     }
 }
