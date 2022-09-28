@@ -7,6 +7,8 @@ using Model.RequestModels;
 using Model.ResponseModels;
 using Model.ResultModels;
 using System.Linq.Expressions;
+using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Service.APIServices;
 
@@ -133,8 +135,8 @@ public class UserService : IUserService
         var findUserName = await _userManager.FindByNameAsync(request.UserName);
         var findEmail = await _userManager.FindByEmailAsync(request.Email);
 
-        bool isUserNameExists = findUserName != null;
-        bool isEmailExists = findEmail != null;
+        var isUserNameExists = findUserName != null;
+        var isEmailExists = findEmail != null;
 
         if (isUserNameExists)
             return new ApiErrorResult<bool>("This Username Already Used!");
@@ -150,9 +152,9 @@ public class UserService : IUserService
         return new ApiErrorResult<bool>("Register Fail!");
     }
 
-    public async Task<ApiResult<bool>> ChangePassword(string userName, ChangePasswordRequest request)
+    public async Task<ApiResult<bool>> ChangePassword(ChangePasswordRequest request)
     {
-        var user = await _userManager.FindByNameAsync(userName);
+        var user = await _userManager.FindByNameAsync(request.UserName);
         if (user == null)
             return new ApiErrorResult<bool>("User Does Not Exist");
         var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
@@ -162,9 +164,41 @@ public class UserService : IUserService
         return new ApiErrorResult<bool>(errorMessages); 
     }
 
-    public async Task<ApiResult<bool>> RoleAssign(string userName, RoleAssignRequest request)
+    public async Task<ApiResult<string>> SendConfirmCode(SendConfirmRequest request)
     {
-        var user = await _userManager.FindByNameAsync(userName);
+        if (string.IsNullOrEmpty(request.Email))
+            return new ApiErrorResult<string>("Email cannot Null or Empty!");
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if (user == null)
+            return new ApiErrorResult<string>($"Cannot find user with email: {request.Email}");
+        
+        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        if (code == null) 
+            return new ApiErrorResult<string>("Generate code failure!");
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        return new ApiSuccessResult<string>(code);
+    }
+
+    public async Task<ApiResult<bool>> ConfirmEmail(ConfirmEmailRequest request)
+    {
+        if (string.IsNullOrEmpty(request.UserName))
+            return new ApiErrorResult<bool>("UserName cannot be Null or Empty!");
+        if (string.IsNullOrEmpty(request.Code))
+            return new ApiErrorResult<bool>("Code cannot be Null or Empty!");
+        var user = await _userManager.FindByNameAsync(request.UserName);
+        if (user == null)
+            return new ApiErrorResult<bool>("Cannot find User! ");
+
+        var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
+        var result = await _userManager.ConfirmEmailAsync(user, code);
+        if (!result.Succeeded)
+            return new ApiErrorResult<bool>("Confirmation Failure!");
+        return new ApiSuccessResult<bool>(true);
+    }
+
+    public async Task<ApiResult<bool>> RoleAssign(RoleAssignRequest request)
+    {
+        var user = await _userManager.FindByNameAsync(request.UserName);
         if (user == null)
             return new ApiErrorResult<bool>("User Does Not Exist");
         var removedRoles = request.Roles.Where(x => !x.Selected).Select(x => x.Name).ToList();
@@ -181,11 +215,11 @@ public class UserService : IUserService
         return new ApiSuccessResult<bool>(true);
     }
 
-    public async Task<ApiResult<bool>> Update(string userName, UpdateUserRequest request)
+    public async Task<ApiResult<bool>> Update(UpdateUserRequest request)
     {
         if (request.Email != null && await _userManager.Users.AnyAsync(x => x.Email == request.Email))
             return new ApiErrorResult<bool>("Email Already Exists");
-        var user = await _userManager.FindByNameAsync(userName);
+        var user = await _userManager.FindByNameAsync(request.UserName);
         if (!string.IsNullOrEmpty(request.Email))
             user.Email = request.Email;
         if (!string.IsNullOrEmpty(request.InGameName))

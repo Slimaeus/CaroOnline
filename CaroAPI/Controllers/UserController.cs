@@ -32,10 +32,10 @@ public class UserController : ControllerBase
         return BadRequest(result);
     }
     /// <summary>
-    /// Regist an account 
+    /// Register an account 
     /// </summary>
     /// <param name="signUpModel">Register information</param>
-    /// <returns>Rigister Status</returns>
+    /// <returns>Register Status</returns>
     [AllowAnonymous]
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -52,7 +52,7 @@ public class UserController : ControllerBase
     /// <summary>
     /// Authenticate your Login
     /// </summary>
-    /// <param name="loginModel">Login infomations</param>
+    /// <param name="loginModel">Login Information</param>
     /// <returns>Your token</returns>
     [AllowAnonymous]
     [HttpPost("authenticate")]
@@ -71,16 +71,16 @@ public class UserController : ControllerBase
     /// Update User Profile
     /// </summary>
     /// <param name="userName">UserName</param>
-    /// <param name="updateUserRequest">Update Infomations</param>
+    /// <param name="updateUserRequest">Update Information</param>
     /// <returns>Update Status</returns>
-    [HttpPut("update/{userName}")]
+    [HttpPut("update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Update(string userName, [FromBody] UpdateUserRequest updateUserRequest)
+    public async Task<IActionResult> Update([FromBody] UpdateUserRequest updateUserRequest)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        var result = await _userService.Update(userName, updateUserRequest);
+        var result = await _userService.Update(updateUserRequest);
         if (result.Succeeded)
             return Ok(result);
         return BadRequest(result);
@@ -123,18 +123,29 @@ public class UserController : ControllerBase
     /// Assign Roles for User
     /// </summary>
     /// <param name="userName">UserName</param>
-    /// <param name="roleAssignRequest">Role Assign Informations</param>
+    /// <param name="roleAssignRequest">Role Assign Information</param>
     /// <returns>Assign Status</returns>
     // WARNING: AFTER DEPLOY MUST UNCOMMENT THIS
     //[Authorize(Roles = "Admin")]
-    [HttpPut("role-assign/{userName}")]
+    [HttpPut("role-assign")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RoleAssign(string userName, RoleAssignRequest roleAssignRequest)
+    public async Task<IActionResult> RoleAssign(RoleAssignRequest roleAssignRequest)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        var result = await _userService.RoleAssign(userName, roleAssignRequest);
+        var result = await _userService.RoleAssign(roleAssignRequest);
+        if (result.Succeeded)
+            return Ok(result);
+        return BadRequest(result);
+    }
+    
+    [HttpPost("get-confirm-code")]
+    public async Task<IActionResult> GetConfirmCode(SendConfirmRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        var result = await _userService.SendConfirmCode(request);
         if (result.Succeeded)
             return Ok(result);
         return BadRequest(result);

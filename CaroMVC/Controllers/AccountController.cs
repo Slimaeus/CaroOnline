@@ -180,7 +180,11 @@ public class AccountController : Controller
     {
         return View();
     }
-
+    [HttpPost]
+    public async Task<IActionResult> ForgotPassword(ForgetPasswordModel model)
+    {
+        return View();
+    }
     public IActionResult ResendEmailConfirmation()
     {
         throw new NotImplementedException();

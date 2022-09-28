@@ -10,8 +10,10 @@ public interface IUserService
 {
     Task<ApiResult<string>> Authenticate(LoginRequest request);
     Task<ApiResult<bool>> Register(RegisterRequest request);
-    Task<ApiResult<bool>> ChangePassword(string userName, ChangePasswordRequest request);
-    Task<ApiResult<bool>> Update(string userName, UpdateUserRequest request);
+    Task<ApiResult<bool>> ChangePassword(ChangePasswordRequest request);
+    Task<ApiResult<string>> SendConfirmCode(SendConfirmRequest request);
+    Task<ApiResult<bool>> ConfirmEmail(ConfirmEmailRequest request);
+    Task<ApiResult<bool>> Update(UpdateUserRequest request);
     Task<ApiResult<UserResponse>> GetById(Guid id);
     Task<ApiResult<UserResponse>> GetByUserName(string userName);
     Task<ApiResult<PagedList<UserResponse>>> GetUserPagingList(PagingRequest request);
@@ -24,5 +26,5 @@ public interface IUserService
     );
     Task<ApiResult<bool>> Delete(Guid id);
     Task<ApiResult<bool>> Delete(string userName);
-    Task<ApiResult<bool>> RoleAssign(string userName, RoleAssignRequest request);
+    Task<ApiResult<bool>> RoleAssign(RoleAssignRequest request);
 }
