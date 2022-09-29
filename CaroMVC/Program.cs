@@ -4,10 +4,12 @@ using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Model.DbModels;
 using Service.APIClientServices;
+using Service.AuthServices;
 using Utility.Constants;
 using Utility.Helpers;
 using Utility.Hubs;
@@ -33,7 +35,7 @@ namespace CaroMVC
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IJwtManager, JwtManager>();
             builder.Services.AddScoped<IUserApiClient, UserApiClient>();
-
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
             builder.Services.AddSession(options =>

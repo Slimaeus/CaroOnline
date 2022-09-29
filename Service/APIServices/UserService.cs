@@ -164,7 +164,7 @@ public class UserService : IUserService
         return new ApiErrorResult<bool>(errorMessages); 
     }
 
-    public async Task<ApiResult<string>> SendConfirmCode(GetConfirmCodeRequest request)
+    public async Task<ApiResult<string>> GetConfirmCode(GetConfirmCodeRequest request)
     {
         if (string.IsNullOrEmpty(request.Email))
             return new ApiErrorResult<string>("Email cannot Null or Empty!");
@@ -181,11 +181,11 @@ public class UserService : IUserService
 
     public async Task<ApiResult<bool>> ConfirmEmail(ConfirmEmailRequest request)
     {
-        if (string.IsNullOrEmpty(request.UserName))
-            return new ApiErrorResult<bool>("UserName cannot be Null or Empty!");
+        if (string.IsNullOrEmpty(request.Email))
+            return new ApiErrorResult<bool>("Email cannot be Null or Empty!");
         if (string.IsNullOrEmpty(request.Code))
             return new ApiErrorResult<bool>("Code cannot be Null or Empty!");
-        var user = await _userManager.FindByNameAsync(request.UserName);
+        var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
             return new ApiErrorResult<bool>("Cannot find User! ");
 

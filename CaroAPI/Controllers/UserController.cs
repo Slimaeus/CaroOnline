@@ -151,7 +151,7 @@ public class UserController : ControllerBase
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        var result = await _userService.SendConfirmCode(request);
+        var result = await _userService.GetConfirmCode(request);
         if (result.Succeeded)
             return Ok(result);
         return BadRequest(result);
