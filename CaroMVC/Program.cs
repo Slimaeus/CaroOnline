@@ -35,6 +35,7 @@ namespace CaroMVC
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddSingleton<IJwtManager, JwtManager>();
             builder.Services.AddScoped<IUserApiClient, UserApiClient>();
+            builder.Services.AddScoped<IResultApiClient, ResultApiClient>();
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

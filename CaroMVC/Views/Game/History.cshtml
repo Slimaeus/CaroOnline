@@ -1,0 +1,70 @@
+﻿@using Model.ActionModels
+@model IEnumerable<HistoryModel>
+<body>
+    <div class="container">
+        <h1 class="text-center">HISTORY</h1>
+        <p class="text-muted text-center">Caro Online - @DateTime.Now.Date.ToString()</p>
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-primary">Sort</button>
+            <div class="btn-group" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <a class="dropdown-item" href="#">Today</a>
+                    <a class="dropdown-item" href="#">All</a>
+                </div>
+            </div>
+        </div>
+        <table id="tablehistory" class="table table-warning table-hover my-2">
+            <thread>
+                <tr class="table-active">
+                    <th>Id</th>
+                    <th>GameMode</th>
+                    <th>StartedTime</th>
+                    <th>EndedTime</th>
+                    <th>Opponent</th>
+                    <th>Win/Draw/Lose</th>
+                    <th>Score</th>
+                </tr>
+            </thread>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.GameMode</td>
+                        <td>@item.StartedTime</td>
+                        <td>@item.EndedTime</td>
+                        <td>@item.Opponent</td>
+                        <td>@item.Win/@item.Draw/@item.Lose</td>
+                        <td>@item.Score</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div>
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">&laquo;</a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">4</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">5</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">&raquo;</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>

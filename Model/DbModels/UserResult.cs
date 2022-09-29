@@ -18,6 +18,6 @@ public class UserResult
     public Result Result { get; set; } = default!;
 
     public bool IsWinner { get; set; }
-    public int Score { get; set; }
+    public int Score { get; set; } = 100;
     public int Order { get; set; }
 }

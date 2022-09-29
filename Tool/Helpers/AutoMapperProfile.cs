@@ -37,5 +37,11 @@ public class AutoMapperProfile : Profile
             {
                 des.Input = context.Mapper.Map<LoginRequest>(src.Input);
             });
+        CreateMap<ResultResponse, HistoryModel>();
+        //CreateMap<PagedList<ResultResponse>, PagedList<HistoryModel>>()
+        //    .AfterMap((src, des, context) =>
+        //    {
+        //        des.Items = context.Mapper.Map<IEnumerable<HistoryModel>>(src.Items);
+        //    });
     }
 }

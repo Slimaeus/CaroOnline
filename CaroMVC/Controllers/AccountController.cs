@@ -1,22 +1,18 @@
-﻿using System.Text;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using AutoMapper;
 using CaroMVC.Models;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Model.ActionModels;
-using Model.DbModels;
-using Model.ResponseModels;
+using Model.RequestModels;
 using Service.APIClientServices;
 
 namespace CaroMVC.Controllers;
-
+[Authorize]
 public class AccountController : Controller
 {
     private readonly IUserApiClient _userApiClient;
@@ -41,7 +37,6 @@ public class AccountController : Controller
     }
     public async Task<IActionResult> Profile()
     {
-        // Handle result.ResultObject null
         var userIdentity = User.Identity;
         if (userIdentity == null)
         {
@@ -180,27 +175,70 @@ public class AccountController : Controller
 
         if (!string.IsNullOrEmpty(loginModel.ReturnUrl))
             return LocalRedirect(loginModel.ReturnUrl);
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction(nameof(HomeController.Index), "Home");
     }
 
-    public async Task<IActionResult> ForgotPassword()
+    public IActionResult ForgotPassword(string returnUrl)
     {
-        return View();
+        ForgetPasswordModel model = new()
+        {
+            ReturnUrl = returnUrl
+        };
+        return View(model);
     }
     [HttpPost]
     public async Task<IActionResult> ForgotPassword(ForgetPasswordModel model)
     {
         if (!ModelState.IsValid)
+        {
+            ModelState.AddModelError("", "Invalid Input");
             return View(model);
-        // Add Send 
-        // await _emailSender.SendEmailAsync(
-        //     Input.Email,
-        //     "Reset Password",
-        //     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-        return Content("NO CONTENT");
+        }
+        var response = await _userApiClient.GetConfirmCode(model.Input);
+        if (response == null)
+        {
+            ModelState.AddModelError("", "Cannot connect to Server");
+            return View(model);
+        }
+        if (!response.Succeeded)
+        {
+            ModelState.AddModelError("", response.Message);
+            return View(model);
+        }
+        var code = response.ResultObject;
+        if (code == null)
+        {
+            ModelState.AddModelError("", "Cannot get the Code");
+            return View(model);
+        }
+        var callbackUrl = Url.Action(nameof(ConfirmEmail), new { code, email = model.Input.Email });
+        await _emailSender.SendEmailAsync(
+            model.Input.Email, 
+            "Reset Password", 
+            $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>CLICKING HERE</a>."
+        );
+        if (!string.IsNullOrEmpty(model.ReturnUrl))
+            return LocalRedirect(model.ReturnUrl);
+        return RedirectToAction(nameof(Index), "Home");
     }
-    public IActionResult EmailConfirmation()
+    public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
     {
-        return View();
+        if (!ModelState.IsValid)
+        {
+            ViewData["Error"] = "Invalid Input!";
+            return View(request);
+        }
+        var response = await _userApiClient.ConfirmEmail(request);
+        if (response == null)
+        {
+            ViewData["Error"] = "Cannot connect to Server";
+            return View(request);
+        }
+        if (!response.Succeeded)
+        {
+            ViewData["Error"] = response.Message;
+            return View(request);
+        }
+        return View(request);
     }
 }

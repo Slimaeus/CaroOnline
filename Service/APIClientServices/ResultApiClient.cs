@@ -55,6 +55,25 @@ public class ResultApiClient : IResultApiClient
             return new ApiErrorResult<PagedList<ResultResponse>>($"Cannot connect to server because {ex.Message}");
         }
     }
+
+    public async Task<ApiResult<IEnumerable<ResultResponse>>> GetResultByUserName(string userName, PagingRequest request)
+    {
+        try
+        {
+            var client = _httpClientFactory.CreateClient("CaroAPI");
+            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            if (token == null)
+                return new ApiErrorResult<IEnumerable<ResultResponse>>("Unauthorized");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await client.GetAsync($"result/get-by-username?username={userName}&{nameof(request.PageIndex)}={request.PageIndex}&{nameof(request.PageSize)}={request.PageSize}");
+            return await ResultReturn<IEnumerable<ResultResponse>>(response);
+        }
+        catch (Exception ex)
+        {
+            return new ApiErrorResult<IEnumerable<ResultResponse>>($"Cannot connect to server because {ex.Message}");
+        }
+    }
+
     private async Task<ApiResult<TResult>> ResultReturn<TResult>(HttpResponseMessage response)
     {
         if (response.IsSuccessStatusCode)

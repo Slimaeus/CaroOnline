@@ -5,6 +5,7 @@ using Model.GameModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using Service.APIClientServices;
+using Model.RequestModels;
 
 namespace Utility.Hubs;
 
@@ -13,11 +14,13 @@ public class GameHub : Hub
 {
     private readonly GameDbContext _context;
     private readonly IUserApiClient _userApiClient;
+    private readonly IResultApiClient _resultApiClient;
 
-    public GameHub(GameDbContext context, IUserApiClient userApiClient)
+    public GameHub(GameDbContext context, IUserApiClient userApiClient, IResultApiClient resultApiClient)
     {
         _context = context;
         _userApiClient = userApiClient;
+        _resultApiClient = resultApiClient;
     }
     public override async Task OnConnectedAsync()
     {
@@ -132,9 +135,19 @@ public class GameHub : Hub
         var winner = await _userApiClient.GetByUserName(winnerUserName);
         if (winner == null) return;
         if (!winner.Succeeded) return;
+
+        var room = await _context.Rooms.Include(r => r.GameUsers).FirstOrDefaultAsync(r => r.RoomName.Equals(roomName));
+        if (room == null) return;
+        var loserUserName = room.GameUsers.Where(u => !u.UserName.Equals(winnerUserName)).Select(u => u.UserName).FirstOrDefault();
+        if (loserUserName == null) return;
+        var request = new ResultRequest()
+        {
+            WinnerUserName = winnerUserName,
+            LoserUserName = loserUserName
+        };
+        var result = await _resultApiClient.Create(request);
+        if (!result.Succeeded) return;
         var winnerInGameName = winner.ResultObject.InGameName;
-        Console.WriteLine(winnerUserName);
-        Console.WriteLine(winnerInGameName);
         await Clients.Group(roomName).SendAsync("gameEnd", winnerUserName, winnerInGameName);
     }
 }
