@@ -51,6 +51,16 @@ public class ResultController : ControllerBase
             return Ok(results);
         return BadRequest(results);
     }
+    [HttpGet("get-history-by-username")]
+    public async Task<IActionResult> GetHistory(string userName, [FromQuery] PagingRequest pagingRequest)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        var results = await _resultService.GetHistoryByUserName(userName, pagingRequest);
+        if (results.Succeeded)
+            return Ok(results);
+        return BadRequest(results);
+    }
     /// <summary>
     /// Create a result
     /// </summary>

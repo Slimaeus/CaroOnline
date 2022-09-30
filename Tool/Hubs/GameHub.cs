@@ -135,7 +135,7 @@ public class GameHub : Hub
         var winner = await _userApiClient.GetByUserName(winnerUserName);
         if (winner == null) return;
         if (!winner.Succeeded) return;
-
+        /*
         var room = await _context.Rooms.Include(r => r.GameUsers).FirstOrDefaultAsync(r => r.RoomName.Equals(roomName));
         if (room == null) return;
         var loserUserName = room.GameUsers.Where(u => !u.UserName.Equals(winnerUserName)).Select(u => u.UserName).FirstOrDefault();
@@ -147,6 +147,7 @@ public class GameHub : Hub
         };
         var result = await _resultApiClient.Create(request);
         if (!result.Succeeded) return;
+        */
         var winnerInGameName = winner.ResultObject.InGameName;
         await Clients.Group(roomName).SendAsync("gameEnd", winnerUserName, winnerInGameName);
     }

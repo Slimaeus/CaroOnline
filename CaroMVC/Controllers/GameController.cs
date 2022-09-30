@@ -54,14 +54,14 @@ public class GameController : Controller
             ViewData["Error"] = "Unauthorized";
             return View();
         }
-        var response = await _resultApiClient.GetResultByUserName(userName, new PagingRequest());
+        var response = await _resultApiClient.GetHistoryByUserName(userName, new PagingRequest());
         if (!response.Succeeded)
         {
             ViewData["Error"] = "Get Result Failure!";
             return View();
         }
-        var gameResult = response.ResultObject;
-        var model = _mapper.Map<IEnumerable<HistoryModel>>(gameResult);
+        var gameResults = response.ResultObject;
+        var model = gameResults.Select(gr => new HistoryModel { Input = gr });
         return View(model);
     }
 

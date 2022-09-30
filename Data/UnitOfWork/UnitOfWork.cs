@@ -16,6 +16,11 @@ public class UnitOfWork : IUnitOfWork
         return DbContext.SaveChanges();
     }
 
+    public async Task<int> CommitAsync()
+    {
+        return await DbContext.SaveChangesAsync();
+    }
+
     public IDbContextTransaction BeginTransaction()
     {
         return DbContext.Database.BeginTransaction();

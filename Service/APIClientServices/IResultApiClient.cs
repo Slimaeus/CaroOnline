@@ -14,4 +14,5 @@ public interface IResultApiClient
     Task<ApiResult<bool>> Create(ResultRequest request);
     Task<ApiResult<PagedList<ResultResponse>>> GetPagedList(PagingRequest request);
     Task<ApiResult<IEnumerable<ResultResponse>>> GetResultByUserName(string userName, PagingRequest request);
+    Task<ApiResult<IEnumerable<HistoryResponse>>> GetHistoryByUserName(string userName, PagingRequest request);
 }

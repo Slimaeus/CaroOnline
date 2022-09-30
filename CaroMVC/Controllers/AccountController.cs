@@ -241,4 +241,9 @@ public class AccountController : Controller
         }
         return View(request);
     }
+
+    public IActionResult ResendEmailConfirmation()
+    {
+        throw new NotImplementedException();
+    }
 }

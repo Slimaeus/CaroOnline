@@ -18,9 +18,19 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : c
         _dbSet.Add(entity);
     }
 
+    public async Task AddAsync(TEntity entity)
+    {
+        await _dbSet.AddAsync(entity);
+    }
+
     public virtual bool Any(Expression<Func<TEntity, bool>> filter)
     {
         return _dbSet.Any(filter);
+    }
+
+    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> filter)
+    {
+        return await _dbSet.AnyAsync(filter);
     }
 
     public virtual int Count(Expression<Func<TEntity, bool>> filter)
@@ -77,6 +87,23 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : c
             query = orderBy(query);
         return query.ToList();
     }
+
+    public async Task<IEnumerable<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> filter = null!, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null!, string includeProperties = "", int skip = 0, int take = 0)
+    {
+        var query = _dbSet.AsQueryable();
+        foreach (string includeProperty in includeProperties.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            query = query.Include(includeProperty);
+        if (filter != null)
+            query = query.Where(filter);
+        if (skip > 0)
+            query = query.Skip(skip);
+        if (take > 0)
+            query = query.Take(take);
+        if (orderBy != null)
+            query = orderBy(query);
+        return await query.ToListAsync();
+    }
+
     public virtual void Update(TEntity entity)
     {
         _dbSet.Attach(entity);

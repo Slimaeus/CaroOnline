@@ -3,7 +3,7 @@
 <body>
     <div class="container">
         <h1 class="text-center">HISTORY</h1>
-        <p class="text-muted text-center">Caro Online - @DateTime.Now.Date.ToString()</p>
+        <p class="text-muted text-center">Caro Online - @DateTime.Now.ToString()</p>
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <button type="button" class="btn btn-primary">Sort</button>
             <div class="btn-group" role="group">
@@ -14,7 +14,7 @@
                 </div>
             </div>
         </div>
-        <table id="tablehistory" class="table table-warning table-hover my-2">
+        <table id="table-history" class="table table-warning table-hover my-2">
             <thread>
                 <tr class="table-active">
                     <th>Id</th>
@@ -30,13 +30,13 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.Id</td>
-                        <td>@item.GameMode</td>
-                        <td>@item.StartedTime</td>
-                        <td>@item.EndedTime</td>
-                        <td>@item.Opponent</td>
-                        <td>@item.Win/@item.Draw/@item.Lose</td>
-                        <td>@item.Score</td>
+                        <td>@item.Input.Id</td>
+                        <td>@item.Input.GameMode</td>
+                        <td>@item.Input.StartedTime</td>
+                        <td>@item.Input.EndedTime</td>
+                        <td>@item.Input.OpponentInGameName</td>
+                        <td>@item.Input.Status</td>
+                        <td>@item.Input.Score</td>
                     </tr>
                 }
             </tbody>
