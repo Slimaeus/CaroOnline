@@ -239,9 +239,18 @@ public class AccountController : Controller
             ViewData["Error"] = response.Message;
             return View(request);
         }
+        var result = response.ResultObject;
+        if (!result)
+        {
+            ViewData["Error"] = "Email confirmed failure!";
+            return View(request);
+        }
+        return RedirectToAction(nameof(ConfirmEmailSuccess));
+    }
+    public IActionResult ConfirmEmailSuccess([FromQuery] ConfirmEmailRequest request)
+    {
         return View(request);
     }
-
     public IActionResult ResendEmailConfirmation()
     {
         throw new NotImplementedException();

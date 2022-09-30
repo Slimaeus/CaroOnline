@@ -90,6 +90,7 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="userName">UserName</param>
     /// <returns>Delete Status</returns>
+    [Authorize(Roles = "Admin")]
     [HttpDelete("delete/{userName}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -107,6 +108,7 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="userName">UserName</param>
     /// <returns>User's information</returns>
+    [AllowAnonymous]
     [HttpGet("get-by-username/{userName}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

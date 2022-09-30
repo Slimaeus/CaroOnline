@@ -48,7 +48,7 @@ public class ResultApiClient : IResultApiClient
             if (token == null)
                 return new ApiErrorResult<IEnumerable<HistoryResponse>>("Unauthorized");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await client.GetAsync($"result/get-history-by-username?username={userName}&{nameof(request.PageIndex)}={request.PageIndex}&{nameof(request.PageSize)}={request.PageSize}");
+            var response = await client.GetAsync($"result/get-history-by-username/{userName}?{nameof(request.PageIndex)}={request.PageIndex}&{nameof(request.PageSize)}={request.PageSize}");
             return await ResultReturn<IEnumerable<HistoryResponse>>(response);
         }
         catch (Exception ex)
@@ -84,7 +84,7 @@ public class ResultApiClient : IResultApiClient
             if (token == null)
                 return new ApiErrorResult<IEnumerable<ResultResponse>>("Unauthorized");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await client.GetAsync($"result/get-by-username?username={userName}&{nameof(request.PageIndex)}={request.PageIndex}&{nameof(request.PageSize)}={request.PageSize}");
+            var response = await client.GetAsync($"result/get-by-username/{userName}?{nameof(request.PageIndex)}={request.PageIndex}&{nameof(request.PageSize)}={request.PageSize}");
             return await ResultReturn<IEnumerable<ResultResponse>>(response);
         }
         catch (Exception ex)

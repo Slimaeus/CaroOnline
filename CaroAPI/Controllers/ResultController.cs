@@ -24,7 +24,7 @@ public class ResultController : ControllerBase
     /// </summary>
     /// <param name="pagingRequest">Paging Resquest</param>
     /// <returns></returns>
-    [Authorize]
+    [AllowAnonymous]
     [HttpGet("get-list")]
     public IActionResult Get([FromQuery] PagingRequest pagingRequest)
     {
@@ -41,7 +41,8 @@ public class ResultController : ControllerBase
     /// <param name="userName">UserName</param>
     /// <param name="pagingRequest">Paging Request</param>
     /// <returns>Result List</returns>
-    [HttpGet("get-by-username")]
+    [AllowAnonymous]
+    [HttpGet("get-by-username/{userName}")]
     public async Task<IActionResult> Get(string userName, [FromQuery] PagingRequest pagingRequest)
     {
         if (!ModelState.IsValid)
@@ -51,7 +52,7 @@ public class ResultController : ControllerBase
             return Ok(results);
         return BadRequest(results);
     }
-    [HttpGet("get-history-by-username")]
+    [HttpGet("get-history-by-username/{userName}")]
     public async Task<IActionResult> GetHistory(string userName, [FromQuery] PagingRequest pagingRequest)
     {
         if (!ModelState.IsValid)
@@ -67,7 +68,7 @@ public class ResultController : ControllerBase
     /// <param name="resultRequest">Create Result Request</param>
     /// <returns>Create Status</returns>
     [HttpPost("create")]
-    public async Task<IActionResult> Post([FromBody] ResultRequest resultRequest)
+    public async Task<IActionResult> Create([FromBody] ResultRequest resultRequest)
     {
 
         if (!ModelState.IsValid)

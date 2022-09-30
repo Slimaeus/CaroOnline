@@ -5,7 +5,4 @@
 @{
 }
 @model ConfirmEmailRequest
-<div class="container">
-    <div class="text-danger validation-summary-errors">@ViewData["Error"]</div>
-    <h1>Please confirm @Model.Email again!</h1>
-</div>
+<h1>@Model.Email confirmed Successfully with @Model.Code!</h1>
