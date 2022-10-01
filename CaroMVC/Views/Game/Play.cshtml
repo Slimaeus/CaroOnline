@@ -81,6 +81,10 @@
                     button.disabled = false
             });
         });
+        // Catch Game End Error Event
+        connection.on("gameEndError", (error) => {
+            alert(error);
+        });
         // Catch Game End Event
         connection.on("gameEnd", (winnerUserName, winnerInGameName) => {
             buttonList.forEach(button => button.disabled = true);

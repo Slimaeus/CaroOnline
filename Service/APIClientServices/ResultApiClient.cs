@@ -17,7 +17,7 @@ public class ResultApiClient : IResultApiClient
         _httpClientFactory = httpClientFactory;
         _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<ApiResult<bool>> Create(ResultRequest request)
+    public async Task<ApiResult<string>> Create(ResultRequest request)
     {
         try
         {
@@ -25,17 +25,17 @@ public class ResultApiClient : IResultApiClient
             var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
             // What if token expires
             if (token == null)
-                return new ApiErrorResult<bool>("Unauthorized");
+                return new ApiErrorResult<string>("Unauthorized");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync("result/create", httpContent);
-            return await ResultReturn<bool>(response);
+            return await ResultReturn<string>(response);
         }
         catch (Exception ex)
         {
-            return new ApiErrorResult<bool>($"Cannot connect to server because {ex.Message}");
+            return new ApiErrorResult<string>($"Cannot connect to server because {ex.Message}");
         }
     }
 

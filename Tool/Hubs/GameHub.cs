@@ -27,14 +27,14 @@ public class GameHub : Hub
         // Retrieve user.
         var user = _context.GameUsers
             .Include(u => u.Rooms)
-            .SingleOrDefault(u => u.UserName == Context.User.Identity!.Name!);
+            .SingleOrDefault(u => u.UserName == Context.User!.Identity!.Name!);
 
         // If user does not exist in database, must add.
         if (user == null)
         {
             user = new GameUser()
             {
-                UserName = Context.User.Identity!.Name!
+                UserName = Context.User!.Identity!.Name!
             };
             _context.GameUsers.Add(user);
             await _context.SaveChangesAsync();
@@ -50,7 +50,7 @@ public class GameHub : Hub
     }
     public async Task RoomCreate()
     {
-        string roomName = Context.User.Identity!.Name!;
+        string roomName = Context.User!.Identity!.Name!;
         var room = await _context.Rooms.FindAsync(roomName);
 
         if (room == null)
@@ -78,7 +78,7 @@ public class GameHub : Hub
             await _context.Rooms.AddAsync(room);
             await _context.SaveChangesAsync();
         }
-        var user = new GameUser() { UserName = Context.User.Identity!.Name! };
+        var user = new GameUser() { UserName = Context.User!.Identity!.Name! };
         _context.GameUsers.Attach(user);
         room.GameUsers.Add(user);
         await _context.SaveChangesAsync();
@@ -92,7 +92,7 @@ public class GameHub : Hub
         var room = await _context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(room => room.RoomName == roomName);
         if (room != null)
         {
-            var user = await _context.GameUsers.FindAsync(Context.User.Identity!.Name!);
+            var user = await _context.GameUsers.FindAsync(Context.User!.Identity!.Name!);
             if (user ==  null)
             {
                 user = new GameUser() { UserName = Context.User.Identity!.Name! };
@@ -109,7 +109,7 @@ public class GameHub : Hub
     }
     public async Task PlaceStone(string roomName, int row, int col)
     {
-        var userName = Context.User.Identity?.Name;
+        var userName = Context.User!.Identity!.Name;
         var room  = await _context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(r => r.RoomName == roomName);
         if (room == null)
             return;
@@ -131,23 +131,50 @@ public class GameHub : Hub
     public async Task GameEnd(string roomName, string winnerUserName)
     {
         if (string.IsNullOrEmpty(winnerUserName))
+        {
+            await Clients.Group(roomName).SendAsync("gameEndError", "Winner name is null");
             return;
+        }
         var winner = await _userApiClient.GetByUserName(winnerUserName);
-        if (winner == null) return;
-        if (!winner.Succeeded) return;
-        /*
+        if (winner == null)
+        {
+            await Clients.Group(roomName).SendAsync("gameEndError", "Cannot Found Winner");
+            return;
+        }
+        if (!winner.Succeeded)
+        {
+            await Clients.Group(roomName).SendAsync("gameEndError", "Found Winner Failure");
+            return;
+        }
+
         var room = await _context.Rooms.Include(r => r.GameUsers).FirstOrDefaultAsync(r => r.RoomName.Equals(roomName));
-        if (room == null) return;
+        if (room == null)
+        {
+            await Clients.Group(roomName).SendAsync("gameEndError", "Cannot Found Room");
+            return;
+        }
         var loserUserName = room.GameUsers.Where(u => !u.UserName.Equals(winnerUserName)).Select(u => u.UserName).FirstOrDefault();
-        if (loserUserName == null) return;
-        var request = new ResultRequest()
+        if (loserUserName == null)
+        {
+            await Clients.Group(roomName).SendAsync("gameEndError", "Cannot Found Loser");
+            return;
+        }
+        var now = DateTime.Now;
+        ResultRequest request = new()
         {
             WinnerUserName = winnerUserName,
-            LoserUserName = loserUserName
+            LoserUserName = loserUserName,
+            Hour = now.Hour,
+            Minute = now.Minute,
+            Second = now.Second
         };
         var result = await _resultApiClient.Create(request);
-        if (!result.Succeeded) return;
-        */
+        if (!result.Succeeded)
+        {
+            await Clients.Group(roomName).SendAsync("gameEndError", $"Create result failure because {result.Message}");
+            return;
+        }
+
         var winnerInGameName = winner.ResultObject.InGameName;
         await Clients.Group(roomName).SendAsync("gameEnd", winnerUserName, winnerInGameName);
     }

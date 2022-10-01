@@ -9,7 +9,18 @@
 - [SignalR](https://dotnet.microsoft.com/en-us/apps/aspnet/signalr)
 - [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/)
 - [Bootstrap](https://getbootstrap.com/)
-- ...
+
+## API Reference
+
+#### Get all items
+
+```http
+  GET /api/user/authenticate
+```
+
+| Parameter      | Type           | Description                |
+|:---------------|:---------------| :------------------------- |
+| `loginRequest` | `LoginRequest` | **Required**. Your API key |
 
 ## appsettings.json in CaroAPI
 ```json
@@ -59,7 +70,7 @@
   }
 }
 ```
-## Who are we?
+## Authors
 
 - [Nguyen Hong Thai]()
 - [Truong Thuc Van]()
