@@ -16,20 +16,21 @@ public class GameController : Controller
 {
     private readonly GameDbContext _context;
     private readonly IResultApiClient _resultApiClient;
-    private readonly IMapper _mapper;
 
     public GameController(
         GameDbContext context, 
-        IResultApiClient resultApiClient,
-        IMapper mapper)
+        IResultApiClient resultApiClient)
     {
         _context = context;
         _resultApiClient = resultApiClient;
-        _mapper = mapper;
     }
         
-    public ActionResult Index()
+    public ActionResult Index(string? error)
     {
+        if (error != null)
+        {
+            ViewData["Error"] = error;
+        }
         var roomList = _context.Rooms.Include(room => room.GameUsers).ToList();
         return View(roomList);
     }
@@ -38,9 +39,14 @@ public class GameController : Controller
     {
         var room = await _context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(room => room.RoomName == roomName);
         if (room == null)
-            return RedirectToAction("Index", "Game");
+        {
+            return RedirectToAction("Index", "Game", new { error = "Room does not exist!" });
+        }
         if (room.GameUsers.All(user => user.UserName != User.Identity!.Name))
-            return RedirectToAction("Index", "Game");
+        {
+            return RedirectToAction("Index", "Game", new { error = "You cannot join this game!" });
+
+        }
         var board = new Board { RowCount = 30, ColumnCount = 30};
         var model = new PlayModel { Room = room, Board = board };
         return View(model);

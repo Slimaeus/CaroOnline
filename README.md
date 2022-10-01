@@ -59,7 +59,7 @@
   }
 }
 ```
-## Who we are?
+## Who are we?
 
 - [Nguyen Hong Thai]()
 - [Truong Thuc Van]()

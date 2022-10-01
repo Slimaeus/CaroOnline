@@ -44,11 +44,14 @@
         </div>
     </div>
 </div>
+
+<!-- Scripts -->
 @section Scripts {
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
     <script src="~/js/classes/Game.js"></script>
     <script src="~/js/classes/Move.js"></script>
-    <script> 
+    <script>
+
         const game = new Game();
         const userList = document.getElementById("user-list");
         const buttonList = document.querySelectorAll(".game-button");
