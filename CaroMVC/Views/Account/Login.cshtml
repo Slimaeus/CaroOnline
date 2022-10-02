@@ -34,13 +34,13 @@
         </div>
         <div>
             <p>
-                <a id="forgot-password" asp-action="ForgotPassword">Forgot your password?</a>
+                <a asp-action="ForgotPassword" asp-route-returnUrl="@Model.ReturnUrl">Forgot your password?</a>
             </p>
             <p>
                 <a asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
             </p>
             <p>
-                <a id="resend-confirmation" asp-action="ResendEmailConfirmation">Resend email confirmation</a>
+                <a asp-action="ResendEmailConfirmation">Resend email confirmation</a>
             </p>
         </div>
     </form>

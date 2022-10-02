@@ -6,15 +6,14 @@
 @{
 }
 @model LoginRequest
-
-<form asp-action="Login" method="post">
-    <div class="form-control">
-        <label asp-for="UserName">@Html.DisplayNameFor(model => model.UserName)</label>
-        <input asp-for="UserName" type="text"/>
-    </div>
-    <div class="form-control">
-        <label asp-for="Password">@Html.DisplayNameFor(model => model.Password)</label>
-        <input asp-for="Password" type="password" />
-    </div>
-    <button type="submit">Login</button>
-</form>
+<ul class="list-group">
+    <li class="list-group-item">
+        <a asp-action="Profile">Profile</a>
+    </li>
+    <li class="list-group-item">
+        <a asp-action="ForgotPassword">ForgotPassword</a>
+    </li>
+    <li class="list-group-item">
+        <a asp-action="Logout">Logout</a>
+    </li>
+</ul>

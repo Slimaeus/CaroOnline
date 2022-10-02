@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Model.ActionModels;
 using Model.RequestModels;
+using NuGet.Protocol;
 using Service.APIClientServices;
 
 namespace CaroMVC.Controllers;
@@ -33,7 +34,7 @@ public class AccountController : Controller
     }
     public IActionResult Index()
     {
-        return RedirectToAction(nameof(Profile));
+        return View();
     }
     public async Task<IActionResult> Profile()
     {
@@ -62,13 +63,9 @@ public class AccountController : Controller
     [AllowAnonymous]
     public IActionResult Login(string? returnUrl)
     {
-        if (returnUrl == null)
-            return View(new LoginModel());
-        LoginModel model = new()
-        {
-            ReturnUrl = returnUrl
-        };
-
+        LoginModel model = new();
+        if (returnUrl != null)
+            model.ReturnUrl = returnUrl;
         return View(model);
     }
         
@@ -122,12 +119,11 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
     [AllowAnonymous]
-    public IActionResult Register(string returnUrl)
+    public IActionResult Register(string? returnUrl)
     {
-        RegisterModel model = new()
-        {
-            ReturnUrl = returnUrl
-        };
+        RegisterModel model = new();
+        if (returnUrl != null)
+            model.ReturnUrl = returnUrl;
         return View(model);
     }
     [HttpPost]
@@ -177,13 +173,12 @@ public class AccountController : Controller
             return LocalRedirect(loginModel.ReturnUrl);
         return RedirectToAction(nameof(HomeController.Index), "Home");
     }
-
+    [AllowAnonymous]
     public IActionResult ForgotPassword(string returnUrl)
     {
-        ForgetPasswordModel model = new()
-        {
-            ReturnUrl = returnUrl
-        };
+        ForgetPasswordModel model = new();
+        if (returnUrl != null)
+            model.ReturnUrl = returnUrl;
         return View(model);
     }
     [HttpPost]

@@ -11,8 +11,8 @@
         <div class="card-body">
             <h2 class="card-title text-center display-2">@Model.InGameName</h2>
             <h3 class="card-subtitle text-center text-muted">UserName: @Model.UserName</h3>
+            <p class="card-text text-center">Email: @Model.Email</p>
         </div>
-
         <div class="d-flex mx-2">
             <div class="row justify-content-start container-fluid">
                 <span class="badge bg-danger mx-2 col-1 fs-5">Level: @Model.Level</span>
@@ -24,8 +24,17 @@
         </div>
 
         <img class="card-img" src="https://img.freepik.com/premium-vector/meadows-landscape-with-mountains-hill_104785-943.jpg?w=2000" alt="Profile image" />
-        <div class="card-body">
-            <p class="card-text">Email: @Model.Email</p>
-        </div>
+        
+    </div>
+    <div>
+        <p>
+            <a asp-action="ForgotPassword" asp-route-returnUrl="@Context.Request.Path">Forgot your password?</a>
+        </p>
+        <p>
+            <a asp-action="Register" asp-route-returnUrl="@Context.Request.Path">Register as a new user</a>
+        </p>
+        <p>
+            <a asp-action="ResendEmailConfirmation">Resend email confirmation</a>
+        </p>
     </div>
 </div>
