@@ -1,7 +1,77 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+  
+<body>
+    <div class="position-relative my-lg-4">
+        <img src="~/images/backgroundcaro.png" class="img-fluid" alt="Responsive image">
+        <div class="position-absolute color-overlay d-flex justify-content-center align-items-center" style="left:25%;top:42%;">
+            <h1 style="font-size: calc(1.525rem + 4.5vw);">CARO ONLINE</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card text-white bg-secondary mb-3" style="max-width: 100rem;">
+            <div class="card-header fs-2"><i class="bi bi-joystick"></i> GAME MODE</div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-lg btn-success" type="button">[<i class="bi bi-emoji-smile-fill"></i>] - Play With Stranger</button>
+                    <button class="btn btn-lg btn-success" type="button">[<i class="bi bi-people-fill"></i>] - Play With Friend</button>
+                    <button class="btn btn-lg btn-success" type="button">[<i class="bi bi-robot"></i>] - Training With Robot</button>
+                </div>
+            </div>
+        </div>
+        <div class="card text-white bg-secondary mb-3" style="max-width: 100rem;">
+            <div class="card-header fs-2"><i class="bi bi-controller"></i> OTHERS</div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-lg btn-info" type="button">[<i class="bi bi-bar-chart-fill"></i>] - Chart Ranking</button>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+
+                        <a asp-controller="Game" asp-action="History" class="btn btn-lg btn-info">[<i class="bi bi-hourglass-split"></i>] - Match History</a>
+                    }
+                    <a asp-controller="Game" asp-action="Index" class="btn btn-lg btn-info">[<i class="bi bi-list-stars"></i>] - Room List</a>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="my-2">RULES:</h2>
+        <div class="accordion my-2" id="accordionRules">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingGomoku">
+                    <button class="accordion-button text-bg-danger" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGomoku" aria-expanded="true" aria-controls="collapseGomoku">
+                        GOMOKU
+                    </button>
+                </h2>
+                <div id="collapseGomoku" class="accordion-collapse collapse show" aria-labelledby="headingGomoku" data-bs-parent="#accordionRules" style="">
+                    <div class="accordion-body">
+                        Game will begin if there are 2 players in the same room. <br /> The player who goes first will be “O”, while the other will be “X”. When coming to your turn, you can set your move in the blank cell.  If you have 5 moves that are side by side in any column or row or cross-row without being blocked 2 end, you will be the winner. After the match, players’ turn will be changed if they continue playing with each other.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingScore">
+                    <button class="accordion-button text-bg-danger" type="button" data-bs-toggle="collapse" data-bs-target="#collapseScore" aria-expanded="true" aria-controls="collapseScore">
+                        SCORE
+                    </button>
+                </h2>
+                <div id="collapseScore" class="accordion-collapse collapse" aria-labelledby="headingScore" data-bs-parent="#accordionRules" style="">
+                    <div class="accordion-body">
+                        After finishing the match, player earns point like this: <br />
+                        - Earning point:<br />
+                        + The winner’s point is calculated:<br />
+                        [Point = Total(Columns, rows, cross-rows having 3 or 4 moves side by side) * 10 + 10]<br />
+                        + The loser’s point is calculated:<br />
+                        [Point = + 10]<br />
+                        - Penalizing point:<br />
+                        Each match has a limit time (10 seconds). If player gets over the limit, player's point will be subtracted in each timeline. If player reaches the last timeline, player will lose the match.<br />
+                        <i>Example: If the player doesn't finish player's turn after 10 seconds, player's point will be subtracted. The longer you don't make your turn, the more point player will be subtracted (maximum -5 point). At 11 seconds, point will be subtracted by one. At 12 seconds, point will be subtracted by two and so on. At 20 seconds (limit time + 10 seconds), player will automatically lose the match if player doesn't interacted with the board.</i><br />
+                        - Special situation: <br />
+                        If player continuosly surrenders, player will be treat like this: At the 3rd time surrendering the match, player will be moved to a waiting queue in 5 minutes.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

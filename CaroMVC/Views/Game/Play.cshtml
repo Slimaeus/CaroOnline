@@ -11,12 +11,13 @@
     </style>
 @model Model.ActionModels.PlayModel
 <div class="container text-center">
-    <h1 id="room-name">@Model.Room!.RoomName</h1>
+    <h1 id="room-name">Room Name: @Model.Room!.RoomName</h1>
     <div class="row">
         @foreach (var user in Model.Room!.GameUsers)
         {
-            <div class="col">
-                <span>Player: @user.UserName</span>
+            <div class="col-6">
+                <label>Player: </label>
+                <span id="player-name">@user.UserName</span>
             </div>
         }
     </div>
