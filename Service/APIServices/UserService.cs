@@ -238,4 +238,45 @@ public class UserService : IUserService
             return new ApiSuccessResult<bool>(true);
         return new ApiErrorResult<bool>("Update Failed!");
     }
+
+    public async Task<ApiResult<PagedList<RankingResponse>>> GetRanking(PagingRequest pagingRequest)
+    {
+        const int defaultPageSize = 10;
+        const int defaultPageIndex = 1;
+        var pageSize = defaultPageSize;
+        var pageIndex = defaultPageIndex;
+
+        if (pagingRequest.PageSize > 0) pageSize = pagingRequest.PageSize;
+        if (pagingRequest.PageIndex > 0) pageIndex = pagingRequest.PageIndex;
+        var rankings = await _userManager.Users.AsQueryable()
+            .Include(u => u.UserResults)
+            .Select(u => new RankingResponse()
+            {
+                UserName = u.UserName,
+                InGameName = u.InGameName!,
+                Level = u.Level,
+                Win = u.UserResults.Sum(ur => ur.IsWinner ? 1 : 0),
+                Draw = 0,
+                Lose = u.UserResults.Sum(ur => ur.IsWinner ? 0 : 1),
+                Score = u.UserResults.Sum(ur => ur.Score)
+            })
+            .OrderByDescending(r => r.Score)
+            .ThenByDescending(r => r.Win)
+            .Skip(pageSize * (pageIndex - 1))
+            .Take(pageSize)
+            .ToListAsync();
+        rankings.ForEach(r =>
+        {
+            r.Top = rankings.IndexOf(r) + pageSize * (pageIndex - 1) + 1;
+        });
+        var totalUser = _userManager.Users.Count();
+        var pageResult = new PagedList<RankingResponse>
+        {
+            TotalCount = totalUser,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            Items = rankings
+        };
+        return new ApiSuccessResult<PagedList<RankingResponse>>(pageResult);
+    }
 }

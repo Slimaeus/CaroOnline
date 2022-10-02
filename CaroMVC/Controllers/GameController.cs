@@ -16,13 +16,16 @@ public class GameController : Controller
 {
     private readonly GameDbContext _context;
     private readonly IResultApiClient _resultApiClient;
+    private readonly IUserApiClient _userApiClient;
 
     public GameController(
         GameDbContext context, 
-        IResultApiClient resultApiClient)
+        IResultApiClient resultApiClient,
+        IUserApiClient userApiClient)
     {
         _context = context;
         _resultApiClient = resultApiClient;
+        _userApiClient = userApiClient;
     }
         
     public ActionResult Index(string? error)
@@ -70,5 +73,34 @@ public class GameController : Controller
         var model = gameResults.Select(gr => new HistoryModel { Input = gr });
         return View(model);
     }
-
+    [AllowAnonymous]
+    public async Task<IActionResult> Ranking(int? pageIndex, int? pageSize)
+    {
+        var request = new PagingRequest();
+        if (pageIndex != null)
+            request.PageIndex = (int)pageIndex;
+        if (pageSize != null)
+            request.PageSize = (int)pageSize;
+        var response = await _userApiClient.GetRanking(request);
+        if (!response.Succeeded)
+        {
+            ViewData["Error"] = "Get Result Failure!";
+            return View();
+        }
+        var rankings = response.ResultObject;
+        var model = new RankingModel
+        {
+            AllPlayerRanks = rankings
+        };
+        var userName = User.Identity!.Name;
+        if (userName == null)
+        {
+            ViewData["Error"] = "Unauthorized";
+            return View(model);
+        }
+        var playerRank = rankings.Items.FirstOrDefault(r => r.UserName == userName);
+        if (playerRank != null)
+            model.PlayerRank = playerRank;
+        return View(model);
+    }
 }

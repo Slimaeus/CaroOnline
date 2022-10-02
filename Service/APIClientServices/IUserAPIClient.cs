@@ -19,6 +19,7 @@ public interface IUserApiClient
     Task<ApiResult<bool>> Update(UpdateUserRequest request);
     Task<ApiResult<UserResponse>> GetByUserName(string userName);
     Task<ApiResult<string>> GetConfirmCode(GetConfirmCodeRequest request);
+    Task<ApiResult<PagedList<RankingResponse>>> GetRanking(PagingRequest request);
     Task<ApiResult<bool>> ConfirmEmail(ConfirmEmailRequest request);
     Task<ApiResult<PagedList<UserResponse>>> GetPagedList(PagingRequest pagingRequest);
     Task<ApiResult<bool>> Delete(DeleteUserRequest deleteUserRequest);

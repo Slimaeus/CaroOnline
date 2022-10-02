@@ -134,6 +134,20 @@ public class UserApiClient : IUserApiClient
 
     }
 
+    public async Task<ApiResult<PagedList<RankingResponse>>> GetRanking(PagingRequest request)
+    {
+        try
+        {
+            var client = _httpClientFactory.CreateClient("CaroAPI");
+            var response = await client.GetAsync($"user/get-ranking?{nameof(request.PageIndex)}={request.PageIndex}&{nameof(request.PageSize)}={request.PageSize}");
+            return await ResultReturn<PagedList<RankingResponse>>(response);
+        }
+        catch (Exception ex)
+        {
+            return new ApiErrorResult<PagedList<RankingResponse>>($"Cannot connect to server because {ex.Message}");
+        }
+    }
+
     public async Task<ApiResult<bool>> Register(RegisterRequest request)
     {
         try

@@ -5,8 +5,8 @@ namespace Data.Repositories;
 
 public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : class
 {
-    private readonly DbContext _context;
-    private readonly DbSet<TEntity> _dbSet;
+    protected readonly DbContext _context;
+    protected readonly DbSet<TEntity> _dbSet;
 
     public GenericRepository(DbContext context)
     {

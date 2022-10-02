@@ -158,7 +158,11 @@ public class UserController : ControllerBase
             return Ok(result);
         return BadRequest(result);
     }
-
+    /// <summary>
+    /// Confirm the email
+    /// </summary>
+    /// <param name="request">Confirm Email Request</param>
+    /// <returns>Confirm Status</returns>
     [HttpPost("confirm-email")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -167,6 +171,24 @@ public class UserController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         var result = await _userService.ConfirmEmail(request);
+        if (result.Succeeded)
+            return Ok(result);
+        return BadRequest(result);
+    }
+    /// <summary>
+    /// Get Ranking List
+    /// </summary>
+    /// <param name="request">Paging Request</param>
+    /// <returns>Ranking List</returns>
+    [AllowAnonymous]
+    [HttpGet("get-ranking")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetRanking([FromQuery] PagingRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        var result = await _userService.GetRanking(request);
         if (result.Succeeded)
             return Ok(result);
         return BadRequest(result);
