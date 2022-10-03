@@ -46,7 +46,6 @@ public class JwtManager : IJwtManager
     public ClaimsPrincipal Validate(string token)
     {
         IdentityModelEventSource.ShowPII = true;
-
         TokenValidationParameters validationParameters = new()
         {
             ValidateLifetime = true,
@@ -58,5 +57,12 @@ public class JwtManager : IJwtManager
         var principal = new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out _);
 
         return principal;
+    }
+    public DateTime GetExpireDate(string token)
+    {
+        JwtSecurityToken jwt = new(token);
+        if (token == null)
+            return DateTime.Now;
+        return jwt.ValidTo.ToUniversalTime();
     }
 }

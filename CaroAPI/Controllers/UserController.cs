@@ -58,11 +58,11 @@ public class UserController : ControllerBase
     [HttpPost("authenticate")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Authenticate([FromBody] LoginRequest loginModel)
+    public async Task<IActionResult> Authenticate([FromBody] LoginRequest request)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        var authResult = await _userService.Authenticate(loginModel);
+        var authResult = await _userService.Authenticate(request);
         if (string.IsNullOrEmpty(authResult.ResultObject))
             return BadRequest(authResult);
         return Ok(authResult);
@@ -76,11 +76,28 @@ public class UserController : ControllerBase
     [HttpPut("update")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Update([FromBody] UpdateUserRequest updateUserRequest)
+    public async Task<IActionResult> Update([FromBody] UpdateUserRequest request)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        var result = await _userService.Update(updateUserRequest);
+        var result = await _userService.Update(request);
+        if (result.Succeeded)
+            return Ok(result);
+        return BadRequest(result);
+    }
+    /// <summary>
+    /// Change Password
+    /// </summary>
+    /// <param name="request">Change Password Request</param>
+    /// <returns>Change Password Status</returns>
+    [HttpPut("change-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        var result = await _userService.ChangePassword(request);
         if (result.Succeeded)
             return Ok(result);
         return BadRequest(result);
@@ -132,11 +149,11 @@ public class UserController : ControllerBase
     [HttpPut("role-assign")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RoleAssign(RoleAssignRequest roleAssignRequest)
+    public async Task<IActionResult> RoleAssign(RoleAssignRequest request)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        var result = await _userService.RoleAssign(roleAssignRequest);
+        var result = await _userService.RoleAssign(request);
         if (result.Succeeded)
             return Ok(result);
         return BadRequest(result);

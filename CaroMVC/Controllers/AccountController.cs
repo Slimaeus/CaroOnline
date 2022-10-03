@@ -68,7 +68,6 @@ public class AccountController : Controller
             model.ReturnUrl = returnUrl;
         return View(model);
     }
-        
     [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Login(LoginModel loginModel)
@@ -96,10 +95,11 @@ public class AccountController : Controller
             return View(loginModel);
         }
         var userPrincipal = _jWtManager.Validate(token);
+        var expire = _jWtManager.GetExpireDate(token);
         var authProperties = new AuthenticationProperties
         {
-            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-            IsPersistent = loginModel.Input.RememberMe
+            ExpiresUtc = expire,
+            IsPersistent = loginModel.RememberMe
         };
         HttpContext.Session.SetString("Token", token);
         await HttpContext.SignInAsync(
@@ -215,6 +215,57 @@ public class AccountController : Controller
         if (!string.IsNullOrEmpty(model.ReturnUrl))
             return LocalRedirect(model.ReturnUrl);
         return RedirectToAction(nameof(Index), "Home");
+    }
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+    [HttpPost]
+    public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            ModelState.AddModelError("", "Invalid Input!");
+
+            return View(model);
+        }
+        if (model.ConfirmPassword != model.Input.NewPassword)
+        {
+            ModelState.AddModelError("", "Confirm Password and New Password not match!");
+            return View(model);
+        }
+        var userIdentity = User.Identity;
+        if (userIdentity == null)
+        {
+            return RedirectToAction(nameof(Login), new LoginModel() { ReturnUrl = Request.Path });
+        }
+        var userName = userIdentity.Name;
+        if (userName == null)
+        {
+            return RedirectToAction(nameof(Login), new LoginModel() { ReturnUrl = Request.Path });
+        }
+        model.Input.UserName = userName;
+        var response = await _userApiClient.ChangePassword(model.Input);
+        if (response == null)
+        {
+            ModelState.AddModelError("", "Cannot Connect to Server!");
+
+            return View(model);
+        }
+        if (!response.Succeeded)
+        {
+            ModelState.AddModelError("", response.Message);
+
+            return View(model);
+        }
+        var result = response.ResultObject;
+        if (!result)
+        {
+            ModelState.AddModelError("", "Change Password Failure!");
+
+            return View(model);
+        }
+        return RedirectToAction("Index", "Account");
     }
     public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
     {

@@ -37,12 +37,33 @@ public class UserApiClient : IUserApiClient
         }
     }
 
+    public async Task<ApiResult<bool>> ChangePassword(ChangePasswordRequest request)
+    {
+        try
+        {
+            var client = _httpClientFactory.CreateClient("CaroAPI");
+            var token = _httpContextAccessor.HttpContext!.Session.GetString("Token");
+            if (token == null)
+                return new ApiErrorResult<bool>("Unauthorized! Please Login Again");
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await client.PutAsync($"user/change-password", httpContent);
+            return await ResultReturn<bool>(response);
+        }
+        catch (Exception ex)
+        {
+            return new ApiErrorResult<bool>($"Cannot connect to server because {ex.Message}");
+        }
+    }
+
     public async Task<ApiResult<bool>> ConfirmEmail(ConfirmEmailRequest request)
     {
         try
         {
             var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var token = _httpContextAccessor.HttpContext!.Session.GetString("Token");
             if (token == null)
                 return new ApiErrorResult<bool>("Unauthorized! Please Login Again");
 
@@ -63,7 +84,7 @@ public class UserApiClient : IUserApiClient
         try
         {
             var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var token = _httpContextAccessor.HttpContext!.Session.GetString("Token");
             if (token == null)
                 return new ApiErrorResult<bool>("Unauthorized");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -82,7 +103,7 @@ public class UserApiClient : IUserApiClient
         try
         {
             var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var token = _httpContextAccessor.HttpContext!.Session.GetString("Token");
             if (token == null)
                 return new ApiErrorResult<UserResponse>("Unauthorized! Please Login Again");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -100,7 +121,7 @@ public class UserApiClient : IUserApiClient
         try
         {
             var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var token = _httpContextAccessor.HttpContext!.Session.GetString("Token");
             if (token == null)
                 return new ApiErrorResult<string>("Unauthorized! Please Login Again");
             var json = JsonConvert.SerializeObject(request);
@@ -120,7 +141,7 @@ public class UserApiClient : IUserApiClient
         try
         {
             var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var token = _httpContextAccessor.HttpContext!.Session.GetString("Token");
             if (token == null)
                 return new ApiErrorResult<PagedList<UserResponse>>("Unauthorized! Please Login Again");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -181,12 +202,12 @@ public class UserApiClient : IUserApiClient
             var client = _httpClientFactory.CreateClient("CaroAPI");
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var token = _httpContextAccessor.HttpContext!.Session.GetString("Token");
             if (token == null)
                 return new ApiErrorResult<bool>("Unauthorized! Please Login Again");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.PostAsync($"user/role-assign", httpContent);
+            var response = await client.PutAsync($"user/role-assign", httpContent);
             return await ResultReturn<bool>(response);
         }
         catch (Exception ex)
@@ -202,12 +223,12 @@ public class UserApiClient : IUserApiClient
             var client = _httpClientFactory.CreateClient("CaroAPI");
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var token = _httpContextAccessor.HttpContext!.Session.GetString("Token");
             if (token == null)
                 return new ApiErrorResult<bool>("Unauthorized! Please Login Again");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.PostAsync($"user/update", httpContent);
+            var response = await client.PutAsync($"user/update", httpContent);
             return await ResultReturn<bool>(response);
         }
         catch (Exception ex)

@@ -16,13 +16,14 @@ public interface IUserApiClient
 
     Task<ApiResult<string>> Authenticate(LoginRequest request);
     Task<ApiResult<bool>> Register(RegisterRequest request);
+    Task<ApiResult<bool>> ChangePassword(ChangePasswordRequest request);
     Task<ApiResult<bool>> Update(UpdateUserRequest request);
     Task<ApiResult<UserResponse>> GetByUserName(string userName);
     Task<ApiResult<string>> GetConfirmCode(GetConfirmCodeRequest request);
     Task<ApiResult<PagedList<RankingResponse>>> GetRanking(PagingRequest request);
     Task<ApiResult<bool>> ConfirmEmail(ConfirmEmailRequest request);
-    Task<ApiResult<PagedList<UserResponse>>> GetPagedList(PagingRequest pagingRequest);
-    Task<ApiResult<bool>> Delete(DeleteUserRequest deleteUserRequest);
+    Task<ApiResult<PagedList<UserResponse>>> GetPagedList(PagingRequest request);
+    Task<ApiResult<bool>> Delete(DeleteUserRequest request);
     Task<ApiResult<bool>> RoleAssign(RoleAssignRequest request);
     Task<ApiResult<TResult>> ResultReturn<TResult>(HttpResponseMessage response);
 }
