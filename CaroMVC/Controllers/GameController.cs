@@ -6,12 +6,9 @@ using Model.GameModels;
 using Model.ActionModels;
 using Service.APIClientServices;
 using Model.RequestModels;
-using AutoMapper;
-using Model.ResponseModels;
 
 namespace CaroMVC.Controllers;
 
-[Authorize]
 public class GameController : Controller
 {
     private readonly GameDbContext _context;

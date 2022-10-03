@@ -99,7 +99,7 @@ public class AccountController : Controller
         var authProperties = new AuthenticationProperties
         {
             ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-            IsPersistent = false
+            IsPersistent = loginModel.Input.RememberMe
         };
         HttpContext.Session.SetString("Token", token);
         await HttpContext.SignInAsync(

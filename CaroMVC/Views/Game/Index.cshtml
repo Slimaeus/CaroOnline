@@ -7,11 +7,15 @@
 <div class="container">
     <div class="text-danger validation-summary-errors">@ViewData["Error"]</div>
 </div>
-<div class="container row" id="room-list">
-    <div class="col">
-        <a asp-action="Play" asp-route-roomName="@User.Identity!.Name" class="btn btn-primary" id="create-room">Create a room</a>
+@if (User.Identity!.IsAuthenticated)
+{
+    <div class="container row" id="room-list">
+        <div class="col">
+            <a asp-action="Play" asp-route-roomName="@User.Identity!.Name" class="btn btn-primary" id="create-room">Create a room</a>
+        </div>
     </div>
-</div>
+
+}
 
 <table class="table table-light table-hover">
     <tr>
@@ -30,7 +34,11 @@
                     <span>@room.GameUsers.Count()/@room.RoomMax</span>
                 </td>
                 <td>
-                    @if (room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-danger" room="@room.RoomName">Sign in to Play</a>
+                    }
+                    else if (room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
                     {
                         <a class="btn btn-danger leave-room" room="@room.RoomName">Leave</a>
                     }

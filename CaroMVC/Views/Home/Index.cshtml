@@ -15,7 +15,7 @@
             <div class="card-header fs-2"><i class="bi bi-joystick"></i> GAME MODE</div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <button class="btn btn-lg btn-success" type="button">[<i class="bi bi-emoji-smile-fill"></i>] - Play With Stranger</button>
+                    <a asp-controller="Game" asp-action="Index" class="btn btn-lg btn-success">[<i class="bi bi-emoji-smile-fill"></i>] - Play With Stranger</a>
                     <button class="btn btn-lg btn-success" type="button">[<i class="bi bi-people-fill"></i>] - Play With Friend</button>
                     <button class="btn btn-lg btn-success" type="button">[<i class="bi bi-robot"></i>] - Training With Robot</button>
                 </div>
@@ -25,7 +25,7 @@
             <div class="card-header fs-2"><i class="bi bi-controller"></i> OTHERS</div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <button class="btn btn-lg btn-info" type="button">[<i class="bi bi-bar-chart-fill"></i>] - Chart Ranking</button>
+                    <a asp-controller="Game" asp-action="Ranking" class="btn btn-lg btn-info">[<i class="bi bi-bar-chart-fill"></i>] - Chart Ranking</a>
                     @if (User.Identity.IsAuthenticated)
                     {
 

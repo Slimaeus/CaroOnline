@@ -19,10 +19,9 @@
                 <tr class="table-active">
                     <th>Id</th>
                     <th>GameMode</th>
-                    <th>StartedTime</th>
-                    <th>EndedTime</th>
+                    <th>Total Time</th>
                     <th>Opponent</th>
-                    <th>Win/Draw/Lose</th>
+                    <th>Result </th>
                     <th>Score</th>
                 </tr>
             </thread>
@@ -32,8 +31,7 @@
                     <tr>
                         <td>@item.Input.Id</td>
                         <td>@item.Input.GameMode</td>
-                        <td>@item.Input.StartedTime</td>
-                        <td>@item.Input.EndedTime</td>
+                        <td>@item.Input.TotalTime.ToString(@"hh\:mm\:ss")</td>
                         <td>@item.Input.OpponentInGameName</td>
                         <td>@item.Input.Status</td>
                         <td>@item.Input.Score</td>

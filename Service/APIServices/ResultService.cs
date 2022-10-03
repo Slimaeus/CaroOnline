@@ -148,6 +148,7 @@ public class ResultService : IResultService
                 Status = (userResult.IsWinner) ? "Win" : "Lose",
                 StartedTime = r.StartedTime,
                 EndedTime = r.EndedTime,
+                TotalTime = r.EndedTime.Subtract(r.StartedTime),
                 Score = userResult.Score
             };
         }).ToList();

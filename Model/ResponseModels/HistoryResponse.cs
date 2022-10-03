@@ -14,4 +14,5 @@ public class HistoryResponse
 
     public DateTime StartedTime { get; set; } = DateTime.Now;
     public DateTime EndedTime { get; set; } = DateTime.Now;
+    public TimeSpan TotalTime { get; set; } = TimeSpan.Zero;
 }
