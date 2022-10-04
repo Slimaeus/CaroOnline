@@ -36,7 +36,7 @@
         </div>
     }
     
-</div>
+@*</div>
 <div class="card position-absolute" style="bottom: 50%; right: 50%; visibility: hidden" id="result-card">
     <div class="card-header">
         Result
@@ -46,6 +46,33 @@
         <a asp-action="Index" class="btn btn-info">Return to Lobby</a>
     </div>
 </div>
+*@
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="btn-test" hidden>
+        test
+    </button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content text-center">
+            <div class="modal-header w-100">
+                <h5 class="modal-title text-center" id="staticBackdropLabel">Result</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="result-text">
+            </div>
+            <div class="modal-footer">
+                <a asp-action="Index" class="btn btn-dark btn-info">Close</a>
+                <a asp-action="History" class="btn btn-dark">History</a>
+                <a class = "btn btn-dark disabled" onclick="location.reload();">Rematch</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- Scripts -->
 @section Scripts {
     <script src="~/lib/microsoft-signalr/signalr.min.js"></script>
@@ -91,7 +118,9 @@
             const board = document.getElementById("board");
             board.style.pointerEvents = "none";
             const roomNameNode = document.getElementById("room-name");
-            const resultCard = document.getElementById("result-card");
+            const resultTest = document.getElementById("btn-test");
+            resultTest.click();
+            const resultCard = document.getElementById("staticBackdrop");
             const resultText = document.getElementById("result-text");
             roomNameNode.innerText = `The Winner is ${winnerInGameName}`;
             resultText.innerText = `The Winner is ${winnerInGameName}`;

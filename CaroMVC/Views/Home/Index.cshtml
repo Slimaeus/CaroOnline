@@ -26,7 +26,7 @@
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a asp-controller="Game" asp-action="Ranking" class="btn btn-lg btn-info">[<i class="bi bi-bar-chart-fill"></i>] - Chart Ranking</a>
-                    @if (User.Identity.IsAuthenticated)
+                    @if (User.Identity!.IsAuthenticated)
                     {
 
                         <a asp-controller="Game" asp-action="History" class="btn btn-lg btn-info">[<i class="bi bi-hourglass-split"></i>] - Match History</a>
