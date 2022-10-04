@@ -9,5 +9,10 @@ public static class SystemConstants
         public const string BaseAddress = "CaroAPIBaseUrl";
         public const string GameConnectionStringKey = "GameSqliteDb";
     }
-
+    public static class Game
+    {
+        public const int WinScore = 20;
+        public const int LoseScore = 10;
+        public const int DrawScore = 5;
+    }
 }

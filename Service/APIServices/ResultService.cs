@@ -48,14 +48,16 @@ public class ResultService : IResultService
         {
             ResultId = result.Id,
             UserId = winner.Id,
-            IsWinner = true
+            IsWinner = true,
+            Score = 20
         };
 
         var loserResult = new UserResult
         {
             ResultId = result.Id,
             UserId = loser.Id,
-            IsWinner = false
+            IsWinner = false,
+            Score = 10
         };
 
         await _userResultRepo.AddAsync(winnerResult);
