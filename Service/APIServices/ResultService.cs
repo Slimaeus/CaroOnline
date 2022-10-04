@@ -106,18 +106,26 @@ public class ResultService : IResultService
         return new ApiErrorResult<string>("Delete result fail!");
     }
 
-    public async Task<ApiResult<IEnumerable<HistoryResponse>>> GetHistoryByUserName(string userName, PagingRequest pagingRequest)
+    public async Task<ApiResult<IEnumerable<HistoryResponse>>> GetHistoryByUserName(string userName, PagingRequest request)
     {
         var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
         {
             return new ApiErrorResult<IEnumerable<HistoryResponse>>("User not found!");
         }
+
+        const int defaultPageSize = 10;
+        const int defaultPageIndex = 1;
+        var pageSize = defaultPageSize;
+        var pageIndex = defaultPageIndex;
+
+        if (request.PageSize > 0) pageSize = request.PageSize;
+        if (request.PageIndex > 0) pageIndex = request.PageIndex;
         var results = await _resultRepo.GetListAsync(
             includeProperties: "UserResults",
             filter: result => result.UserResults.Any(userResult => userResult.UserId == user.Id),
-            skip: (pagingRequest.PageIndex - 1) * pagingRequest.PageSize,
-            take: pagingRequest.PageSize
+            skip: (request.PageIndex - 1) * request.PageSize,
+            take: request.PageSize
         );
         if (results == null)
             return new ApiErrorResult<IEnumerable<HistoryResponse>>("Get Result by UserName list failed!");
@@ -157,11 +165,19 @@ public class ResultService : IResultService
         return new ApiSuccessResult<IEnumerable<HistoryResponse>>(histories!);
     }
 
-    public ApiResult<IEnumerable<ResultResponse>> GetResults(PagingRequest pagingRequest)
+    public ApiResult<IEnumerable<ResultResponse>> GetResults(PagingRequest request)
     {
+        const int defaultPageSize = 10;
+        const int defaultPageIndex = 1;
+        var pageSize = defaultPageSize;
+        var pageIndex = defaultPageIndex;
+
+        if (request.PageSize > 0) pageSize = request.PageSize;
+        if (request.PageIndex > 0) pageIndex = request.PageIndex;
+
         var resultList = _resultRepo.GetList(
-            skip: (pagingRequest.PageIndex - 1) * pagingRequest.PageSize,
-            take: pagingRequest.PageSize
+            skip: (request.PageIndex - 1) * request.PageSize,
+            take: request.PageSize
         );
         if (resultList.Any())
             return new ApiErrorResult<IEnumerable<ResultResponse>>("Get result list failed!");
@@ -169,18 +185,25 @@ public class ResultService : IResultService
         return new ApiSuccessResult<IEnumerable<ResultResponse>>(response);
     }
 
-    public async Task<ApiResult<IEnumerable<ResultResponse>>> GetResultsByUserName(string userName, PagingRequest pagingRequest)
+    public async Task<ApiResult<IEnumerable<ResultResponse>>> GetResultsByUserName(string userName, PagingRequest request)
     {
         var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
         {
             return new ApiErrorResult<IEnumerable<ResultResponse>>("User not found!");
         }
+        const int defaultPageSize = 10;
+        const int defaultPageIndex = 1;
+        var pageSize = defaultPageSize;
+        var pageIndex = defaultPageIndex;
+
+        if (request.PageSize > 0) pageSize = request.PageSize;
+        if (request.PageIndex > 0) pageIndex = request.PageIndex;
         var resultList = await _resultRepo.GetListAsync(
             includeProperties: "UserResults",
             filter: result => result.UserResults.Any(userResult => userResult.UserId == user.Id),
-            skip: (pagingRequest.PageIndex - 1) * pagingRequest.PageSize,
-            take: pagingRequest.PageSize
+            skip: (request.PageIndex - 1) * request.PageSize,
+            take: request.PageSize
         );
         if (resultList == null)
             return new ApiErrorResult<IEnumerable<ResultResponse>>("Get Result by UserName list failed!");
