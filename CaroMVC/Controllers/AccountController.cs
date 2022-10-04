@@ -126,6 +126,7 @@ public class AccountController : Controller
             model.ReturnUrl = returnUrl;
         return View(model);
     }
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Register(RegisterModel model)
     {
@@ -149,6 +150,7 @@ public class AccountController : Controller
         if (!loginResponse.Succeeded)
         {
             ModelState.AddModelError("", "Login Failure");
+            return View(model);
         }
         var token = loginResponse.ResultObject;
         if (token == null)
@@ -181,6 +183,7 @@ public class AccountController : Controller
             model.ReturnUrl = returnUrl;
         return View(model);
     }
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> ForgotPassword(ForgetPasswordModel model)
     {
@@ -210,7 +213,7 @@ public class AccountController : Controller
         await _emailSender.SendEmailAsync(
             model.Input.Email, 
             "Reset Password", 
-            $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>CLICKING HERE</a>."
+            $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>CLICKING HERE</a>."
         );
         if (!string.IsNullOrEmpty(model.ReturnUrl))
             return LocalRedirect(model.ReturnUrl);
