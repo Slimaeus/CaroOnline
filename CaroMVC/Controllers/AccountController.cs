@@ -63,6 +63,8 @@ public class AccountController : Controller
     [AllowAnonymous]
     public IActionResult Login(string? returnUrl)
     {
+        if (User.Identity.IsAuthenticated)
+            return RedirectToAction("Index", "Home");
         LoginModel model = new();
         if (returnUrl != null)
             model.ReturnUrl = returnUrl;
@@ -121,6 +123,8 @@ public class AccountController : Controller
     [AllowAnonymous]
     public IActionResult Register(string? returnUrl)
     {
+        if (User.Identity.IsAuthenticated)
+            return RedirectToAction("Index", "Home");
         RegisterModel model = new();
         if (returnUrl != null)
             model.ReturnUrl = returnUrl;
