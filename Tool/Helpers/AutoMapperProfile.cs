@@ -20,16 +20,16 @@ public class AutoMapperProfile : Profile
         CreateMap<RoleRequest, AppRole>();
         CreateMap<AppRole, RoleResponse>();
         CreateMap<RegisterRequest, AppUser>();
-        CreateMap<ResultRequest, Result>()
-            .ForMember(des => des.StartedTime, act => act.MapFrom(src => DateTime.Now))
-            .ForMember(
-                des => des.EndedTime,
-                act => act.MapFrom(
-                    src => DateTime.Now
-                        .AddHours(src.Hour)
-                        .AddMinutes(src.Minute)
-                        .AddSeconds(src.Second)
-                ));
+        CreateMap<ResultRequest, Result>();
+            //.ForMember(des => des.StartedTime, act => act.MapFrom(src => DateTime.Now))
+            //.ForMember(
+            //    des => des.EndedTime,
+            //    act => act.MapFrom(
+            //        src => DateTime.Now
+            //            .AddHours(src.Hour)
+            //            .AddMinutes(src.Minute)
+            //            .AddSeconds(src.Second)
+            //    ));
         CreateMap<Result, ResultResponse>();
         CreateMap<RegisterRequest, LoginRequest>();
         CreateMap<RegisterModel, LoginModel>()

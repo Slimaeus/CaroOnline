@@ -1,8 +1,10 @@
 class Game {
     #moves;
+    startedDate;
 
     constructor() {
         this.#moves = []
+        this.startedDate = Date.now();
     }
     // Check if a user win
     isWinner(move) {

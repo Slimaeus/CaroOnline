@@ -182,14 +182,14 @@ public class AccountController : Controller
     [AllowAnonymous]
     public IActionResult ForgotPassword(string returnUrl)
     {
-        ForgetPasswordModel model = new();
+        ForgotPasswordModel model = new();
         if (returnUrl != null)
             model.ReturnUrl = returnUrl;
         return View(model);
     }
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> ForgotPassword(ForgetPasswordModel model)
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
     {
         if (!ModelState.IsValid)
         {

@@ -115,7 +115,6 @@ public class GameHub : Hub
             return;
         var players = room.GameUsers.ToList();
         var index = players.FindIndex(p => p.UserName == userName);
-        Console.WriteLine(index);
         var colorList = new List<string>
         {
             "success",
@@ -123,12 +122,11 @@ public class GameHub : Hub
             "primary"
         };
         var color = (index != -1 && index < colorList.Count) ? colorList[index] : "outline-dark";
-        Console.WriteLine(color);
         await Clients.Group(roomName).SendAsync("updateBoard", userName, row, col, color);
         await Clients.OthersInGroup(roomName).SendAsync("enableBoard");
     }
 
-    public async Task GameEnd(string roomName, string winnerUserName)
+    public async Task GameEnd(string roomName, string winnerUserName, DateTime startedDate)
     {
         if (string.IsNullOrEmpty(winnerUserName))
         {
@@ -160,10 +158,13 @@ public class GameHub : Hub
             return;
         }
         var now = DateTime.Now;
+        // Save Valid DateTime
         ResultRequest request = new()
         {
             WinnerUserName = winnerUserName,
             LoserUserName = loserUserName,
+            StartedTime = startedDate.AddHours(+7),
+            EndedTime = now,
             Hour = now.Hour,
             Minute = now.Minute,
             Second = now.Second

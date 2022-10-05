@@ -179,7 +179,7 @@ public class ResultService : IResultService
             skip: (request.PageIndex - 1) * request.PageSize,
             take: request.PageSize
         );
-        if (resultList.Any())
+        if (!resultList.Any())
             return new ApiErrorResult<IEnumerable<ResultResponse>>("Get result list failed!");
         var response = _mapper.Map<IEnumerable<ResultResponse>>(resultList);
         return new ApiSuccessResult<IEnumerable<ResultResponse>>(response);

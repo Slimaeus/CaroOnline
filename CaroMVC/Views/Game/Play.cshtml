@@ -128,7 +128,8 @@
                 const move = new Move(row,  col, userName);
                 if (game.isWinner(move))
                 {
-                    connection.invoke("GameEnd", roomName, move.userName);
+                    console.log(game.startedDate);
+                    connection.invoke("GameEnd", roomName, move.userName, new Date(game.startedDate));
                 }
                 buttonList.forEach(button => button.disabled = true);
                 connection.invoke("PlaceStone", roomName, Number(row), Number(col));
