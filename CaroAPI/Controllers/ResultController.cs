@@ -52,6 +52,7 @@ public class ResultController : ControllerBase
             return Ok(results);
         return BadRequest(results);
     }
+    [AllowAnonymous]
     [HttpGet("get-history-by-username/{userName}")]
     public async Task<IActionResult> GetHistory(string userName, [FromQuery] PagingRequest pagingRequest)
     {

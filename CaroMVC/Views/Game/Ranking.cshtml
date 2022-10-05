@@ -93,7 +93,7 @@
                     <ul class="pagination justify-content-center">
                         @if (Model.AllPlayerRanks.HasPrevious) {
                             <li class="page-item">
-                                <a class="page-link" href="@Model.AllPlayerRanks.PageIndex - 1">&raquo;</a>
+                                <a class="page-link" href="@Model.AllPlayerRanks.PageIndex - 1">&laquo;</a>
                             </li>
                         }
                         @for (int i = 1; i <= Model.AllPlayerRanks.PageCount; i++)
@@ -152,9 +152,7 @@
                             <th>Top</th>
                             <th>InGameName</th>
                             <th>Win/Draw/Lose</th>
-                            <th>TotalTime</th>
                             <th>Score</th>
-                            <th>Nation</th>
                         </tr>
                     </thread>
                     <tbody>
@@ -176,7 +174,7 @@
                         @if (Model.AllPlayerRanks.HasPrevious)
                         {
                             <li class="page-item">
-                                <a class="page-link" href="@Model.AllPlayerRanks.PageIndex - 1">&raquo;</a>
+                                <a asp-action="Ranking" asp-route-pageIndex="@(@Model.AllPlayerRanks.PageIndex - 1)" class="page-link">&laquo;</a>
                             </li>
                         }
                         @for (int i = 1; i <= Model.AllPlayerRanks.PageCount; i++)
@@ -188,7 +186,7 @@
                         @if (Model.AllPlayerRanks.HasNext)
                         {
                             <li class="page-item">
-                                <a class="page-link" href="@Model.AllPlayerRanks.PageIndex + 1">&raquo;</a>
+                                <a asp-action="Ranking" asp-route-pageIndex="@(@Model.AllPlayerRanks.PageIndex + 1)" class="page-link">&raquo;</a>
                             </li>
                         }
                     </ul>

@@ -52,7 +52,7 @@ public class GameController : Controller
         return View(model);
     }
 
-    public async Task<IActionResult> History()
+    public async Task<IActionResult> History(int? pageIndex, int? pageSize)
     {
         var userName = User.Identity!.Name;
         if (userName == null)
@@ -60,14 +60,19 @@ public class GameController : Controller
             ViewData["Error"] = "Unauthorized";
             return View();
         }
-        var response = await _resultApiClient.GetHistoryByUserName(userName, new PagingRequest());
+        var request = new PagingRequest();
+        if (pageIndex != null)
+            request.PageIndex = (int)pageIndex;
+        if (pageSize != null)
+            request.PageSize = (int)pageSize;
+        var response = await _resultApiClient.GetHistoryByUserName(userName, request);
         if (!response.Succeeded)
         {
             ViewData["Error"] = "Get Result Failure!";
             return View();
         }
         var gameResults = response.ResultObject;
-        var model = gameResults.Select(gr => new HistoryModel { Input = gr });
+        var model = new HistoryModel { Input = gameResults };
         return View(model);
     }
     [AllowAnonymous]

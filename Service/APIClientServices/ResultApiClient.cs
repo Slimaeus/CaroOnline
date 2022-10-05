@@ -39,21 +39,17 @@ public class ResultApiClient : IResultApiClient
         }
     }
 
-    public async Task<ApiResult<IEnumerable<HistoryResponse>>> GetHistoryByUserName(string userName, PagingRequest request)
+    public async Task<ApiResult<PagedList<HistoryResponse>>> GetHistoryByUserName(string userName, PagingRequest request)
     {
         try
         {
             var client = _httpClientFactory.CreateClient("CaroAPI");
-            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
-            if (token == null)
-                return new ApiErrorResult<IEnumerable<HistoryResponse>>("Unauthorized");
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await client.GetAsync($"result/get-history-by-username/{userName}?{nameof(request.PageIndex)}={request.PageIndex}&{nameof(request.PageSize)}={request.PageSize}");
-            return await ResultReturn<IEnumerable<HistoryResponse>>(response);
+            return await ResultReturn<PagedList<HistoryResponse>>(response);
         }
         catch (Exception ex)
         {
-            return new ApiErrorResult<IEnumerable<HistoryResponse>>($"Cannot connect to server because {ex.Message}");
+            return new ApiErrorResult<PagedList<HistoryResponse>>($"Cannot connect to server because {ex.Message}");
         }
     }
 

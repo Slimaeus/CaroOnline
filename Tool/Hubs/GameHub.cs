@@ -164,10 +164,7 @@ public class GameHub : Hub
             WinnerUserName = winnerUserName,
             LoserUserName = loserUserName,
             StartedTime = startedDate.AddHours(+7),
-            EndedTime = now,
-            Hour = now.Hour,
-            Minute = now.Minute,
-            Second = now.Second
+            EndedTime = now
         };
         var result = await _resultApiClient.Create(request);
         if (!result.Succeeded)

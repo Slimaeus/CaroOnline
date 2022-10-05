@@ -1,5 +1,5 @@
 ﻿@using Model.ActionModels
-@model IEnumerable<HistoryModel>
+@model HistoryModel
 <body>
     <div class="container">
         <h1 class="text-center">HISTORY</h1>
@@ -26,42 +26,39 @@
                 </tr>
             </thread>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Input.Items)
                 {
                     <tr>
-                        <td>@item.Input.Id</td>
-                        <td>@item.Input.GameMode</td>
-                        <td>@item.Input.TotalTime.ToString(@"hh\:mm\:ss")</td>
-                        <td>@item.Input.OpponentInGameName</td>
-                        <td>@item.Input.Status</td>
-                        <td>@item.Input.Score</td>
+                        <td>@item.Id</td>
+                        <td>@item.GameMode</td>
+                        <td>@item.TotalTime.ToString(@"hh\:mm\:ss")</td>
+                        <td>@item.OpponentInGameName</td>
+                        <td>@item.Status</td>
+                        <td>@item.Score</td>
                     </tr>
                 }
             </tbody>
         </table>
         <div>
             <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">&laquo;</a>
-                </li>
-                <li class="page-item active">
-                    <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">3</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">4</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">5</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="#">&raquo;</a>
-                </li>
+                @if (Model.Input.HasPrevious)
+                {
+                    <li class="page-item">
+                        <a asp-action="History" asp-route-pageIndex="@(@Model.Input.PageIndex - 1)" class="page-link">&laquo;</a>
+                    </li>
+                }
+                @for (int i = 1; i <= Model.Input.PageCount; i++)
+                {
+                    <li class="page-item">
+                        <a asp-action="History" asp-route-pageIndex="@i" class="page-link">@i</a>
+                    </li>
+                }
+                @if (Model.Input.HasNext)
+                {
+                    <li class="page-item">
+                        <a asp-action="History" asp-route-pageIndex="@(@Model.Input.PageIndex + 1)" class="page-link">&raquo;</a>
+                    </li>
+                }
             </ul>
         </div>
     </div>

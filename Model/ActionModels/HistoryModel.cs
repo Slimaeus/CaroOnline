@@ -9,6 +9,6 @@ namespace Model.ActionModels
 {
     public class HistoryModel
     {
-        public HistoryResponse Input { get; set; }
+        public PagedList<HistoryResponse> Input { get; set; } = new PagedList<HistoryResponse>();
     }
 }

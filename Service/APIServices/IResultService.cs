@@ -11,5 +11,5 @@ public interface IResultService
     Task<ApiResult<string>> DeleteResultById (Guid resultId, DeleteResultRequest resultRequest);
     ApiResult<IEnumerable<ResultResponse>> GetResults(PagingRequest pagingRequest);
     Task<ApiResult<IEnumerable<ResultResponse>>> GetResultsByUserName(string userName, PagingRequest pagingRequest);
-    Task<ApiResult<IEnumerable<HistoryResponse>>> GetHistoryByUserName(string userName, PagingRequest pagingRequest);
+    Task<ApiResult<PagedList<HistoryResponse>>> GetHistoryByUserName(string userName, PagingRequest pagingRequest);
 }

@@ -106,12 +106,12 @@ public class ResultService : IResultService
         return new ApiErrorResult<string>("Delete result fail!");
     }
 
-    public async Task<ApiResult<IEnumerable<HistoryResponse>>> GetHistoryByUserName(string userName, PagingRequest request)
+    public async Task<ApiResult<PagedList<HistoryResponse>>> GetHistoryByUserName(string userName, PagingRequest request)
     {
         var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
         {
-            return new ApiErrorResult<IEnumerable<HistoryResponse>>("User not found!");
+            return new ApiErrorResult<PagedList<HistoryResponse>>("User not found!");
         }
 
         const int defaultPageSize = 10;
@@ -128,9 +128,9 @@ public class ResultService : IResultService
             take: request.PageSize
         );
         if (results == null)
-            return new ApiErrorResult<IEnumerable<HistoryResponse>>("Get Result by UserName list failed!");
+            return new ApiErrorResult<PagedList<HistoryResponse>>("Get Result by UserName list failed!");
 
-        var histories = results
+        var historyResults = results
             .Select(r => {
             var userResult = r.UserResults.AsQueryable().FirstOrDefault(u => u.UserId == user.Id);
             if (userResult == null)
@@ -143,7 +143,6 @@ public class ResultService : IResultService
                 return null;
             }
             var opponent = _unitOfWork.DbContext.Users.Find(opponentResult.UserId);
-            //var opponent = opponentResult.User;
             if (opponent == null)
             {
                 return null;
@@ -162,7 +161,15 @@ public class ResultService : IResultService
                 Score = userResult.Score
             };
         }).ToList();
-        return new ApiSuccessResult<IEnumerable<HistoryResponse>>(histories!);
+        var totalCount = _resultRepo.Count();
+        PagedList<HistoryResponse> histories = new()
+        { 
+            TotalCount = totalCount,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            Items = historyResults!
+        };
+        return new ApiSuccessResult<PagedList<HistoryResponse>>(histories!);
     }
 
     public ApiResult<IEnumerable<ResultResponse>> GetResults(PagingRequest request)

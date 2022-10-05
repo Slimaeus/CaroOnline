@@ -40,6 +40,11 @@ public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : c
         return _dbSet.Count(filter);
     }
 
+    public int Count()
+    {
+        return _dbSet.Count();
+    }
+
     public virtual void Delete(TEntity entity)
     {
         _dbSet.Remove(entity);

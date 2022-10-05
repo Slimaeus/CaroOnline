@@ -10,6 +10,7 @@ public interface IRepository<TEntity> where TEntity : class
     void Delete(TEntity entity);
     void Delete(object id);
     void Delete(Expression<Func<TEntity, bool>> filter);
+    int Count();
     int Count(Expression<Func<TEntity, bool>> filter);
     IEnumerable<TEntity> GetList(
         Expression<Func<TEntity, bool>> filter = null!,
