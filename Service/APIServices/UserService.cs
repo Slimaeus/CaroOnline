@@ -45,7 +45,7 @@ public class UserService : IUserService
         var result = await _userManager.DeleteAsync(user);
         if (result.Succeeded)
             return new ApiSuccessResult<bool>(true);
-        return new ApiErrorResult<bool>("Delete Fail!");
+        return new ApiErrorResult<bool>(string.Join(' ', result.Errors.Select(error => error.Description)));
     }
 
     public async Task<ApiResult<bool>> Delete(string userName)
@@ -56,7 +56,7 @@ public class UserService : IUserService
         var result = await _userManager.DeleteAsync(user);
         if (result.Succeeded)
             return new ApiSuccessResult<bool>(true);
-        return new ApiErrorResult<bool>("Delete failed!");
+        return new ApiErrorResult<bool>(string.Join(' ', result.Errors.Select(error => error.Description)));
     }
 
     public async Task<ApiResult<UserResponse>> GetById(Guid id)
@@ -64,9 +64,7 @@ public class UserService : IUserService
         var user = await _userManager.FindByIdAsync(id.ToString());
         if (user == null)
             return new ApiErrorResult<UserResponse>("User does not exist!");
-        var roles = await _userManager.GetRolesAsync(user);
         var userResponse = _mapper.Map<UserResponse>(user);
-        userResponse.Roles = roles;
         return new ApiSuccessResult<UserResponse>(userResponse);
 
     }
@@ -76,9 +74,7 @@ public class UserService : IUserService
         var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
             return new ApiErrorResult<UserResponse>("User Does Not Exist!");
-        var roles = await _userManager.GetRolesAsync(user);
         var userResponse = _mapper.Map<UserResponse>(user);
-        userResponse.Roles = roles;
         return new ApiSuccessResult<UserResponse>(userResponse);
     }
 
@@ -100,7 +96,6 @@ public class UserService : IUserService
             userList = await orderBy(query).ToListAsync();
         else
             userList = await query.ToListAsync();
-
         return userList;
     }
 
@@ -149,7 +144,7 @@ public class UserService : IUserService
 
         if (result.Succeeded)
             return new ApiSuccessResult<bool>(true);
-        return new ApiErrorResult<bool>("Register Fail!");
+        return new ApiErrorResult<bool>(string.Join(' ', result.Errors.Select(error => error.Description)));
     }
 
     public async Task<ApiResult<bool>> ChangePassword(ChangePasswordRequest request)
@@ -160,8 +155,7 @@ public class UserService : IUserService
         var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
         if (result.Succeeded)
             return new ApiSuccessResult<bool>(true);
-        var errorMessages = result.Errors.Select(error => error.Description).ToArray();
-        return new ApiErrorResult<bool>(errorMessages); 
+        return new ApiErrorResult<bool>(string.Join(' ', result.Errors.Select(error => error.Description))); 
     }
 
     public async Task<ApiResult<string>> GetConfirmCode(GetConfirmCodeRequest request)
@@ -191,9 +185,9 @@ public class UserService : IUserService
 
         var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
         var result = await _userManager.ConfirmEmailAsync(user, code);
-        if (!result.Succeeded)
-            return new ApiErrorResult<bool>("Confirmation Failure!");
-        return new ApiSuccessResult<bool>(true);
+        if (result.Succeeded)
+            return new ApiSuccessResult<bool>(true);
+        return new ApiErrorResult<bool>(string.Join(' ', result.Errors.Select(error => error.Description)));
     }
 
     public async Task<ApiResult<bool>> RoleAssign(RoleAssignRequest request)
@@ -236,7 +230,7 @@ public class UserService : IUserService
         var result = await _userManager.UpdateAsync(user);
         if (result.Succeeded)
             return new ApiSuccessResult<bool>(true);
-        return new ApiErrorResult<bool>("Update Failed!");
+        return new ApiErrorResult<bool>(string.Join(' ', result.Errors.Select(error => error.Description)));
     }
 
     public async Task<ApiResult<PagedList<RankingResponse>>> GetRanking(PagingRequest pagingRequest)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Model.DbModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,5 @@ namespace Model.ResponseModels
         public int Level { get; set; } = 1;
         public int Exp { get; set; } = 0;
         public int Score { get; set; } = 0;
-        public ICollection<string> Roles { get; set; } = new List<string>();
     }
 }

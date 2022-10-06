@@ -11,7 +11,7 @@
 {
     <div class="container row" id="room-list">
         <div class="col">
-            <a asp-action="Play" asp-route-roomName="@User.Identity!.Name" class="btn btn-primary" id="create-room">Create a room</a>
+            <button class="btn btn-primary" id="create-room">Create a room</button>
         </div>
     </div>
 
@@ -22,10 +22,13 @@
         <th scope="col">Id Room</th>
         <th scope="col">Room Name</th>
         <th scope="col">Current Players</th>
-        <th scope="col">Status</th>
+        <th scope="col">Start</th>
+        <th scope="col">End</th>
     </tr>
     <tbody>
-        @foreach (var room in Model)
+        @foreach (var room in Model
+        .OrderByDescending(r => r.RoomName == User.Identity!.Name!)
+        .ThenBy(r => r.GameUsers.Any(u => u.UserName == User.Identity!.Name)))
         {
             <tr>
                 <th scope="row">@room.RoomName</th>
@@ -38,17 +41,26 @@
                     {
                         <a asp-controller="Account" asp-action="Login" class="btn btn-danger" room="@room.RoomName">Sign in to Play</a>
                     }
-                    else if (room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
+                    else if (room.RoomName == User.Identity!.Name)
                     {
-                        <a class="btn btn-danger leave-room" room="@room.RoomName">Leave</a>
+                        <a asp-action="Play" asp-route-roomName="@room.RoomName" class="btn btn-info join-room" room="@room.RoomName">Play</a>
                     }
                     else if (room.GameUsers.Count() < room.RoomMax)
                     {
                         <a asp-action="Play" asp-route-roomName="@room.RoomName" class="btn btn-success join-room" room="@room.RoomName">Join</a>
                     }
                 </td>
+                <td>
+                    @if (room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
+                    {
+                        
+                        <a class="btn btn-danger leave-room" room="@room.RoomName">@((room.RoomName == User.Identity!.Name) ? "Delete" : "Leave")</a>
+                    }
+
+                </td>
 
             </tr>
+            
         }
     </tbody>
 </table>

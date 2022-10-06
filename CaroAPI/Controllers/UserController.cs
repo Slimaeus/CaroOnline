@@ -21,6 +21,7 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="pagingRequest">Paging params</param>
     /// <returns>The User paged list</returns>
+    [AllowAnonymous]
     [HttpGet("get-paged-list")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -66,6 +67,23 @@ public class UserController : ControllerBase
         if (string.IsNullOrEmpty(authResult.ResultObject))
             return BadRequest(authResult);
         return Ok(authResult);
+    }
+    /// <summary>
+    /// Delete User by Id
+    /// </summary>
+    /// <param name="id">User's Id</param>
+    /// <returns>Delete User</returns>
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        var result = await _userService.Delete(id);
+        if (result.Succeeded)
+            return Ok(result);
+        return BadRequest(result);
     }
     /// <summary>
     /// Update User Profile
@@ -116,6 +134,18 @@ public class UserController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         var result = await _userService.Delete(userName);
+        if (result.Succeeded)
+            return Ok(result);
+        return BadRequest(result);
+    }
+    [HttpGet("@me")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        var result = await _userService.GetByUserName(User.Identity!.Name!);
         if (result.Succeeded)
             return Ok(result);
         return BadRequest(result);
