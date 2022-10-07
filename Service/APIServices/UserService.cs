@@ -196,6 +196,7 @@ public class UserService : IUserService
         if (user == null)
             return new ApiErrorResult<bool>("User Does Not Exist");
         var removedRoles = request.Roles.Where(x => !x.Selected).Select(x => x.Name).ToList();
+
         foreach (var roleName in removedRoles)
             if (await _userManager.IsInRoleAsync(user, roleName))
                 await _userManager.RemoveFromRoleAsync(user, roleName);

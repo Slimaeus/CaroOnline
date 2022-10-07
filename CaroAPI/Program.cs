@@ -65,7 +65,7 @@ namespace CaroAPI
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.ConnectionStringKey));
             });
-            builder.Services.AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<CaroDbContext>()
                 .AddDefaultTokenProviders();
 
