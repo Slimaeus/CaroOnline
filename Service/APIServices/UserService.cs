@@ -181,7 +181,7 @@ public class UserService : IUserService
             return new ApiErrorResult<bool>("Code cannot be Null or Empty!");
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
-            return new ApiErrorResult<bool>("Cannot find User! ");
+            return new ApiErrorResult<bool>("Cannot find User!");
 
         var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
         var result = await _userManager.ConfirmEmailAsync(user, code);

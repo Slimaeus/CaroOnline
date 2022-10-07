@@ -74,11 +74,6 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginModel loginModel)
     {
-        if (!ModelState.IsValid)
-        {
-            ViewData["Error"] = "Invalid Input!";
-            return View(loginModel);
-        }
         var response = await _userApiClient.Authenticate(loginModel.Input);
         if (response == null)
         {

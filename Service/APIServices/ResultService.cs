@@ -59,7 +59,12 @@ public class ResultService : IResultService
             IsWinner = false,
             Score = 10
         };
-
+        winner.Score += 20;
+        winner.Exp += 20;
+        loser.Score += 10;
+        loser.Exp += 10;
+        await _userManager.UpdateAsync(winner);
+        await _userManager.UpdateAsync(loser);
         await _userResultRepo.AddAsync(winnerResult);
         await _userResultRepo.AddAsync(loserResult);
 
