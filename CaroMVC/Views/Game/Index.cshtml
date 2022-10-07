@@ -41,7 +41,7 @@
                     {
                         <a asp-controller="Account" asp-action="Login" class="btn btn-danger" room="@room.RoomName">Sign in to Play</a>
                     }
-                    else if (room.RoomName == User.Identity!.Name)
+                    else if (room.RoomName == User.Identity!.Name || room.GameUsers.Any(user => user.UserName == User.Identity!.Name))
                     {
                         <a asp-action="Play" asp-route-roomName="@room.RoomName" class="btn btn-info join-room" room="@room.RoomName">Play</a>
                     }
