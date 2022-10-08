@@ -89,6 +89,14 @@ namespace CaroAPI
                 };
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("*");
+                });
+            });
+
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IRoleService, RoleService>();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
@@ -115,6 +123,8 @@ namespace CaroAPI
             });
 
             app.UseHttpsRedirection();
+
+            app.UseCors();
 
             app.UseAuthentication();
 
