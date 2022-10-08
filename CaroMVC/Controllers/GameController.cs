@@ -8,7 +8,7 @@ using Service.APIClientServices;
 using Model.RequestModels;
 
 namespace CaroMVC.Controllers;
-
+[Authorize]
 public class GameController : Controller
 {
     private readonly GameDbContext _context;
@@ -24,7 +24,7 @@ public class GameController : Controller
         _resultApiClient = resultApiClient;
         _userApiClient = userApiClient;
     }
-        
+    [AllowAnonymous]
     public ActionResult Index(string? error)
     {
         if (error != null)
