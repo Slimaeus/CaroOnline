@@ -208,15 +208,16 @@ public class AccountController : Controller
             ModelState.AddModelError("", "Cannot get the Code");
             return View(model);
         }
-        var callbackUrl = Url.Action(nameof(ConfirmEmail), new { code, email = model.Input.Email });
-        await _emailSender.SendEmailAsync(
-            model.Input.Email, 
-            "Reset Password", 
-            $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>CLICKING HERE</a>."
-        );
-        if (!string.IsNullOrEmpty(model.ReturnUrl))
-            return LocalRedirect(model.ReturnUrl);
-        return RedirectToAction(nameof(Index), "Home");
+        return RedirectToAction(nameof(ConfirmEmail), new { code, email = model.Input.Email });
+        //var callbackUrl = Url.Action(nameof(ConfirmEmail), new { code, email = model.Input.Email });
+        //await _emailSender.SendEmailAsync(
+        //    model.Input.Email, 
+        //    "Reset Password", 
+        //    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl!)}'>CLICKING HERE</a>."
+        //);
+        //if (!string.IsNullOrEmpty(model.ReturnUrl))
+        //    return LocalRedirect(model.ReturnUrl);
+        //return RedirectToAction(nameof(Index), "Home");
     }
     public IActionResult ChangePassword()
     {
@@ -293,10 +294,18 @@ public class AccountController : Controller
             ViewData["Error"] = "Email confirmed failure!";
             return View(request);
         }
-        return RedirectToAction(nameof(ConfirmEmailSuccess));
+        return RedirectToAction(nameof(ConfirmEmailSuccess), request);
     }
-    public IActionResult ConfirmEmailSuccess([FromQuery] ConfirmEmailRequest request)
+    public async Task<IActionResult> ConfirmEmailSuccess([FromQuery] ConfirmEmailRequest request)
     {
+        //var userName = User.Identity!.Name;
+
+        //ChangePasswordRequest changePasswordRequest = new()
+        //{ 
+        //    UserName = 
+        //};
+        //var response = await _userApiClient.ChangePassword(changePasswordRequest);
+        //ViewData["Password"] = password;
         return View(request);
     }
     public IActionResult ResendEmailConfirmation()

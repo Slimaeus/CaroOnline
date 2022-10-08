@@ -166,7 +166,10 @@ public class ResultService : IResultService
                 Score = userResult.Score
             };
         }).ToList();
-        var totalCount = _resultRepo.Count();
+        var totalCount = _resultRepo.GetList(
+            filter: r => r.UserResults.Any(ur => ur.UserId == user.Id),
+            includeProperties: "UserResults"
+        ).Count();
         PagedList<HistoryResponse> histories = new()
         { 
             TotalCount = totalCount,

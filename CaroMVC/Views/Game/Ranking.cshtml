@@ -1,4 +1,7 @@
 ﻿@using Model.ActionModels
+@{
+    var cooldown = DateTime.Now.AddDays(1).Date.Subtract(DateTime.Now);
+}
 @model RankingModel
 <body>
     <div class="container">
@@ -63,7 +66,7 @@
                     </div>
                 }
 
-                <h4>Reset in: <span class="badge rounded-pill bg-success fs-6">@DateTime.Now.Date.ToString()</span></h4>
+                <h4>Reset in: <span class="badge rounded-pill bg-success fs-6">@cooldown.ToString(@"hh\:mm\:ss")</span></h4>
                 <table id="table1days" class="table table-dark table-hover">
                     <thread>
                         <tr class="table-active">

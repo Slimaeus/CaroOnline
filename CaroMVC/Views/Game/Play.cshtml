@@ -74,9 +74,6 @@
         const buttonList = document.querySelectorAll(".game-button");
         const board = document.getElementById("board");
 
-        const preventClick = (e) => {
-            e.preventDefault();
-        };
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)
@@ -126,13 +123,12 @@
                 const roomName = userList.getAttribute("room");
                 const userName = "@User.Identity?.Name";
                 const move = new Move(row,  col, userName);
-                if (game.isWinner(move))
-                {
-                    console.log(game.startedDate);
-                    connection.invoke("GameEnd", roomName, move.userName, new Date(game.startedDate));
-                }
                 buttonList.forEach(button => button.disabled = true);
                 connection.invoke("PlaceStone", roomName, Number(row), Number(col));
+                if (game.isWinner(move))
+                {
+                    connection.invoke("GameEnd", roomName, move.userName, new Date(game.startedDate));
+                }
             });
         });
     </script>

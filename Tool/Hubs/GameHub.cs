@@ -128,6 +128,7 @@ public class GameHub : Hub
 
     public async Task GameEnd(string roomName, string winnerUserName, DateTime startedDate)
     {
+        var now = DateTime.Now;
         if (string.IsNullOrEmpty(winnerUserName))
         {
             await Clients.Group(roomName).SendAsync("gameEndError", "Winner name is null");
@@ -157,7 +158,6 @@ public class GameHub : Hub
             await Clients.Group(roomName).SendAsync("gameEndError", "Cannot Found Loser");
             return;
         }
-        var now = DateTime.Now;
         // Save Valid DateTime
         ResultRequest request = new()
         {
