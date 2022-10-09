@@ -19,7 +19,7 @@ namespace Service.AuthServices
             smtpClient.EnableSsl = true;
 
             smtpClient.Send("caroonlinehutech@gmail.com", email, subject, htmlMessage);
-            return Task.Run(() => { Console.WriteLine(htmlMessage); });
+            return Task.CompletedTask;
         }
     }
 }

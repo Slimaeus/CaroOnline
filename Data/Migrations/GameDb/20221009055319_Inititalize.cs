@@ -4,7 +4,7 @@
 
 namespace Data.Migrations.GameDb
 {
-    public partial class AddRoomMax : Migration
+    public partial class Inititalize : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,7 @@ namespace Data.Migrations.GameDb
                 name: "GameUsers",
                 columns: table => new
                 {
-                    UserName = table.Column<string>(type: "TEXT", nullable: false)
+                    UserName = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -23,8 +23,8 @@ namespace Data.Migrations.GameDb
                 name: "Rooms",
                 columns: table => new
                 {
-                    RoomName = table.Column<string>(type: "TEXT", nullable: false),
-                    RoomMax = table.Column<int>(type: "INTEGER", nullable: false)
+                    RoomName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoomMax = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,30 +32,11 @@ namespace Data.Migrations.GameDb
                 });
 
             migrationBuilder.CreateTable(
-                name: "Connections",
-                columns: table => new
-                {
-                    ConnectionID = table.Column<string>(type: "TEXT", nullable: false),
-                    UserAgent = table.Column<string>(type: "TEXT", nullable: false),
-                    Connected = table.Column<bool>(type: "INTEGER", nullable: false),
-                    GameUserUserName = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Connections", x => x.ConnectionID);
-                    table.ForeignKey(
-                        name: "FK_Connections_GameUsers_GameUserUserName",
-                        column: x => x.GameUserUserName,
-                        principalTable: "GameUsers",
-                        principalColumn: "UserName");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GameUserPlayRoom",
                 columns: table => new
                 {
-                    GameUsersUserName = table.Column<string>(type: "TEXT", nullable: false),
-                    RoomsRoomName = table.Column<string>(type: "TEXT", nullable: false)
+                    GameUsersUserName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoomsRoomName = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,11 +56,6 @@ namespace Data.Migrations.GameDb
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Connections_GameUserUserName",
-                table: "Connections",
-                column: "GameUserUserName");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_GameUserPlayRoom_RoomsRoomName",
                 table: "GameUserPlayRoom",
                 column: "RoomsRoomName");
@@ -87,9 +63,6 @@ namespace Data.Migrations.GameDb
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Connections");
-
             migrationBuilder.DropTable(
                 name: "GameUserPlayRoom");
 

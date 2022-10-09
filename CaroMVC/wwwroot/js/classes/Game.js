@@ -33,9 +33,11 @@ class Game {
         let currMove = move
         while (this.isMoveExist(currMove.row + rowGap, currMove.col + colGap)) {
             const nextMove = this.getMove(currMove.row + rowGap, currMove.col + colGap);
-            if (currMove.isSameLine(nextMove))
+            if (currMove.isSameLine(nextMove)) {
                 line.push(nextMove)
-            currMove = nextMove
+                currMove = nextMove
+            }
+            else break;
         }
         return line
     }

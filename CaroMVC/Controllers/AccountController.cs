@@ -296,7 +296,7 @@ public class AccountController : Controller
         }
         return RedirectToAction(nameof(ConfirmEmailSuccess), request);
     }
-    public async Task<IActionResult> ConfirmEmailSuccess([FromQuery] ConfirmEmailRequest request)
+    public IActionResult ConfirmEmailSuccess([FromQuery] ConfirmEmailRequest request)
     {
         //var userName = User.Identity!.Name;
 

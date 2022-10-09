@@ -163,7 +163,7 @@ public class GameHub : Hub
         {
             WinnerUserName = winnerUserName,
             LoserUserName = loserUserName,
-            StartedTime = startedDate.AddHours(+7),
+            StartedTime = startedDate,
             EndedTime = now
         };
         var result = await _resultApiClient.Create(request);

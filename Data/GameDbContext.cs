@@ -9,7 +9,6 @@ namespace Data
         {
         }
         public DbSet<GameUser> GameUsers { get; set; } = default!;
-        public DbSet<Connection> Connections { get; set; } = default!;
         public DbSet<PlayRoom> Rooms { get; set; } = default!;
     }
 }

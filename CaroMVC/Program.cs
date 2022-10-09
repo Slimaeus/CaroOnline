@@ -23,9 +23,15 @@ namespace CaroMVC
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            /*
             builder.Services.AddDbContext<GameDbContext>(options =>
             {
                 options.UseSqlite(builder.Configuration.GetConnectionString(SystemConstants.AppSettings.GameConnectionStringKey));
+            });
+            */
+            builder.Services.AddDbContext<GameDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.AppSettings.GameConnectionStringKey));
             });
             builder.Services.AddHttpClient("CaroAPI", httpClient =>
             {
@@ -54,12 +60,14 @@ namespace CaroMVC
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            /*
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            */
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -69,11 +77,12 @@ namespace CaroMVC
 
             app.UseAuthorization();
             app.UseSession();
-            
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapHub<GameHub>("/hubs/game");
+
             app.Run();
         }
     }
