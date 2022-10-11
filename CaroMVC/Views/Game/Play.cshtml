@@ -31,7 +31,7 @@
         <div class="row d-flex justify-content-xl-center justify-content-xxl-center flex-nowrap">
             @for (int col = 0; col < Model.Board.ColumnCount; col++)
             {
-                <button class="col-1 btn btn-outline-dark w-auto game-button" row="@row" col="@col">&nbsp;&nbsp;&nbsp;</button>
+                <button class="col-1 btn btn-outline-dark bi bi-hand-index-thumb text-white w-auto game-button" row="@row" col="@col"></button>
             }
         </div>
     }
@@ -54,7 +54,7 @@
             <div class="modal-footer">
                 <a asp-action="Index" class="btn btn-dark btn-info">Close</a>
                 <a asp-action="History" class="btn btn-dark">History</a>
-                <a class = "btn btn-dark disabled" onclick="location.reload();">Rematch</a>
+                <a class = "btn btn-dark" id="btn-rematch">Rematch</a>
             </div>
         </div>
     </div>
@@ -72,6 +72,7 @@
         const userList = document.getElementById("user-list");
         const buttonList = document.querySelectorAll(".game-button");
         const board = document.getElementById("board");
+        const rematchButton = document.getElementById("btn-rematch");
 
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
@@ -84,8 +85,12 @@
             updateButtons.forEach((button) => {
                 // Set if this button clicked
                 button.setAttribute("clicked", "true")
-                button.className = button.className.replace("outline-dark", color);
+                button.className = button.className.replace("outline-dark bi bi-hand-index-thumb text-white", color);
             })
+        });
+        // Catch Rematch Event
+        connection.on("rematch", () => {
+            location.reload();
         });
         // Catch Enable Board Event
         connection.on("enableBoard", () => {
@@ -130,5 +135,10 @@
                 }
             });
         });
+
+        rematchButton.addEventListener("click", () => {
+            const roomName = userList.getAttribute("room");
+            connection.invoke("GameRematch", roomName);
+        })
     </script>
 }

@@ -117,11 +117,11 @@ public class GameHub : Hub
         var index = players.FindIndex(p => p.UserName == userName);
         var colorList = new List<string>
         {
-            "success",
-            "danger",
-            "primary"
+            "success bi bi-circle",
+            "danger bi bi-x-lg",
+            "primary bi bi-star"
         };
-        var color = (index != -1 && index < colorList.Count) ? colorList[index] : "outline-dark";
+        var color = (index != -1 && index < colorList.Count) ? colorList[index] : "outline-dark bi bi-hand-index-thumb text-white";
         await Clients.Group(roomName).SendAsync("updateBoard", userName, row, col, color);
         await Clients.OthersInGroup(roomName).SendAsync("enableBoard");
     }
@@ -175,5 +175,9 @@ public class GameHub : Hub
 
         var winnerInGameName = winner.ResultObject.InGameName;
         await Clients.Group(roomName).SendAsync("gameEnd", winnerUserName, winnerInGameName);
+    }
+    public async Task GameRematch(string roomName)
+    {
+        await Clients.Group(roomName).SendAsync("rematch");
     }
 }

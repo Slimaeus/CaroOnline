@@ -8,7 +8,6 @@ public static class SystemConstants
         public const string Token = "Token";
         public const string BaseAddress = "CaroAPIBaseUrl";
         public const string GameConnectionStringKey = "GameSqlDb";
-        //public const string GameConnectionStringKey = "GameSqliteDb";
     }
     public static class Game
     {
