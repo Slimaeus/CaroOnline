@@ -1,0 +1,142 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Play With Bot";
+}
+<style>
+    .game-button:disabled {
+        opacity: unset;
+    }
+</style>
+@model Model.ActionModels.PlayModel
+<div class="container text-center">
+    <h1 id="room-name">Play with bot</h1>
+    @if (User.Identity!.IsAuthenticated)
+    {
+        <div class="text-center">
+            <label>Player: </label>
+            <span id="player-name">@User.Identity.Name</span>
+        </div>
+    }
+</div>
+
+<div class="container position-relative" id="board">
+    @for (int row = 0; row < Model.Board.RowCount; row++)
+    {
+        <div class="row d-flex justify-content-xl-center justify-content-xxl-center flex-nowrap">
+            @for (int col = 0; col < Model.Board.ColumnCount; col++)
+            {
+                <button class="col-1 btn btn-outline-dark bi bi-hand-index-thumb text-white w-auto game-button" row="@row" col="@col"></button>
+            }
+        </div>
+    }
+</div>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="btn-test" hidden>
+    test
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-header w-100">
+                <h5 class="modal-title text-center" id="staticBackdropLabel">Result</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="result-text">
+            </div>
+            <div class="modal-footer">
+                <a asp-action="Index" class="btn btn-dark btn-info">Close</a>
+                <a class="btn btn-dark" id="btn-rematch">Rematch</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Scripts -->
+@section Scripts {
+    <script src="~/js/classes/Game.js"></script>
+    <script src="~/js/classes/Move.js"></script>
+    <script src="~/js/classes/Bot.js"></script>
+    <script>
+
+        const boardRow = Number("@Model.Board.RowCount");
+        const boardCol = Number("@Model.Board.ColumnCount");
+        const game = new Game(boardRow, boardCol);
+        const bot = new Bot("Bot" + Date.now().toString(), game);
+        console.log(bot.name);
+        const userList = document.getElementById("user-list");
+        const buttonList = document.querySelectorAll(".game-button");
+        const board = document.getElementById("board");
+        const rematchButton = document.getElementById("btn-rematch");
+
+
+        // Update Board
+        function updateBoard(move, color) {
+            game.moves.push(move);
+            const updateButtons = document.querySelectorAll(`button[row = "${move.row}"][col = "${move.col}"]`);
+            updateButtons.forEach((button) => {
+                // Set if this button clicked
+                button.setAttribute("clicked", "true")
+                button.className = button.className.replace("outline-dark bi bi-hand-index-thumb text-white", color);
+            })
+        };
+        // Catch Rematch Event
+        function rematch() {
+            location.reload();
+        };
+        // Catch Enable Board Event
+        function enableBoard() {
+            buttonList.forEach(button => {
+                if (button.getAttribute("clicked") !== "true")
+                    button.disabled = false
+            });
+        };
+        // Catch Game End Event
+        function gameEnd(winnerInGameName) {
+            const board = document.getElementById("board");
+            board.style.pointerEvents = "none";
+            const roomNameNode = document.getElementById("room-name");
+            const resultTest = document.getElementById("btn-test");
+            resultTest.click();
+            const resultCard = document.getElementById("staticBackdrop");
+            const resultText = document.getElementById("result-text");
+            roomNameNode.innerText = `The Winner is ${winnerInGameName}`;
+            resultText.innerText = `The Winner is ${winnerInGameName}`;
+            resultCard.style.visibility = "visible";
+        };
+
+        function botMove(playerMove) {
+            const move = bot.createMove(playerMove);
+
+            placeStone(move, "danger bi bi-x-lg");
+            enableBoard();
+        };
+
+        function placeStone(move, color) {
+            updateBoard(move, color);
+            if (game.isWinner(move)) {
+                gameEnd(move.userName);
+            }
+        }
+
+        buttonList.forEach((button) => {
+            button.addEventListener("click", () => {
+                const row = button.getAttribute("row");
+                const col = button.getAttribute("col");
+                const userName = "You";
+                const move = new Move(row, col, userName);
+                placeStone(move, "success bi bi-circle");
+                buttonList.forEach(button => button.disabled = true);
+                botMove(move);
+            });
+        });
+
+        rematchButton.addEventListener("click", () => {
+            rematch();
+        })
+    </script>
+}

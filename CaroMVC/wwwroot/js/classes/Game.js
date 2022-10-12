@@ -1,10 +1,13 @@
 class Game {
-    #moves;
+    moves;
     startedDate;
-
-    constructor() {
-        this.#moves = []
+    row;
+    col;
+    constructor(row, col) {
+        this.moves = []
         this.startedDate = Date.now();
+        this.row = Number(row);
+        this.col = Number(col);
     }
     // Check if a user win
     isWinner(move) {
@@ -14,18 +17,12 @@ class Game {
         const hasValidRLDLine = this.getRLDLine(move).length >= 5
         return hasValidHorLine || hasValidVerLine || hasValidLRDLine || hasValidRLDLine
     }
-    get moves() {
-        return this.#moves
-    }
-    set moves(value) {
-        this.#moves = value;
-    }
     getMove(row, col) {
-        return this.#moves.find(move => move.row === row &&  move.col === col)
+        return this.moves.find(move => move.row === row &&  move.col === col)
     }
     // Check if a move exists in game
     isMoveExist(row, col) {
-        return this.#moves.some(m => m.row === row && m.col === col)
+        return this.moves.some(m => m.row === row && m.col === col)
     }
     // Get line with gap
     getLine(move, rowGap, colGap) {

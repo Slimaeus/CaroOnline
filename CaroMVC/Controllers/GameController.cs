@@ -105,4 +105,12 @@ public class GameController : Controller
             model.PlayerRank = playerRank;
         return View(model);
     }
+
+    [AllowAnonymous]
+    public IActionResult PlayWithBot()
+    {
+        var board = new Board { RowCount = 30, ColumnCount = 30 };
+        var model = new PlayModel { Board = board };
+        return View(model);
+    }
 }
