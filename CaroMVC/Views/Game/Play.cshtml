@@ -73,7 +73,7 @@
         const buttonList = document.querySelectorAll(".game-button");
         const board = document.getElementById("board");
         const rematchButton = document.getElementById("btn-rematch");
-
+        buttonList.forEach(button => button.disabled = true);
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)

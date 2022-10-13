@@ -86,7 +86,8 @@ public class GameHub : Hub
         await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
 
         await Clients.All.SendAsync("addRoom", roomName);
-        await Clients.Group(roomName).SendAsync("newPlayerJoin", user.UserName);
+        await Clients.OthersInGroup(roomName).SendAsync("newPlayerJoin", user.UserName);
+        await Clients.OthersInGroup(roomName).SendAsync("enableBoard");
     }
     public async Task RoomLeave(string roomName)
     {
