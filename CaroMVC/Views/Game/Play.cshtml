@@ -12,7 +12,7 @@
 @model Model.ActionModels.PlayModel
 <div class="container text-center">
     <h1 id="room-name">Room Name: @Model.Room!.RoomName</h1>
-    <div class="row">
+    <div class="row" id="player-list">
         @foreach (var user in Model.Room!.GameUsers)
         {
             <div class="col-6">
@@ -78,6 +78,14 @@
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)
             .build();
+        // Catch When Someone Join
+        connection.on("newPlayerJoin", (userName) => {
+            const playerList = document.getElementById("player-list");
+            const newPlayer = document.createElement("div");
+            newPlayer.className = "col-6";
+            newPlayer.innerHTML = '<label>Player: </label><span id ="player-name"> ' + userName + '</span>';
+            playerList.appendChild(newPlayer);
+        });
         // Catch Update Board Event
         connection.on("updateBoard", (userName, row, col, color) => {
             game.moves.push(new Move(row,  col, userName));
