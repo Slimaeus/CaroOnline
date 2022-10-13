@@ -83,6 +83,14 @@
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)
             .build();
+
+        // Catch When Someone Leave
+        connection.on("leaveRoom", (leaveRoomName) => {
+            const roomName = userList.getAttribute("room");
+            if (leaveRoomName == roomName) {
+                location.reload();
+            }
+        });
         // Catch When Someone Join
         connection.on("newPlayerJoin", (userName) => {
             const playerList = document.getElementById("player-list");
