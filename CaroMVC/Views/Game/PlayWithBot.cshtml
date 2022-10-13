@@ -120,7 +120,9 @@
             updateBoard(move, color);
             if (game.isWinner(move)) {
                 gameEnd(move.userName);
+                return true;
             }
+            return false;
         }
 
         buttonList.forEach((button) => {
@@ -129,9 +131,11 @@
                 const col = button.getAttribute("col");
                 const userName = "You";
                 const move = new Move(row, col, userName);
-                placeStone(move, "success bi bi-circle");
-                buttonList.forEach(button => button.disabled = true);
-                botMove(move);
+                const result = placeStone(move, "success bi bi-circle");
+                if (!result) {
+                    buttonList.forEach(button => button.disabled = true);
+                    botMove(move);
+                }
             });
         });
 

@@ -6,8 +6,13 @@
         this.game = game
     }
     createMove(userMove) {
-        const row = userMove.row + 1;
-        const col = userMove.col + 1;
+        let row = 0;
+        let col = 0;
+        do {
+            row = Math.floor(Math.random() * (game.row - 1));
+            col = Math.floor(Math.random() * (game.col - 1));
+        }
+        while (game.isMoveExist(row, col));
         return new Move(row, col, bot.name);
     }
 
