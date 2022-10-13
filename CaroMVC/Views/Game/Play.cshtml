@@ -21,6 +21,7 @@
             </div>
         }
     </div>
+    <button class="btn btn-danger" id="btn-leave" room="@Model.Room!.RoomName">Leave</button>
 </div>
 
 <div class="container position-relative" id="board">
@@ -72,9 +73,11 @@
         const userList = document.getElementById("user-list");
         const buttonList = document.querySelectorAll(".game-button");
         const board = document.getElementById("board");
+        buttonList.forEach(button => button.disabled = true);
+
         const rematchButton = document.getElementById("btn-rematch");
         const playerNames = document.querySelectorAll('.player-name');
-        buttonList.forEach(button => button.disabled = true);
+        const leaveButton = document.getElementById("btn-leave");
         // Create Connection
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
@@ -158,5 +161,9 @@
             const roomName = userList.getAttribute("room");
             connection.invoke("GameRematch", roomName);
         })
+
+        leaveButton.addEventListener("click", () => {
+            connection.invoke("RoomLeave", "@Model.Room.RoomName");
+        });
     </script>
 }

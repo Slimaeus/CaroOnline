@@ -107,6 +107,7 @@ public class GameHub : Hub
             await _context.SaveChangesAsync();
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
             await Clients.All.SendAsync("leaveRoom", roomName);
+            //await Clients.Group(roomName).SendAsync("leaveRoom")
         }
     }
     public async Task PlaceStone(string roomName, int row, int col)
