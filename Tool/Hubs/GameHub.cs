@@ -182,5 +182,6 @@ public class GameHub : Hub
     public async Task GameRematch(string roomName)
     {
         await Clients.Group(roomName).SendAsync("rematch");
+        await Clients.OthersInGroup(roomName).SendAsync("enableBoard");
     }
 }

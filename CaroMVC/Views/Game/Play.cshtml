@@ -73,7 +73,7 @@
         const userList = document.getElementById("user-list");
         const buttonList = document.querySelectorAll(".game-button");
         const board = document.getElementById("board");
-        buttonList.forEach(button => button.disabled = true);
+        //buttonList.forEach(button => button.disabled = true);
 
         const rematchButton = document.getElementById("btn-rematch");
         const playerNames = document.querySelectorAll('.player-name');
@@ -118,13 +118,13 @@
         connection.on("rematch", () => {
             location.reload();
         });
-        // Catch Enable Board Event
         connection.on("enableBoard", () => {
             buttonList.forEach(button => {
                 if (button.getAttribute("clicked") !== "true")
                     button.disabled = false
             });
         });
+        // Catch Enable Board Event
         // Catch Game End Error Event
         connection.on("gameEndError", (error) => {
             alert(error);
