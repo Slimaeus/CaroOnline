@@ -15,9 +15,9 @@
     <div class="row" id="player-list">
         @foreach (var user in Model.Room!.GameUsers)
         {
-            <div class="col-6">
+            <div class="col-6 player-name" id="@user.UserName">
                 <label>Player: </label>
-                <span id="player-name">@user.UserName</span>
+                <span>@user.UserName</span>
             </div>
         }
     </div>
@@ -73,7 +73,9 @@
         const buttonList = document.querySelectorAll(".game-button");
         const board = document.getElementById("board");
         const rematchButton = document.getElementById("btn-rematch");
+        const playerNames = document.querySelectorAll('.player-name');
         buttonList.forEach(button => button.disabled = true);
+        // Create Connection
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
             .configureLogging(signalR.LogLevel.Information)
@@ -82,12 +84,17 @@
         connection.on("newPlayerJoin", (userName) => {
             const playerList = document.getElementById("player-list");
             const newPlayer = document.createElement("div");
-            newPlayer.className = "col-6";
-            newPlayer.innerHTML = '<label>Player: </label><span id ="player-name"> ' + userName + '</span>';
+            newPlayer.className = "col-6 player-name";
+            newPlayer.id = userName;
+            newPlayer.innerHTML = '<label>Player: </label><span> ' + userName + '</span>';
             playerList.appendChild(newPlayer);
         });
         // Catch Update Board Event
         connection.on("updateBoard", (userName, row, col, color) => {
+            if ("@User!.Identity!.Name".localeCompare(userName) != 0) {
+                const userDisplay = document.getElementById(userName);
+                userDisplay.classList.add("text-danger");
+            }
             game.moves.push(new Move(row,  col, userName));
             const updateButtons = document.querySelectorAll(`button[row = "${row}"][col = "${col}"]`);
             updateButtons.forEach((button) => {
@@ -130,6 +137,9 @@
 
         buttonList.forEach((button) => {
             button.addEventListener("click", () => {
+                playerNames.forEach((name) => {
+                    name.className = name.className.replace("text-danger", '');
+                });
                 const row = button.getAttribute("row");
                 const col = button.getAttribute("col");
                 const roomName = userList.getAttribute("room");
