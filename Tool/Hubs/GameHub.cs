@@ -5,6 +5,7 @@ using Model.GameModels;
 using Microsoft.AspNetCore.Authorization;
 using Service.APIClientServices;
 using Model.RequestModels;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Utility.Hubs;
 
@@ -14,12 +15,14 @@ public class GameHub : Hub
     private readonly GameDbContext _context;
     private readonly IUserApiClient _userApiClient;
     private readonly IResultApiClient _resultApiClient;
+    private readonly IMemoryCache _cache;
 
-    public GameHub(GameDbContext context, IUserApiClient userApiClient, IResultApiClient resultApiClient)
+    public GameHub(GameDbContext context, IUserApiClient userApiClient, IResultApiClient resultApiClient, IMemoryCache cache)
     {
         _context = context;
         _userApiClient = userApiClient;
         _resultApiClient = resultApiClient;
+        _cache = cache;
     }
     public override async Task OnConnectedAsync()
     {
@@ -46,6 +49,25 @@ public class GameHub : Hub
         }
 
         await base.OnConnectedAsync();
+    }
+    // Reset Room Data
+    public async Task ResetRoom(string roomName)
+    {
+        _cache.Remove(roomName);
+        await Clients.Group(roomName).SendAsync("reseted");
+    }
+    // Save Game Data
+    public async Task SaveGame(string roomName, object game)
+    {
+        Console.WriteLine(roomName + "has " + game.ToString());
+        _cache.Set(roomName, game);
+        await Clients.Group(roomName).SendAsync("saved");
+    }
+    // Reset Game Data
+    public async Task Reconnect(string roomName)
+    {
+        _cache.TryGetValue(roomName, out object game);
+        await Clients.Group(roomName).SendAsync("reload", game);
     }
     public async Task RoomCreate()
     {

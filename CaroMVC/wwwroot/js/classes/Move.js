@@ -2,7 +2,7 @@ class Move {
     row;
     col;
     userName;
-
+    color;
     constructor(row, col, userName) {
         this.row = Number(row)
         this.col = Number(col)

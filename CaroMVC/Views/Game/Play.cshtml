@@ -86,7 +86,7 @@
 
         // Catch When Someone Leave
         connection.on("leaveRoom", (leaveRoomName) => {
-            const roomName = userList.getAttribute("room");
+            const roomName = "@Model.Room.RoomName";
             if (leaveRoomName == roomName) {
                 location.reload();
             }
@@ -106,13 +106,15 @@
                 const userDisplay = document.getElementById(userName);
                 userDisplay.classList.add("text-danger");
             }
+            const roomName = "@Model.Room.RoomName";
             game.moves.push(new Move(row,  col, userName));
+            connection.invoke("SaveGame", roomName, game.moves);
             const updateButtons = document.querySelectorAll(`button[row = "${row}"][col = "${col}"]`);
             updateButtons.forEach((button) => {
                 // Set if this button clicked
                 button.setAttribute("clicked", "true")
                 button.className = button.className.replace("outline-dark bi bi-hand-index-thumb text-white", color);
-            })
+            });
         });
         // Catch Rematch Event
         connection.on("rematch", () => {
@@ -142,9 +144,42 @@
             resultText.innerText = `The Winner is ${winnerInGameName}`;
             resultCard.style.visibility = "visible";
         });
+        connection.on("reload", (moves) => {
+            const colorList = ["success bi bi-circle",
+                "danger bi bi-x-lg",
+                "primary bi bi-star"];
+            moves.forEach(move => {
+                const row = move.row;
+                const col = move.col;
+                const userName = move.userName;
+                const roomName = "@Model.Room.RoomName";
+                const color = (userName == roomName) ? colorList[0] : colorList[1];
+                const updateButtons = document.querySelectorAll(`button[row = "${row}"][col = "${col}"]`);
+                updateButtons.forEach((button) => {
+                    // Set if this button clicked
+                    button.setAttribute("clicked", "true")
+                    button.className = button.className.replace("outline-dark bi bi-hand-index-thumb text-white", color);
+                })
+            });
+            if (moves[moves.length - 1].userName == "@User.Identity.Name") {
+                buttonList.forEach(button => button.disabled = true);
+            }
+            else {
+                buttonList.forEach(button => {
+                    if (button.getAttribute("clicked") === "true")
+                        button.disabled = true
+                });
+            }
+            game.moves = moves;
+        });
         connection.start()
-            .then(() => console.log("Connected!"))
+            .then(fulfilled)
             .catch(console.error);
+
+        function fulfilled() {
+            const roomName = "@Model.Room.RoomName";
+            connection.invoke("Reconnect", roomName);
+        }
 
         buttonList.forEach((button) => {
             button.addEventListener("click", () => {
@@ -166,12 +201,13 @@
         });
 
         rematchButton.addEventListener("click", () => {
-            const roomName = userList.getAttribute("room");
+            const roomName = "@Model.Room.RoomName";
             connection.invoke("GameRematch", roomName);
         })
 
         leaveButton.addEventListener("click", () => {
             connection.invoke("RoomLeave", "@Model.Room.RoomName");
+            connection.invoke("ResetRoom", "@Model.Room.RoomName");
         });
     </script>
 }
