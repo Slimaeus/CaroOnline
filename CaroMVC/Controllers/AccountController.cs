@@ -1,5 +1,4 @@
-﻿using System.Text.Encodings.Web;
-using AutoMapper;
+﻿using AutoMapper;
 using CaroMVC.Models;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Model.ActionModels;
 using Model.RequestModels;
-using NuGet.Protocol;
 using Service.APIClientServices;
 
 namespace CaroMVC.Controllers;

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Model.GameModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Caching.Memory;
 using Service.APIClientServices;
 using Model.RequestModels;
 
@@ -102,12 +101,11 @@ public class GameHub : Hub
             _context.GameUsers.Attach(user);
 
             room.GameUsers.Remove(user);
-            if (room.GameUsers.Count == 0)
+            if (room.GameUsers.Count == 0 || room.GameUsers.All(u => u.UserName != roomName))
                 _context.Rooms.Remove(room);
             await _context.SaveChangesAsync();
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
             await Clients.All.SendAsync("leaveRoom", roomName);
-            //await Clients.Group(roomName).SendAsync("leaveRoom")
         }
     }
     public async Task PlaceStone(string roomName, int row, int col)
@@ -161,7 +159,6 @@ public class GameHub : Hub
             await Clients.Group(roomName).SendAsync("gameEndError", "Cannot Found Loser");
             return;
         }
-        // Save Valid DateTime
         ResultRequest request = new()
         {
             WinnerUserName = winnerUserName,
