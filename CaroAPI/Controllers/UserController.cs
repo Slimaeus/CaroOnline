@@ -240,4 +240,22 @@ public class UserController : ControllerBase
             return Ok(result);
         return BadRequest(result);
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userName"></param>
+    /// <returns></returns>
+    [AllowAnonymous]
+    [HttpGet("get-ranking-by-username")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetRankingByUserName(string userName)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        var result = await _userService.GetRankingByUserName(userName);
+        if (result.Succeeded)
+            return Ok(result);
+        return BadRequest(result);
+    }
 }

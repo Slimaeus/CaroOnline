@@ -2,7 +2,7 @@
 
 public class RankingResponse
 {
-    public int Top { get; set; } = 0;
+    public int Top { get; set; }
     public string InGameName { get; set; } = string.Empty;
     public int Level { get; set; }
     public string UserName { get; set; } = string.Empty;

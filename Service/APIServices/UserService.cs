@@ -274,4 +274,27 @@ public class UserService : IUserService
         };
         return new ApiSuccessResult<PagedList<RankingResponse>>(pageResult);
     }
+
+    public async Task<ApiResult<RankingResponse>> GetRankingByUserName(string userName)
+    {
+        var ranking = await _userManager.Users.AsQueryable()
+            .Include(u => u.UserResults)
+            .Where(u => u.UserName == userName)
+            .Select(u => new RankingResponse()
+            {
+                UserName = u.UserName,
+                InGameName = u.InGameName!,
+                Level = u.Level,
+                Win = u.UserResults.Sum(ur => ur.IsWinner ? 1 : 0),
+                Draw = 0,
+                Lose = u.UserResults.Sum(ur => ur.IsWinner ? 0 : 1),
+                Score = u.UserResults.Sum(ur => ur.Score)
+            })
+            .OrderByDescending(r => r.Score)
+            .ThenByDescending(r => r.Win)
+            .FirstOrDefaultAsync();
+        if (ranking == null)
+            return new ApiErrorResult<RankingResponse>("Cannot found");
+        return new ApiSuccessResult<RankingResponse>(ranking);
+    }
 }

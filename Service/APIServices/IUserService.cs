@@ -27,6 +27,7 @@ public interface IUserService
         int skip = 0
     );
     Task<ApiResult<PagedList<RankingResponse>>> GetRanking(PagingRequest pagingRequest);
+    Task<ApiResult<RankingResponse>> GetRankingByUserName(string userName);
     Task<ApiResult<bool>> Delete(Guid id);
     Task<ApiResult<bool>> Delete(string userName);
     Task<ApiResult<bool>> RoleAssign(RoleAssignRequest request);

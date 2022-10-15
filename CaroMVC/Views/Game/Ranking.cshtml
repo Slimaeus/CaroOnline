@@ -1,7 +1,4 @@
 ﻿@using Model.ActionModels
-@{
-    var cooldown = DateTime.Now.AddDays(1).Date.Subtract(DateTime.Now);
-}
 @model RankingModel
 <body>
     <div class="container">
@@ -22,17 +19,11 @@
                 </div>
             </div>
         </div>
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="table1day-tab" data-bs-toggle="tab" data-bs-target="#table1day" type="button" role="tab" aria-controls="table1day" aria-selected="true">1day</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="table30days-tab" data-bs-toggle="tab" data-bs-target="#table30days" type="button" role="tab" aria-controls="table30days" aria-selected="false">30days</button>
-            </li>
-        </ul>
+    </div>
+
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="table1day" role="tabpanel" aria-labelledby="table1day-tab">
-                @if (Model.PlayerRank.Top != 0)
+                @if (User!.Identity!.IsAuthenticated && Model.PlayerRank.Level != 0)
                 {
                     <div class="card text-white bg-info mb-3 my-2" style="max-width: 100rem;">
                         <div class="card-header fs-1">Your Achievements Today</div>
@@ -50,7 +41,6 @@
                                 <tr class="table-active fs-5">
                                     <th>Top</th>
                                     <th>Win/Draw/Lose</th>
-                                    <th>TotalTime</th>
                                     <th>Score</th>
                                 </tr>
                             </thread>
@@ -58,7 +48,6 @@
                                 <tr class="fs-1">
                                     <td>@Model.PlayerRank.Top</td>
                                     <td>@Model.PlayerRank.Win/@Model.PlayerRank.Draw/@Model.PlayerRank.Lose</td>
-                                    <td>01:05:06</td>
                                     <td>@Model.PlayerRank.Score</td>
                                 </tr>
                             </tbody>
@@ -66,16 +55,13 @@
                     </div>
                 }
 
-                <h4>Reset in: <span class="badge rounded-pill bg-success fs-6">@cooldown.ToString(@"hh\:mm\:ss")</span></h4>
                 <table id="table1days" class="table table-dark table-hover">
                     <thread>
                         <tr class="table-active">
                             <th>Top</th>
                             <th>InGameName</th>
                             <th>Win/Draw/Lose</th>
-                            @*<th>TotalTime</th>*@
                             <th>Score</th>
-                            @*<th>Nation</th>*@
                         </tr>
                     </thread>
                     <tbody>
@@ -85,9 +71,7 @@
                                 <td>@item.Top</td>
                                 <td>@item.InGameName</td>
                                 <td>@item.Win/@item.Draw/@item.Lose</td>
-                                @*<td>@item.Input.TotalTime</td>*@
                                 <td>@item.Score</td>
-                                @*<td>@item.Input.Nation</td>*@
                             </tr>
                         }
                     </tbody>
@@ -96,7 +80,7 @@
                     <ul class="pagination justify-content-center">
                         @if (Model.AllPlayerRanks.HasPrevious) {
                             <li class="page-item">
-                                <a class="page-link" href="@Model.AllPlayerRanks.PageIndex - 1">&laquo;</a>
+                                <a asp-action="Ranking" class="page-link" asp-route-pageIndex="@(@Model.AllPlayerRanks.PageIndex - 1)">&laquo;</a>
                             </li>
                         }
                         @for (int i = 1; i <= Model.AllPlayerRanks.PageCount; i++)
@@ -108,12 +92,14 @@
                         @if (Model.AllPlayerRanks.HasNext)
                         {
                             <li class="page-item">
-                                <a class="page-link" href="@Model.AllPlayerRanks.PageIndex + 1">&raquo;</a>
+                                <a asp-action="Ranking" class="page-link" asp-route-pageIndex="@(@Model.AllPlayerRanks.PageIndex + 1)">&raquo;</a>
                             </li>
                         }
                     </ul>
                 </div>
             </div>
+
+
             <div class="tab-pane fade" id="table30days" role="tabpanel" aria-labelledby="table30days-tab">
                 @if (Model.PlayerRank.Top != 0)
                 {
@@ -133,7 +119,6 @@
                                 <tr class="table-active fs-5">
                                     <th>Top</th>
                                     <th>Win/Draw/Lose</th>
-                                    @*<th>TotalTime</th>*@
                                     <th>Score</th>
                                 </tr>
                             </thread>
@@ -141,7 +126,6 @@
                                 <tr class="fs-1">
                                     <td>@Model.PlayerRank.Top</td>
                                     <td>@Model.PlayerRank.Win/@Model.PlayerRank.Draw/@Model.PlayerRank.Lose</td>
-                                    @*<td>01:05:06</td>*@
                                     <td>@Model.PlayerRank.Score</td>
                                 </tr>
                             </tbody>
@@ -149,52 +133,8 @@
                     </div>
                 }
 
-                <table id="table30days" class="table table-dark table-hover">
-                    <thread>
-                        <tr class="table-active">
-                            <th>Top</th>
-                            <th>InGameName</th>
-                            <th>Win/Draw/Lose</th>
-                            <th>Score</th>
-                        </tr>
-                    </thread>
-                    <tbody>
-                        @foreach (var item in Model.AllPlayerRanks.Items)
-                        {
-                            <tr>
-                                <td>@item.Top</td>
-                                <td>@item.InGameName</td>
-                                <td>@item.Win/@item.Draw/@item.Lose</td>
-                                @*<td>@item.TotalTime</td>*@
-                                <td>@item.Score</td>
-                                @*<td>@item.Nation</td>*@
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                <div>
-                    <ul class="pagination justify-content-center">
-                        @if (Model.AllPlayerRanks.HasPrevious)
-                        {
-                            <li class="page-item">
-                                <a asp-action="Ranking" asp-route-pageIndex="@(@Model.AllPlayerRanks.PageIndex - 1)" class="page-link">&laquo;</a>
-                            </li>
-                        }
-                        @for (int i = 1; i <= Model.AllPlayerRanks.PageCount; i++)
-                        {
-                            <li class="page-item">
-                                <a asp-action="Ranking" asp-route-pageIndex="@i" class="page-link">@i</a>
-                            </li>
-                        }
-                        @if (Model.AllPlayerRanks.HasNext)
-                        {
-                            <li class="page-item">
-                                <a asp-action="Ranking" asp-route-pageIndex="@(@Model.AllPlayerRanks.PageIndex + 1)" class="page-link">&raquo;</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
+
+
         </div>
     </div>
 </body>
