@@ -102,6 +102,7 @@ public class GameHub : Hub
         var user = new GameUser() { UserName = Context.User!.Identity!.Name! };
         _context.GameUsers.Attach(user);
         room.GameUsers.Add(user);
+        
         await _context.SaveChangesAsync();
 
         await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
@@ -138,6 +139,7 @@ public class GameHub : Hub
             return;
         var players = room.GameUsers.ToList();
         var index = players.FindIndex(p => p.UserName == userName);
+        Console.WriteLine(index);
         var colorList = new List<string>
         {
             "success bi bi-circle",
