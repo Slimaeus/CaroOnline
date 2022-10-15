@@ -65,7 +65,19 @@ namespace CaroAPI
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.ConnectionStringKey));
             });
-            builder.Services.AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = false)
+            builder.Services.AddIdentity<AppUser, AppRole>(options => {
+                // Sign In Settings
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedAccount = false;
+                // Password Settings
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 0;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 0;
+            })
                 .AddEntityFrameworkStores<CaroDbContext>()
                 .AddDefaultTokenProviders();
 
