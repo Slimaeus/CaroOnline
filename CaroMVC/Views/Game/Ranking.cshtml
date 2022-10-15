@@ -26,13 +26,12 @@
                 @if (User!.Identity!.IsAuthenticated && Model.PlayerRank.Level != 0)
                 {
                     <div class="card text-white bg-info mb-3 my-2" style="max-width: 100rem;">
-                        <div class="card-header fs-1">Your Achievements Today</div>
+                        <div class="card-header fs-1">Your Achievements</div>
                         <div class="card-body">
                             <div class="d-flex my-2">
                                 <div class="row justify-content-between container-fluid">
-                                    <p class="card-text col-11 fs-5">InGameName: @Model.PlayerRank.InGameName</p>
-                                    <button class="btn btn-primary btn-lg col-1"><i class="bi bi-share-fill"></i></button>
-                                    <p class="card-text fs-5">Level: @Model.PlayerRank.Level</p>
+                                    <p class="card-text col-11 fs-5">@Model.PlayerRank.InGameName</p>
+                                <iframe class="btn-lg col-1" src="https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&layout=button&size=large&width=77&height=28&appId" width="77" height="28" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
                                 </div>
                             </div>
                         </div>

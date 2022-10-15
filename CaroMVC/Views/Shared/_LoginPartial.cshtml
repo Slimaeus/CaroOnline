@@ -3,9 +3,6 @@
     @if (User.Identity!.IsAuthenticated)
     {
         <li class="nav-item">
-            <a id="manage" class="nav-link text-dark" asp-controller="Account" asp-action="Index" title="Manage">Account</a>
-        </li>
-        <li class="nav-item">
             <a id="manage" class="nav-link text-dark" asp-controller="Account" asp-action="Profile" title="Manage">Hello @User.Identity.Name !</a>
         </li>
         <li class="nav-item">

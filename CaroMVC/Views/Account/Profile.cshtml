@@ -17,22 +17,26 @@
             <span class="badge bg-danger mx-2 fs-5">Level: @Model.Level</span>
             <span class="badge rounded-pill bg-dark fs-5">Score: @Model.Score</span>
         </div>
-        <div class="progress mx-3 my-lg-2" style="height: 20px;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated fs-6 bg-info" role="progressbar" style="width: 50%;" aria-valuenow="@Model.Exp" aria-valuemin="0" aria-valuemax="100">Exp: @Model.Exp</div>
-        </div>
+        <hr />
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a asp-action="Profile">Profile</a>
+            </li>
+            <li class="list-group-item">
+                <a asp-action="ForgotPassword">Forgot Password</a>
+            </li>
+            <li class="list-group-item">
+                <a asp-action="ChangePassword">Change Password</a>
+            </li>
+            <li class="list-group-item">
+                <a asp-action="Logout">Logout</a>
+            </li>
+        </ul>
+        @*<div class="progress mx-3 my-lg-2" style="height: 20px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated fs-6 bg-info" role="progressbar" style="width: 50%;" aria-valuenow="@Model.Score" aria-valuemin="0" aria-valuemax="500">Exp: @Model.Exp</div>
+        </div>*@
 
-        <img class="card-img" src="https://img.freepik.com/premium-vector/meadows-landscape-with-mountains-hill_104785-943.jpg?w=2000" alt="Profile image" />
+        @*<img class="card-img" src="https://img.freepik.com/premium-vector/meadows-landscape-with-mountains-hill_104785-943.jpg?w=2000" alt="Profile image" />*@
         
-    </div>
-    <div>
-        <p>
-            <a asp-action="ForgotPassword" asp-route-returnUrl="@Context.Request.Path">Forgot your password?</a>
-        </p>
-        <p>
-            <a asp-action="Register" asp-route-returnUrl="@Context.Request.Path">Register as a new user</a>
-        </p>
-        <p>
-            <a asp-action="ResendEmailConfirmation">Resend email confirmation</a>
-        </p>
     </div>
 </div>
