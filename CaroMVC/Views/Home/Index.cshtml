@@ -16,7 +16,6 @@
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a asp-controller="Game" asp-action="Index" class="btn btn-lg btn-success">[<i class="bi bi-emoji-smile-fill"></i>] - Play With Stranger</a>
-                    <button class="btn btn-lg btn-success" type="button">[<i class="bi bi-people-fill"></i>] - Play With Friend</button>
                     <a asp-controller="Game" asp-action="PlayWithBot" class="btn btn-lg btn-success" type="button">[<i class="bi bi-robot"></i>] - Training With Robot</a>
                 </div>
             </div>
@@ -28,7 +27,6 @@
                     <a asp-controller="Game" asp-action="Ranking" class="btn btn-lg btn-info">[<i class="bi bi-bar-chart-fill"></i>] - Chart Ranking</a>
                     @if (User.Identity!.IsAuthenticated)
                     {
-
                         <a asp-controller="Game" asp-action="History" class="btn btn-lg btn-info">[<i class="bi bi-hourglass-split"></i>] - Match History</a>
                     }
                     <a asp-controller="Game" asp-action="Index" class="btn btn-lg btn-info">[<i class="bi bi-list-stars"></i>] - Room List</a>
@@ -36,7 +34,7 @@
             </div>
         </div>
 
-        <h2 class="my-2">RULES:</h2>
+        <h2 class="my-2" id="rules">RULES:</h2>
         <div class="accordion my-2" id="accordionRules">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingGomoku">

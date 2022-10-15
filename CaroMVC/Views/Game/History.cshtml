@@ -4,21 +4,10 @@
     <div class="container">
         <h1 class="text-center">HISTORY</h1>
         <p class="text-muted text-center">Caro Online - @DateTime.Now.ToString()</p>
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-            <button type="button" class="btn btn-primary">Sort</button>
-            <div class="btn-group" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                    <a class="dropdown-item" href="#">Today</a>
-                    <a class="dropdown-item" href="#">All</a>
-                </div>
-            </div>
-        </div>
         <table id="table-history" class="table table-warning table-hover my-2">
             <thread>
                 <tr class="table-active">
                     <th>Id</th>
-                    <th>GameMode</th>
                     <th>Total Time</th>
                     <th>Opponent</th>
                     <th>Result </th>
@@ -30,7 +19,6 @@
                 {
                     <tr>
                         <td>@item.Id</td>
-                        <td>@item.GameMode</td>
                         <td>@item.TotalTime.ToString(@"hh\:mm\:ss")</td>
                         <td>@item.OpponentInGameName</td>
                         <td>@item.Status</td>

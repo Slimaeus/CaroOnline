@@ -69,7 +69,7 @@ namespace CaroAPI
                 // Sign In Settings
                 options.SignIn.RequireConfirmedPhoneNumber = false;
                 options.SignIn.RequireConfirmedAccount = false;
-                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
                 // Password Settings
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
