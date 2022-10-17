@@ -25,12 +25,8 @@ public class GameController : Controller
         _userApiClient = userApiClient;
     }
     [AllowAnonymous]
-    public ActionResult Index(string? error)
+    public ActionResult Index()
     {
-        if (error != null)
-        {
-            ViewData["Error"] = error;
-        }
         var roomList = _context.Rooms.Include(room => room.GameUsers).ToList();
         return View(roomList);
     }
@@ -40,12 +36,13 @@ public class GameController : Controller
         var room = await _context.Rooms.Include(room => room.GameUsers).FirstOrDefaultAsync(room => room.RoomName == roomName);
         if (room == null)
         {
-            return RedirectToAction("Index", "Game", new { error = "Room does not exist!" });
+            ViewData["Error"] = "Room does not exist!!!";
+            return RedirectToAction("Index", "Game");
         }
         if (room.GameUsers.All(user => user.UserName != User.Identity!.Name))
         {
-            return RedirectToAction("Index", "Game", new { error = "You cannot join this game!" });
-
+            ViewData["Error"] = "You cannot join this game!";
+            return RedirectToAction("Index", "Game");
         }
         var board = new Board { RowCount = 30, ColumnCount = 30};
         var model = new PlayModel { Room = room, Board = board };
