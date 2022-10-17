@@ -53,7 +53,7 @@
             <div class="modal-body" id="result-text">
             </div>
             <div class="modal-footer">
-                <a asp-action="Index" class="btn btn-dark btn-info">Close</a>
+                <button class="btn btn-danger" id="modal-btn-leave" room="@Model.Room!.RoomName">Leave</button>
                 <a asp-action="History" class="btn btn-dark">History</a>
                 <a class = "btn btn-dark" id="btn-rematch">Rematch</a>
             </div>
@@ -78,6 +78,7 @@
         const rematchButton = document.getElementById("btn-rematch");
         const playerNames = document.querySelectorAll('.player-name');
         const leaveButton = document.getElementById("btn-leave");
+        const modalLeaveButton = document.getElementById("modal-btn-leave");
         // Create Connection
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/hubs/game")
@@ -121,6 +122,7 @@
             location.reload();
         });
         connection.on("enableBoard", () => {
+
             buttonList.forEach(button => {
                 if (button.getAttribute("clicked") !== "true")
                     button.disabled = false
@@ -148,6 +150,9 @@
             const colorList = ["success bi bi-circle",
                 "danger bi bi-x-lg",
                 "primary bi bi-star"];
+            if (moves == null)
+                return;
+
             moves.forEach(move => {
                 const row = move.row;
                 const col = move.col;
@@ -204,9 +209,13 @@
 
         rematchButton.addEventListener("click", () => {
             const roomName = "@Model.Room.RoomName";
+            connection.invoke("ResetRoom", "@Model.Room.RoomName");
             connection.invoke("GameRematch", roomName);
         })
-
+        modalLeaveButton.addEventListener("click", () => {
+            connection.invoke("RoomLeave", "@Model.Room.RoomName");
+            connection.invoke("ResetRoom", "@Model.Room.RoomName");
+        });
         leaveButton.addEventListener("click", () => {
             connection.invoke("RoomLeave", "@Model.Room.RoomName");
             connection.invoke("ResetRoom", "@Model.Room.RoomName");
